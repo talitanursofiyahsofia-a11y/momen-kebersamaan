@@ -1,326 +1,1409 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-    <meta name="theme-color" content="#080b14">
-    <title>MOMENTARY — Jejak Kenangan</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="admin.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#080b14" />
+  <title>MOMENTARY — Jejak Kenangan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070a12;
+      --panel: #0d1220;
+      --text: #f2f4fb;
+      --muted: #99a3ba;
+      --blue: #a8c1ff;
+      --lav: #c7b8ff;
+      --line: rgba(255,255,255,.11);
+      --card: rgba(255,255,255,.03);
+      --success: #6ee7b7;
+      --danger: #fca5a5;
+      --warning: #fcd34d;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: radial-gradient(circle at 50% -5%, #1a2743, #080b14 38%, #05070c 100%);
+      color: var(--text);
+      font-family: Manrope, sans-serif;
+      overflow-x: hidden;
+    }
+    body:before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 20;
+      opacity: .11;
+      background-image: radial-gradient(#fff 1px, transparent 1px);
+      background-size: 62px 62px;
+      mask-image: linear-gradient(#000, transparent 75%);
+    }
+    a { color: inherit; }
+    button, input, textarea, select { font: inherit; }
+    .hidden { display: none !important; }
+    .eyebrow, .label {
+      font: 500 .67rem "DM Mono", monospace;
+      letter-spacing: .2em;
+      color: #aebbe0;
+    }
+
+    .gate {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: radial-gradient(circle at 50% 42%, #172542, #0a0f1d 43%, #05070d);
+    }
+    .gate-glow {
+      position: absolute;
+      width: 55vw;
+      height: 55vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(168,193,255,.18), transparent 66%);
+      animation: pulse 5s infinite;
+    }
+    .gate-content { position: relative; width: min(760px, 90%); }
+    .gate h1 {
+      font-size: clamp(3.3rem, 12vw, 8rem);
+      letter-spacing: .08em;
+      margin: 10px 0 0;
+      font-weight: 600;
+    }
+    .gate-content > p {
+      margin: 0;
+      color: var(--muted);
+      letter-spacing: .35em;
+      text-transform: uppercase;
+    }
+    .gate-card {
+      margin: 38px auto 0;
+      width: min(390px, 100%);
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255,255,255,.04);
+      backdrop-filter: blur(16px);
+      text-align: left;
+    }
+    .gate-card label {
+      display: block;
+      color: #b7bfd1;
+      font-size: .75rem;
+      margin-bottom: 8px;
+    }
+    .gate-card label span { color: #69748d; }
+    .gate-card input {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #090d17;
+      color: #fff;
+      border-radius: 12px;
+      padding: 12px 13px;
+      outline: 0;
+    }
+    .gate-card input:focus { border-color: #93adf0; }
+    .gate-card button, #replay {
+      width: 100%;
+      margin-top: 12px;
+      padding: 13px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.24);
+      background: rgba(255,255,255,.07);
+      color: #fff;
+      cursor: pointer;
+    }
+    .gate-card small {
+      display: block;
+      text-align: center;
+      color: #68738a;
+      font-size: .65rem;
+      margin-top: 13px;
+    }
+
+    .topbar {
+      position: fixed;
+      z-index: 40;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 17px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(rgba(5,7,13,.7), transparent);
+      pointer-events: none;
+    }
+    .topbar > * { pointer-events: auto; }
+    .brand {
+      font: 500 .7rem "DM Mono";
+      letter-spacing: .18em;
+      color: #fff;
+      text-decoration: none;
+    }
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: rgba(8,11,20,.55);
+      color: #fff;
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+    }
+
+    .hero {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 90px 7vw;
+      position: relative;
+    }
+    .hero-copy { text-align: center; max-width: 900px; position: relative; z-index: 2; }
+    .hero h2 {
+      font-size: clamp(3.2rem, 8.5vw, 8rem);
+      line-height: .94;
+      letter-spacing: -.055em;
+      font-weight: 500;
+      margin: 20px 0;
+    }
+    .hero h2 i, .intro i, .heading i, .soundtrack i, .video-section i, .timeline i {
+      color: var(--blue);
+      font-style: normal;
+      font-weight: 300;
+    }
+    .hero-copy > p {
+      max-width: 600px;
+      margin: auto;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+    .scroll-cue {
+      margin-top: 68px;
+      font: 500 .62rem "DM Mono";
+      letter-spacing: .16em;
+      color: #8994aa;
+    }
+    .scroll-cue span {
+      display: block;
+      width: 1px;
+      height: 52px;
+      margin: 0 auto 12px;
+      background: linear-gradient(var(--blue), transparent);
+      animation: drop 2s infinite;
+    }
+    .side {
+      position: absolute;
+      top: 50%;
+      color: #68738c;
+      font: 500 .58rem "DM Mono";
+      letter-spacing: .13em;
+      line-height: 1.8;
+      writing-mode: vertical-rl;
+    }
+    .side.left { left: 18px; }
+    .side.right { right: 18px; }
+    .hero-orbit {
+      position: absolute;
+      border: 1px solid rgba(168,193,255,.1);
+      border-radius: 50%;
+    }
+    .hero-orbit.a { width: 55vw; height: 55vw; right: -25vw; top: 15%; }
+    .hero-orbit.b { width: 35vw; height: 35vw; left: -18vw; bottom: 0; }
+
+    .intro, .gallery-section, .soundtrack, .video-section, .timeline, .memory-wall {
+      max-width: 1180px;
+      margin: auto;
+      padding: 17vh 7vw;
+    }
+    .intro { text-align: center; }
+    .intro h3, .heading h3, .soundtrack h3, .video-section h3, .timeline h3 {
+      font-size: clamp(2.4rem, 5vw, 5.3rem);
+      line-height: 1;
+      letter-spacing: -.045em;
+      font-weight: 400;
+      margin: 22px 0;
+    }
+    .intro p { max-width: 670px; margin: 40px auto 0; color: var(--muted); line-height: 1.9; }
+
+    .featured { max-width: 1300px; margin: auto; position: relative; padding: 0 0 14vh; }
+    .media { position: relative; overflow: hidden; }
+    .photo { min-height: 78svh; background: linear-gradient(135deg,#17243c,#10182b 50%,#292741); }
+    .media img, .memory-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .placeholder {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: radial-gradient(circle at 70% 25%, rgba(199,184,255,.22), transparent 32%), linear-gradient(135deg,#17243c,#10182b 50%,#292741);
+    }
+    .placeholder b { font: 500 .8rem "DM Mono"; letter-spacing: .18em; }
+    .placeholder small {
+      display: block;
+      margin-top: 10px;
+      color: #8995ad;
+      font-size: .65rem;
+    }
+    .media-meta {
+      display: flex;
+      justify-content: space-between;
+      padding: 17px 7vw;
+      font: 500 .62rem "DM Mono";
+      letter-spacing: .15em;
+      color: #aab3c6;
+    }
+    .heading { margin-bottom: 65px; }
+    .heading p { color: var(--muted); line-height: 1.7; }
+
+    .gallery { display: grid; grid-template-columns: 1.1fr .9fr; gap: 14px; }
+    .memory-card {
+      position: relative;
+      min-height: 360px;
+      overflow: hidden;
+      background: #11182a;
+      border: 1px solid rgba(255,255,255,.06);
+    }
+    .memory-card:nth-child(3n) { min-height: 520px; grid-row: span 2; }
+    .memory-card.wide { grid-column: 1 / -1; min-height: 430px; }
+    .memory-card img { transition: transform .9s; }
+    .memory-card:hover img { transform: scale(1.04); }
+    .memory-card .caption {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      font: 500 .6rem "DM Mono";
+      letter-spacing: .12em;
+      text-shadow: 0 2px 12px #000;
+    }
+
+    .soundtrack { display: grid; grid-template-columns: 1fr 1fr; gap: 9vw; align-items: center; }
+    .soundtrack p { color: #b2bbcc; line-height: 1.9; }
+    .sound-card {
+      height: 330px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: rgba(255,255,255,.025);
+      display: grid;
+      place-items: center;
+      align-content: center;
+      gap: 28px;
+    }
+    .sound-card > span { font: 500 .6rem "DM Mono"; letter-spacing: .18em; color: #737e96; }
+    .bars { height: 75px; display: flex; gap: 7px; align-items: center; }
+    .bars i {
+      width: 5px;
+      border-radius: 9px;
+      background: linear-gradient(var(--blue), var(--lav));
+      animation: eq 1.2s ease-in-out infinite alternate;
+    }
+    .bars i:nth-child(1){height:25px}. .bars i:nth-child(2){height:55px;animation-delay:.1s}. .bars i:nth-child(3){height:72px;animation-delay:.2s}. .bars i:nth-child(4){height:42px;animation-delay:.3s}. .bars i:nth-child(5){height:68px;animation-delay:.4s}. .bars i:nth-child(6){height:35px;animation-delay:.5s}. .bars i:nth-child(7){height:60px;animation-delay:.6s}. .bars i:nth-child(8){height:45px;animation-delay:.7s}. .bars i:nth-child(9){height:30px;animation-delay:.8s}
+
+    .videos { display: grid; gap: 18px; margin-top: 55px; }
+    .video-card { background: #05070d; border: 1px solid var(--line); position: relative; }
+    .video-card video { width: 100%; display: block; max-height: 78vh; }
+    .video-card figcaption { padding: 12px 15px; font: 500 .6rem "DM Mono"; letter-spacing: .12em; color: #8d98af; }
+
+    .timeline-list { margin-top: 70px; border-left: 1px solid rgba(168,193,255,.35); }
+    .timeline-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      gap: 25px;
+      padding: 0 0 75px 28px;
+    }
+    .timeline-item:before {
+      content: "";
+      position: absolute;
+      left: -5px;
+      top: 3px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 24px var(--blue);
+    }
+    .timeline-item .num { font: 500 .65rem "DM Mono"; color: var(--blue); }
+    .timeline-item small { font: 500 .6rem "DM Mono"; letter-spacing: .15em; color: #77839c; }
+    .timeline-item h4 { font-size: 1.4rem; margin: 8px 0; }
+    .timeline-item p { margin: 0; color: var(--muted); line-height: 1.7; }
+
+    .wall {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+      margin-top: 50px;
+    }
+    .wall div {
+      aspect-ratio: 1;
+      overflow: hidden;
+      background: linear-gradient(135deg,#18243c,#29273e);
+      display: grid;
+      place-items: center;
+      color: #8b96ad;
+      font: 500 .55rem "DM Mono";
+      letter-spacing: .1em;
+    }
+    .wall img { width: 100%; height: 100%; object-fit: cover; }
+
+    .closing {
+      min-height: 95svh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 15vh 7vw;
+    }
+    .closing h2 { font-size: clamp(4rem, 13vw, 10rem); letter-spacing: .08em; margin: 18px 0; }
+    .closing p { color: #9da7bb; line-height: 2; }
+    .closing button { width: min(260px, 80vw); }
+
+    .reveal { opacity: 0; transform: translateY(45px); transition: opacity 1s, transform 1s; }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 20px);
+      padding: 10px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(8,11,20,.85);
+      backdrop-filter: blur(12px);
+      font-size: .7rem;
+      color: #c8d0e0;
+      opacity: 0;
+      pointer-events: none;
+      transition: .3s;
+      z-index: 80;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    .edit-mode-btn {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 80;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(10,14,20,.8);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font: 500 .65rem "DM Mono";
+      letter-spacing: .12em;
+    }
+
+    .admin-panel {
+      position: fixed;
+      right: 18px;
+      top: 18px;
+      bottom: 18px;
+      width: min(430px, calc(100vw - 36px));
+      background: rgba(8, 11, 20, .96);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      z-index: 90;
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+      overflow: auto;
+      padding: 18px;
+    }
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .admin-header h2 {
+      margin: 0;
+      font: 500 .8rem "DM Mono";
+      letter-spacing: .18em;
+    }
+    .close-btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .admin-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 18px;
+    }
+    .admin-tab-btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: #dfe8ff;
+      padding: 8px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+      font: 500 .58rem "DM Mono";
+      letter-spacing: .08em;
+    }
+    .admin-tab-btn.active {
+      background: rgba(168,193,255,.12);
+      border-color: rgba(168,193,255,.4);
+    }
+    .admin-tab-content { display: none; }
+    .admin-tab-content.active { display: block; }
+
+    .admin-section { margin-bottom: 26px; }
+    .admin-section h3 {
+      margin: 0 0 12px;
+      font-size: 1.1rem;
+    }
+    .small-text { color: var(--muted); font-size: .8rem; margin-top: 6px; }
+
+    .input-field, .textarea-field, .input-select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      color: white;
+      border-radius: 12px;
+      padding: 10px 12px;
+      outline: none;
+      margin-top: 8px;
+    }
+    .textarea-field { resize: vertical; min-height: 90px; }
+
+    .btn {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: white;
+      background: transparent;
+      cursor: pointer;
+      padding: 10px 12px;
+      font-size: .75rem;
+      letter-spacing: .08em;
+      margin-top: 10px;
+    }
+    .btn-primary { background: rgba(168,193,255,.12); }
+    .btn-success { background: rgba(110,231,183,.12); }
+    .btn-secondary { background: rgba(255,255,255,.05); }
+    .btn-warning { background: rgba(252,211,77,.12); }
+    .btn-danger { background: rgba(252,165,165,.12); }
+
+    .media-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .media-item {
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+    .media-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .media-item strong { font-size: .8rem; }
+    .mini-btn {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: white;
+      border-radius: 8px;
+      padding: 6px 8px;
+      cursor: pointer;
+    }
+    .audio-section { margin-top: 16px; }
+    .audio-item { margin-top: 16px; }
+    .audio-item label { display: block; font-size: .75rem; color: #dfe7ff; }
+    .setting-item { margin-top: 16px; }
+    .setting-item label { font-size: .75rem; color: #dfe7ff; }
+    .admin-footer {
+      display: grid;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: grid;
+      place-items: center;
+      background: rgba(0,0,0,.72);
+      padding: 18px;
+    }
+    .modal-content {
+      width: min(500px, 100%);
+      background: rgba(14,18,30,.98);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 20px;
+      position: relative;
+    }
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: transparent;
+      border: 1px solid var(--line);
+      width: 34px;
+      height: 34px;
+      color: white;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    .form-group { margin-top: 14px; }
+    .form-group label { display: block; margin-bottom: 6px; font-size: .75rem; color: #dfe7ff; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+    .modal-actions .btn { flex: 1; }
+
+    @keyframes pulse { 50% { transform: scale(1.12); opacity: .65; } }
+    @keyframes drop { 50% { transform: translateY(11px); opacity: .35; } }
+    @keyframes eq { to { transform: scaleY(.4); } }
+
+    @media (max-width: 700px) {
+      .side { display: none; }
+      .intro, .gallery-section, .soundtrack, .video-section, .timeline, .memory-wall { padding-left: 24px; padding-right: 24px; }
+      .gallery { grid-template-columns: 1fr; }
+      .memory-card, .memory-card:nth-child(3n), .memory-card.wide { min-height: 330px; grid-column: auto; grid-row: auto; }
+      .soundtrack { grid-template-columns: 1fr; gap: 35px; }
+      .sound-card { height: 240px; }
+      .wall { grid-template-columns: repeat(2, 1fr); }
+      .timeline-item { grid-template-columns: 45px 1fr; padding-left: 20px; }
+      .timeline-item h4 { font-size: 1.05rem; }
+      .photo { min-height: 72svh; }
+      .gate-card { margin-top: 28px; }
+      .admin-panel { width: calc(100vw - 20px); right: 10px; top: 10px; bottom: 10px; }
+    }
+  </style>
 </head>
 <body>
-    <!-- EDIT MODE BUTTON (Always visible di corner) -->
-    <button id="editModeToggle" class="edit-mode-btn" title="Edit Momen (Ctrl+E)">✎ EDIT</button>
+  <button id="editModeToggle" class="edit-mode-btn" title="Edit Momen (Ctrl+E)">✎ EDIT</button>
 
-    <div id="gate" class="gate">
-        <div class="grain"></div>
-        <div class="gate-glow"></div>
-        <div class="gate-content">
-            <span class="eyebrow">DIGITAL MEMORY ARCHIVE</span>
-            <h1>MOMENTARY</h1>
-            <p>Jejak Kenangan</p>
-            <div class="gate-card">
-                <label for="guestName">Nama / panggilan <span>(opsional)</span></label>
-                <input id="guestName" maxlength="30" placeholder="Contoh: Raka">
-                <button id="enterBtn">✦ MULAI ✦</button>
-                <small>Gunakan suara untuk pengalaman terbaik.</small>
-            </div>
-        </div>
+  <div id="gate" class="gate">
+    <div class="grain"></div>
+    <div class="gate-glow"></div>
+    <div class="gate-content">
+      <span class="eyebrow">DIGITAL MEMORY ARCHIVE</span>
+      <h1 id="siteTitle">MOMENTARY</h1>
+      <p id="siteSubtitle">Jejak Kenangan</p>
+      <div class="gate-card">
+        <label for="guestName">Nama / panggilan <span>(opsional)</span></label>
+        <input id="guestName" maxlength="30" placeholder="Contoh: Raka">
+        <button id="enterBtn">✦ MULAI ✦</button>
+        <small>Gunakan suara untuk pengalaman terbaik.</small>
+      </div>
+    </div>
+  </div>
+
+  <header id="topbar" class="topbar hidden">
+    <a href="#top" class="brand" id="brandName">MOMENTARY</a>
+    <button id="muteBtn" class="icon-btn" aria-label="Suara">♫</button>
+  </header>
+
+  <div id="adminPanel" class="admin-panel hidden">
+    <div class="admin-header">
+      <h2>ADMIN PANEL</h2>
+      <button id="closeAdminBtn" class="close-btn">✕</button>
     </div>
 
-    <header id="topbar" class="topbar hidden">
-        <a href="#top" class="brand">MOMENTARY</a>
-        <button id="muteBtn" class="icon-btn" aria-label="Suara">♫</button>
-    </header>
-
-    <!-- ADMIN PANEL (Hidden by default) -->
-    <div id="adminPanel" class="admin-panel hidden">
-        <div class="admin-header">
-            <h2>ADMIN PANEL</h2>
-            <button id="closeAdminBtn" class="close-btn">✕</button>
-        </div>
-        
-        <div class="admin-tabs">
-            <button class="admin-tab-btn active" data-tab="photos">📸 FOTO</button>
-            <button class="admin-tab-btn" data-tab="videos">🎬 VIDEO</button>
-            <button class="admin-tab-btn" data-tab="audio">🎵 AUDIO</button>
-            <button class="admin-tab-btn" data-tab="timeline">📅 TIMELINE</button>
-            <button class="admin-tab-btn" data-tab="captions">✍️ CAPTION</button>
-            <button class="admin-tab-btn" data-tab="settings">⚙️ PENGATURAN</button>
-        </div>
-
-        <!-- TAB: FOTO -->
-        <div id="photosTab" class="admin-tab-content active">
-            <div class="admin-section">
-                <h3>Galeri Foto</h3>
-                <button class="btn btn-primary" id="addPhotoBtn">+ TAMBAH FOTO</button>
-                <div id="photosList" class="media-list"></div>
-            </div>
-        </div>
-
-        <!-- TAB: VIDEO -->
-        <div id="videosTab" class="admin-tab-content">
-            <div class="admin-section">
-                <h3>Dokumentasi Video</h3>
-                <button class="btn btn-primary" id="addVideoBtn">+ TAMBAH VIDEO</button>
-                <div id="videosList" class="media-list"></div>
-            </div>
-        </div>
-
-        <!-- TAB: AUDIO -->
-        <div id="audioTab" class="admin-tab-content">
-            <div class="admin-section">
-                <h3>Musik Latar & Sound Effects</h3>
-                
-                <div class="audio-section">
-                    <h4>🎵 Background Music</h4>
-                    <p class="small-text">Musik yang akan di-loop otomatis (3-5 menit ideal)</p>
-                    <div class="audio-item">
-                        <input type="text" id="bgMusicSrc" placeholder="Path: media/audio/background.mp3" class="input-field">
-                        <div class="audio-controls">
-                            <audio id="bgMusicPreview" controls style="width: 100%; margin-top: 10px;"></audio>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="audio-section" style="margin-top: 30px;">
-                    <h4>🔊 Sound Effects</h4>
-                    <p class="small-text">Efek suara untuk klik tombol dan transisi</p>
-                    
-                    <div class="audio-item">
-                        <label>Click Sound</label>
-                        <input type="text" id="clickSrc" placeholder="Path: media/audio/click.mp3" class="input-field">
-                        <audio id="clickPreview" controls style="width: 100%; margin-top: 5px;"></audio>
-                    </div>
-                    <div class="audio-item">
-                        <label>Transition Sound</label>
-                        <input type="text" id="transitionSrc" placeholder="Path: media/audio/transition.mp3" class="input-field">
-                        <audio id="transitionPreview" controls style="width: 100%; margin-top: 5px;"></audio>
-                    </div>
-                </div>
-
-                <button class="btn btn-secondary" id="saveAudioBtn" style="margin-top: 20px;">💾 SIMPAN AUDIO</button>
-            </div>
-        </div>
-
-        <!-- TAB: TIMELINE -->
-        <div id="timelineTab" class="admin-tab-content">
-            <div class="admin-section">
-                <h3>Timeline Perjalanan</h3>
-                <button class="btn btn-primary" id="addTimelineBtn">+ TAMBAH TIMELINE</button>
-                <div id="timelineList" class="media-list"></div>
-            </div>
-        </div>
-
-        <!-- TAB: CAPTIONS -->
-        <div id="captionsTab" class="admin-tab-content">
-            <div class="admin-section">
-                <h3>Caption & Subtitle</h3>
-                <p class="small-text">Caption ini akan berganti saat user scroll ke section musik</p>
-                <button class="btn btn-primary" id="addCaptionBtn">+ TAMBAH CAPTION</button>
-                <div id="captionsList" class="media-list"></div>
-            </div>
-        </div>
-
-        <!-- TAB: SETTINGS -->
-        <div id="settingsTab" class="admin-tab-content">
-            <div class="admin-section">
-                <h3>Pengaturan Situs</h3>
-                
-                <div class="setting-item">
-                    <label>Nama Situs</label>
-                    <input type="text" id="siteName" class="input-field" placeholder="MOMENTARY">
-                </div>
-
-                <div class="setting-item">
-                    <label>Subtitle</label>
-                    <input type="text" id="subtitle" class="input-field" placeholder="Jejak Kenangan">
-                </div>
-
-                <div class="setting-item">
-                    <label>Featured Photo (Media Path)</label>
-                    <input type="text" id="featuredPhoto" class="input-field" placeholder="media/photos/01.jpg">
-                </div>
-
-                <div class="setting-item">
-                    <label>Closing Message</label>
-                    <textarea id="closingText" class="textarea-field" rows="3" placeholder="Time passes.&#10;Memories stay."></textarea>
-                </div>
-
-                <button class="btn btn-secondary" id="saveSettingsBtn" style="margin-top: 20px;">💾 SIMPAN PENGATURAN</button>
-            </div>
-        </div>
-
-        <!-- ACTION BUTTONS -->
-        <div class="admin-footer">
-            <button class="btn btn-success" id="saveAllBtn">✓ SIMPAN SEMUA DATA</button>
-            <button class="btn btn-warning" id="exportDataBtn">⬇ EXPORT DATA</button>
-            <button class="btn btn-danger" id="resetDataBtn">↻ RESET (HATI-HATI!)</button>
-        </div>
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" data-tab="photos">📸 FOTO</button>
+      <button class="admin-tab-btn" data-tab="videos">🎬 VIDEO</button>
+      <button class="admin-tab-btn" data-tab="audio">🎵 AUDIO</button>
+      <button class="admin-tab-btn" data-tab="timeline">📅 TIMELINE</button>
+      <button class="admin-tab-btn" data-tab="captions">✍️ CAPTION</button>
+      <button class="admin-tab-btn" data-tab="settings">⚙️ PENGATURAN</button>
     </div>
 
-    <!-- MODAL EDIT FOTO/VIDEO -->
-    <div id="editModal" class="modal hidden">
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <h3 id="modalTitle">Edit Media</h3>
-            
-            <div class="form-group">
-                <label>Tipe Media</label>
-                <select id="mediaType" class="input-field">
-                    <option value="foto">Foto</option>
-                    <option value="video">Video</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Path File (Contoh: media/photos/01.jpg)</label>
-                <input type="text" id="mediaSrc" class="input-field" placeholder="media/photos/01.jpg">
-            </div>
-
-            <div class="form-group">
-                <label>Judul Momen</label>
-                <input type="text" id="mediaTitle" class="input-field" placeholder="A LITTLE MOMENT">
-            </div>
-
-            <div class="form-group">
-                <label>Tahun/Tanggal</label>
-                <input type="text" id="mediaDate" class="input-field" placeholder="2026">
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn btn-success" id="saveMediaBtn">✓ SIMPAN</button>
-                <button class="btn btn-secondary" id="cancelMediaBtn">BATAL</button>
-            </div>
-        </div>
+    <div id="photosTab" class="admin-tab-content active">
+      <div class="admin-section">
+        <h3>Galeri Foto</h3>
+        <button class="btn btn-primary" id="addPhotoBtn">+ TAMBAH FOTO</button>
+        <div id="photosList" class="media-list"></div>
+      </div>
     </div>
 
-    <!-- MODAL EDIT TIMELINE -->
-    <div id="editTimelineModal" class="modal hidden">
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <h3>Edit Timeline</h3>
-            
-            <div class="form-group">
-                <label>Tahun</label>
-                <input type="text" id="timelineYear" class="input-field" placeholder="2026">
-            </div>
-
-            <div class="form-group">
-                <label>Judul Chapter</label>
-                <input type="text" id="timelineTitle" class="input-field" placeholder="THE FIRST STEP">
-            </div>
-
-            <div class="form-group">
-                <label>Deskripsi</label>
-                <textarea id="timelineText" class="textarea-field" rows="3" placeholder="Awal dari sebuah perjalanan."></textarea>
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn btn-success" id="saveTimelineBtn">✓ SIMPAN</button>
-                <button class="btn btn-secondary" id="cancelTimelineBtn">BATAL</button>
-            </div>
-        </div>
+    <div id="videosTab" class="admin-tab-content">
+      <div class="admin-section">
+        <h3>Dokumentasi Video</h3>
+        <button class="btn btn-primary" id="addVideoBtn">+ TAMBAH VIDEO</button>
+        <div id="videosList" class="media-list"></div>
+      </div>
     </div>
 
-    <!-- MODAL EDIT CAPTION -->
-    <div id="editCaptionModal" class="modal hidden">
-        <div class="modal-content">
-            <button class="modal-close">&times;</button>
-            <h3>Edit Caption</h3>
-            
-            <div class="form-group">
-                <label>Teks Caption</label>
-                <textarea id="captionText" class="textarea-field" rows="4" placeholder="Ketik caption/subtitle di sini..."></textarea>
-            </div>
+    <div id="audioTab" class="admin-tab-content">
+      <div class="admin-section">
+        <h3>Musik Latar & Sound Effect</h3>
 
-            <div class="modal-actions">
-                <button class="btn btn-success" id="saveCaptionBtn">✓ SIMPAN</button>
-                <button class="btn btn-secondary" id="cancelCaptionBtn">BATAL</button>
-            </div>
+        <div class="audio-section">
+          <h4>🎵 Background Music</h4>
+          <div class="audio-item">
+            <label>Path Musik</label>
+            <input type="text" id="bgMusicSrc" class="input-field" placeholder="media/audio/background.mp3">
+            <audio id="bgMusicPreview" controls style="width:100%; margin-top: 10px;"></audio>
+          </div>
         </div>
+
+        <div class="audio-section" style="margin-top:20px;">
+          <h4>🔊 Sound Effect</h4>
+          <div class="audio-item">
+            <label>Click Sound</label>
+            <input type="text" id="clickSrc" class="input-field" placeholder="media/audio/click.mp3">
+            <audio id="clickPreview" controls style="width:100%; margin-top: 6px;"></audio>
+          </div>
+          <div class="audio-item">
+            <label>Transition Sound</label>
+            <input type="text" id="transitionSrc" class="input-field" placeholder="media/audio/transition.mp3">
+            <audio id="transitionPreview" controls style="width:100%; margin-top: 6px;"></audio>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" id="saveAudioBtn" style="margin-top: 16px;">💾 SIMPAN AUDIO</button>
+      </div>
     </div>
 
-    <!-- MAIN APP -->
-    <main id="app" class="hidden">
-        <section id="top" class="hero">
-            <div class="hero-orbit a"></div>
-            <div class="hero-orbit b"></div>
-            <div class="side left">EVERY MOMENT<br>HAS A STORY</div>
-            <div class="side right">ARCHIVE / <span id="archiveNo">01</span></div>
-            <div class="hero-copy">
-                <span class="eyebrow">A DIGITAL MEMORY JOURNAL</span>
-                <h2>Our story,<br><i>frame by frame.</i></h2>
-                <p>Tempat menyimpan tawa, perjalanan, kegiatan, dan cerita yang pernah kita lalui bersama.</p>
-                <div class="scroll-cue"><span></span>SCROLL TO REMEMBER</div>
-            </div>
-        </section>
-        <section class="intro reveal">
-            <span class="label">01 / THE BEGINNING</span>
-            <h3>Some moments are <i>too beautiful to forget.</i></h3>
-            <p>"Kita mungkin tidak sadar saat menjalaninya, tetapi suatu hari nanti momen kecil ini akan menjadi kenangan besar."</p>
-        </section>
-        <section class="featured reveal">
-            <div class="media photo" data-src="media/photos/01.jpg">
-                <div class="placeholder"><b>FOTO UTAMA</b><small>media/photos/01.jpg</small></div>
-            </div>
-            <div class="media-meta">
-                <span>THE MOMENT</span>
-                <span>2026</span>
-            </div>
-        </section>
-        <section class="gallery-section reveal">
-            <div class="heading">
-                <span class="label">02 / MEMORY GALLERY</span>
-                <h3>Pieces of <i>our memories.</i></h3>
-                <p>Koleksi momen berharga dari perjalanan kita bersama.</p>
-            </div>
-            <div id="gallery" class="gallery"></div>
-        </section>
-        <section class="soundtrack reveal">
+    <div id="timelineTab" class="admin-tab-content">
+      <div class="admin-section">
+        <h3>Timeline</h3>
+        <button class="btn btn-primary" id="addTimelineBtn">+ TAMBAH TIMELINE</button>
+        <div id="timelineList" class="media-list"></div>
+      </div>
+    </div>
+
+    <div id="captionsTab" class="admin-tab-content">
+      <div class="admin-section">
+        <h3>Caption</h3>
+        <button class="btn btn-primary" id="addCaptionBtn">+ TAMBAH CAPTION</button>
+        <div id="captionsList" class="media-list"></div>
+      </div>
+    </div>
+
+    <div id="settingsTab" class="admin-tab-content">
+      <div class="admin-section">
+        <h3>Pengaturan Situs</h3>
+
+        <div class="setting-item">
+          <label>Nama Situs</label>
+          <input id="siteNameInput" class="input-field" type="text" placeholder="MOMENTARY">
+        </div>
+        <div class="setting-item">
+          <label>Subtitle</label>
+          <input id="subtitleInput" class="input-field" type="text" placeholder="Jejak Kenangan">
+        </div>
+        <div class="setting-item">
+          <label>Featured Photo</label>
+          <input id="featuredPhotoInput" class="input-field" type="text" placeholder="media/photos/01.jpg">
+        </div>
+        <div class="setting-item">
+          <label>Closing Message</label>
+          <textarea id="closingTextInput" class="textarea-field" rows="3" placeholder="Time passes. Memories stay."></textarea>
+        </div>
+
+        <button class="btn btn-secondary" id="saveSettingsBtn" style="margin-top:16px;">💾 SIMPAN PENGATURAN</button>
+      </div>
+    </div>
+
+    <div class="admin-footer">
+      <button class="btn btn-success" id="saveAllBtn">✓ SIMPAN SEMUA DATA</button>
+      <button class="btn btn-warning" id="exportDataBtn">⬇ EXPORT DATA</button>
+      <button class="btn btn-danger" id="resetDataBtn">↻ RESET DATA</button>
+    </div>
+  </div>
+
+  <div id="editModal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close">&times;</button>
+      <h3 id="modalTitle">Edit Media</h3>
+
+      <div class="form-group">
+        <label>Path File</label>
+        <input id="mediaSrc" class="input-field" type="text" placeholder="media/photos/01.jpg">
+      </div>
+      <div class="form-group">
+        <label>Judul</label>
+        <input id="mediaTitle" class="input-field" type="text" placeholder="A LITTLE MOMENT">
+      </div>
+      <div class="form-group">
+        <label>Tahun / Tanggal</label>
+        <input id="mediaDate" class="input-field" type="text" placeholder="2026">
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-success" id="saveMediaBtn">✓ SIMPAN</button>
+        <button class="btn btn-secondary" id="cancelMediaBtn">BATAL</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="editTimelineModal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close">&times;</button>
+      <h3>Edit Timeline</h3>
+
+      <div class="form-group">
+        <label>Tahun</label>
+        <input id="timelineYear" class="input-field" type="text" placeholder="2026">
+      </div>
+      <div class="form-group">
+        <label>Judul</label>
+        <input id="timelineTitle" class="input-field" type="text" placeholder="THE FIRST STEP">
+      </div>
+      <div class="form-group">
+        <label>Deskripsi</label>
+        <textarea id="timelineText" class="textarea-field" rows="3" placeholder="Awal dari sebuah perjalanan."></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-success" id="saveTimelineBtn">✓ SIMPAN</button>
+        <button class="btn btn-secondary" id="cancelTimelineBtn">BATAL</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="editCaptionModal" class="modal hidden">
+    <div class="modal-content">
+      <button class="modal-close">&times;</button>
+      <h3>Edit Caption</h3>
+
+      <div class="form-group">
+        <label>Caption</label>
+        <textarea id="captionText" class="textarea-field" rows="4" placeholder="Text caption..."></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-success" id="saveCaptionBtn">✓ SIMPAN</button>
+        <button class="btn btn-secondary" id="cancelCaptionBtn">BATAL</button>
+      </div>
+    </div>
+  </div>
+
+  <main id="app" class="hidden">
+    <section id="top" class="hero">
+      <div class="hero-orbit a"></div>
+      <div class="hero-orbit b"></div>
+      <div class="side left">EVERY MOMENT<br>HAS A STORY</div>
+      <div class="side right">ARCHIVE / <span id="archiveNo">01</span></div>
+      <div class="hero-copy">
+        <span class="eyebrow">A DIGITAL MEMORY JOURNAL</span>
+        <h2>Our story,<br><i>frame by frame.</i></h2>
+        <p>Tempat menyimpan tawa, perjalanan, kegiatan, dan cerita yang pernah kita lalui bersama.</p>
+        <div class="scroll-cue"><span></span>SCROLL TO REMEMBER</div>
+      </div>
+    </section>
+
+    <section class="intro reveal">
+      <span class="label">01 / THE BEGINNING</span>
+      <h3>Some moments are <i>too beautiful to forget.</i></h3>
+      <p>“Kita mungkin tidak sadar saat menjalaninya, tetapi suatu hari nanti momen kecil ini akan menjadi kenangan besar.”</p>
+    </section>
+
+    <section class="featured reveal">
+      <div class="media photo">
+        <img id="featuredImage" src="media/photos/01.jpg" alt="Featured memory" />
+      </div>
+      <div class="media-meta">
+        <span>THE MOMENT</span>
+        <span id="featuredYear">2026</span>
+      </div>
+    </section>
+
+    <section class="gallery-section reveal">
+      <div class="heading">
+        <span class="label">02 / MEMORY GALLERY</span>
+        <h3>Pieces of <i>our memories.</i></h3>
+        <p>Koleksi momen berharga dari perjalanan kita bersama.</p>
+      </div>
+      <div id="gallery" class="gallery"></div>
+    </section>
+
+    <section class="soundtrack reveal">
+      <div>
+        <span class="label">03 / THE SOUNDTRACK</span>
+        <h3>Let the memories <i>have a soundtrack.</i></h3>
+        <p id="caption">Every little moment can become a story worth keeping.</p>
+      </div>
+      <div class="sound-card">
+        <div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <span>BACKGROUND AUDIO</span>
+      </div>
+    </section>
+
+    <section class="video-section reveal">
+      <span class="label">04 / MOVING MEMORIES</span>
+      <h3>Not just a picture.<br><i>A moment in motion.</i></h3>
+      <div id="videos" class="videos"></div>
+    </section>
+
+    <section class="timeline reveal">
+      <span class="label">05 / THE JOURNEY</span>
+      <h3>A few chapters <i>of our story.</i></h3>
+      <div id="timeline" class="timeline-list"></div>
+    </section>
+
+    <section class="memory-wall reveal">
+      <span class="label">06 / MEMORY WALL</span>
+      <div id="wall" class="wall"></div>
+    </section>
+
+    <section class="closing reveal">
+      <span class="eyebrow">END OF THIS CHAPTER</span>
+      <h2 id="closingHeader">MOMENTARY</h2>
+      <p id="closingText">Time passes.<br>Memories stay.</p>
+      <button id="replay">↻ LIHAT KEMBALI</button>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <audio id="music" loop preload="auto" src="media/audio/background.mp3"></audio>
+  <audio id="click" preload="auto" src="media/audio/click.mp3"></audio>
+  <audio id="whoosh" preload="auto" src="media/audio/transition.mp3"></audio>
+
+  <script>
+    const STORAGE_KEY = 'momentary_data_v1';
+
+    const defaultData = {
+      siteName: 'MOMENTARY',
+      subtitle: 'Jejak Kenangan',
+      featuredPhoto: 'media/photos/01.jpg',
+      featuredYear: '2026',
+      closingText: 'Time passes.<br>Memories stay.',
+      gallery: [
+        { src: 'media/photos/02.jpg', title: 'A LITTLE MOMENT', date: '2026' },
+        { src: 'media/photos/03.jpg', title: 'TOGETHER', date: '2026' },
+        { src: 'media/photos/04.jpg', title: 'GOOD TIMES', date: '2026' },
+        { src: 'media/photos/05.jpg', title: 'ONE FOR THE ARCHIVE', date: '2026' },
+        { src: 'media/photos/06.jpg', title: 'KEEP THIS MOMENT', date: '2026' },
+        { src: 'media/photos/07.jpg', title: 'WE WERE HERE', date: '2026' }
+      ],
+      videos: [
+        { src: 'media/videos/01.mp4', title: 'DOCUMENTATION / 01' },
+        { src: 'media/videos/02.mp4', title: 'DOCUMENTATION / 02' }
+      ],
+      timeline: [
+        { year: '2026', title: 'THE FIRST STEP', text: 'Awal dari sebuah perjalanan.' },
+        { year: '2026', title: 'THE MOMENTS', text: 'Tawa, kegiatan, dan cerita yang tumbuh bersama.' },
+        { year: '2026', title: 'THE MEMORY', text: 'Hal-hal sederhana yang akhirnya berarti.' }
+      ],
+      captions: [
+        'Every little moment can become a story worth keeping.',
+        'We laughed. We grew. We were here.',
+        'Some memories arrive quietly.',
+        'Time passes. The feeling stays.',
+        'This was our story.'
+      ],
+      audio: {
+        background: 'media/audio/background.mp3',
+        click: 'media/audio/click.mp3',
+        transition: 'media/audio/transition.mp3'
+      }
+    };
+
+    const state = loadData();
+    const galleryEl = document.getElementById('gallery');
+    const videosEl = document.getElementById('videos');
+    const timelineEl = document.getElementById('timeline');
+    const wallEl = document.getElementById('wall');
+    const captionEl = document.getElementById('caption');
+    const music = document.getElementById('music');
+    const clickAudio = document.getElementById('click');
+    const whoosh = document.getElementById('whoosh');
+    let soundOn = true;
+    let currentCaptionIndex = 0;
+    let currentEditMode = 'photos';
+    let editingIndex = null;
+    let editingType = null;
+
+    function loadData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return JSON.parse(JSON.stringify(defaultData));
+      try {
+        const parsed = JSON.parse(saved);
+        return { ...JSON.parse(JSON.stringify(defaultData)), ...parsed, audio: { ...defaultData.audio, ...(parsed.audio || {}) } };
+      } catch (e) {
+        return JSON.parse(JSON.stringify(defaultData));
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      toast('Data berhasil disimpan');
+    }
+
+    function toast(message) {
+      const x = document.getElementById('toast');
+      x.textContent = message;
+      x.classList.add('show');
+      setTimeout(() => x.classList.remove('show'), 2200);
+    }
+
+    function play(audioEl, volume = 0.45) {
+      if (!soundOn || !audioEl) return;
+      audioEl.currentTime = 0;
+      audioEl.volume = volume;
+      audioEl.play().catch(() => {});
+    }
+
+    function renderHeader() {
+      document.getElementById('siteTitle').textContent = state.siteName;
+      document.getElementById('siteSubtitle').textContent = state.subtitle;
+      document.getElementById('brandName').textContent = state.siteName;
+      document.getElementById('closingHeader').textContent = state.siteName;
+      document.getElementById('closingText').innerHTML = state.closingText;
+      document.getElementById('featuredImage').src = state.featuredPhoto;
+      document.getElementById('featuredYear').textContent = state.featuredYear || '2026';
+    }
+
+    function renderGallery() {
+      galleryEl.innerHTML = '';
+      state.gallery.forEach((item, i) => {
+        const card = document.createElement('figure');
+        card.className = 'memory-card' + (i === 3 ? ' wide' : '');
+        card.innerHTML = `
+          <img src="${item.src}" alt="${item.title}" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML += '<div class=\'placeholder\'><b>${item.title}</b><small>${item.src}</small></div>'">
+          <figcaption class="caption"><span>${item.title}</span><span>${item.date}</span></figcaption>
+        `;
+        galleryEl.appendChild(card);
+      });
+    }
+
+    function renderVideos() {
+      videosEl.innerHTML = '';
+      state.videos.forEach(item => {
+        const f = document.createElement('figure');
+        f.className = 'video-card';
+        f.innerHTML = `
+          <video controls playsinline preload="metadata" src="${item.src}"></video>
+          <figcaption>${item.title}</figcaption>
+        `;
+        videosEl.appendChild(f);
+      });
+    }
+
+    function renderTimeline() {
+      timelineEl.innerHTML = '';
+      state.timeline.forEach((item, i) => {
+        const article = document.createElement('article');
+        article.className = 'timeline-item';
+        article.innerHTML = `
+          <span class="num">0${i + 1}</span>
+          <div>
+            <small>${item.year}</small>
+            <h4>${item.title}</h4>
+            <p>${item.text}</p>
+          </div>
+        `;
+        timelineEl.appendChild(article);
+      });
+    }
+
+    function renderWall() {
+      wallEl.innerHTML = '';
+      state.gallery.slice(0, 8).forEach(item => {
+        const d = document.createElement('div');
+        const img = document.createElement('img');
+        img.src = item.src;
+        img.alt = item.title;
+        img.loading = 'lazy';
+        img.onerror = () => { d.textContent = item.title; };
+        d.appendChild(img);
+        wallEl.appendChild(d);
+      });
+    }
+
+    function renderAudioFields() {
+      document.getElementById('bgMusicSrc').value = state.audio.background;
+      document.getElementById('clickSrc').value = state.audio.click;
+      document.getElementById('transitionSrc').value = state.audio.transition;
+      music.src = state.audio.background;
+      clickAudio.src = state.audio.click;
+      whoosh.src = state.audio.transition;
+      document.getElementById('bgMusicPreview').src = state.audio.background;
+      document.getElementById('clickPreview').src = state.audio.click;
+      document.getElementById('transitionPreview').src = state.audio.transition;
+    }
+
+    function renderSettingsInputs() {
+      document.getElementById('siteNameInput').value = state.siteName;
+      document.getElementById('subtitleInput').value = state.subtitle;
+      document.getElementById('featuredPhotoInput').value = state.featuredPhoto;
+      document.getElementById('closingTextInput').value = state.closingText.replace(/<br>/g, '\n');
+    }
+
+    function renderCaptions() {
+      if (state.captions.length > 0) {
+        captionEl.textContent = state.captions[currentCaptionIndex % state.captions.length];
+      }
+    }
+
+    function renderAdminLists() {
+      renderPhotosList();
+      renderVideosList();
+      renderTimelineList();
+      renderCaptionsList();
+    }
+
+    function renderPhotosList() {
+      const list = document.getElementById('photosList');
+      list.innerHTML = '';
+      state.gallery.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'media-item';
+        div.innerHTML = `
+          <div class="media-row">
+            <strong>${item.title}</strong>
             <div>
-                <span class="label">03 / THE SOUNDTRACK</span>
-                <h3>Let the memories <i>have a soundtrack.</i></h3>
-                <p id="caption">Every little moment can become a story worth keeping.</p>
+              <button class="mini-btn" data-action="edit" data-type="gallery" data-index="${idx}">✎</button>
+              <button class="mini-btn" data-action="delete" data-type="gallery" data-index="${idx}">🗑</button>
             </div>
-            <div class="sound-card">
-                <div class="bars">
-                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-                </div>
-                <span>BACKGROUND AUDIO</span>
+          </div>
+          <div style="font-size:.72rem; color:#9aa8bc;">${item.src}</div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function renderVideosList() {
+      const list = document.getElementById('videosList');
+      list.innerHTML = '';
+      state.videos.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'media-item';
+        div.innerHTML = `
+          <div class="media-row">
+            <strong>${item.title}</strong>
+            <div>
+              <button class="mini-btn" data-action="edit" data-type="videos" data-index="${idx}">✎</button>
+              <button class="mini-btn" data-action="delete" data-type="videos" data-index="${idx}">🗑</button>
             </div>
-        </section>
-        <section class="video-section reveal">
-            <span class="label">04 / MOVING MEMORIES</span>
-            <h3>Not just a picture.<br><i>A moment in motion.</i></h3>
-            <div id="videos" class="videos"></div>
-        </section>
-        <section class="timeline reveal">
-            <span class="label">05 / THE JOURNEY</span>
-            <h3>A few chapters <i>of our story.</i></h3>
-            <div id="timeline" class="timeline-list"></div>
-        </section>
-        <section class="memory-wall reveal">
-            <span class="label">06 / MEMORY WALL</span>
-            <div id="wall" class="wall"></div>
-        </section>
-        <section class="closing reveal">
-            <span class="eyebrow">END OF THIS CHAPTER</span>
-            <h2>MOMENTARY</h2>
-            <p id="closingText">Time passes.<br>Memories stay.</p>
-            <button id="replay">↻ LIHAT KEMBALI</button>
-        </section>
-    </main>
+          </div>
+          <div style="font-size:.72rem; color:#9aa8bc;">${item.src}</div>
+        `;
+        list.appendChild(div);
+      });
+    }
 
-    <div id="toast" class="toast"></div>
-    <audio id="music" loop preload="auto" src="media/audio/background.mp3"></audio>
-    <audio id="click" preload="auto" src="media/audio/click.mp3"></audio>
-    <audio id="whoosh" preload="auto" src="media/audio/transition.mp3"></audio>
+    function renderTimelineList() {
+      const list = document.getElementById('timelineList');
+      list.innerHTML = '';
+      state.timeline.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'media-item';
+        div.innerHTML = `
+          <div class="media-row">
+            <strong>${item.title}</strong>
+            <div>
+              <button class="mini-btn" data-action="edit" data-type="timeline" data-index="${idx}">✎</button>
+              <button class="mini-btn" data-action="delete" data-type="timeline" data-index="${idx}">🗑</button>
+            </div>
+          </div>
+          <div style="font-size:.72rem; color:#9aa8bc;">${item.year} • ${item.text}</div>
+        `;
+        list.appendChild(div);
+      });
+    }
 
-    <script src="storage.js"></script>
-    <script src="script.js"></script>
-    <script src="admin.js"></script>
+    function renderCaptionsList() {
+      const list = document.getElementById('captionsList');
+      list.innerHTML = '';
+      state.captions.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'media-item';
+        div.innerHTML = `
+          <div class="media-row">
+            <strong>Caption ${idx + 1}</strong>
+            <div>
+              <button class="mini-btn" data-action="edit" data-type="captions" data-index="${idx}">✎</button>
+              <button class="mini-btn" data-action="delete" data-type="captions" data-index="${idx}">🗑</button>
+            </div>
+          </div>
+          <div style="font-size:.72rem; color:#9aa8bc;">${item}</div>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function renderAll() {
+      renderHeader();
+      renderGallery();
+      renderVideos();
+      renderTimeline();
+      renderWall();
+      renderCaptions();
+      renderAudioFields();
+      renderSettingsInputs();
+      renderAdminLists();
+    }
+
+    function openEditModal(type, index = null) {
+      const modal = document.getElementById('editModal');
+      const timelineModal = document.getElementById('editTimelineModal');
+      const captionModal = document.getElementById('editCaptionModal');
+
+      modal.classList.add('hidden');
+      timelineModal.classList.add('hidden');
+      captionModal.classList.add('hidden');
+
+      if (type === 'gallery' || type === 'videos') {
+        modal.classList.remove('hidden');
+        editingType = type;
+        editingIndex = index;
+
+        const item = type === 'gallery' ? state.gallery[index] : state.videos[index];
+        if (!item) {
+          document.getElementById('mediaSrc').value = '';
+          document.getElementById('mediaTitle').value = '';
+          document.getElementById('mediaDate').value = '';
+        } else {
+          document.getElementById('mediaSrc').value = item.src || '';
+          document.getElementById('mediaTitle').value = item.title || '';
+          document.getElementById('mediaDate').value = item.date || '';
+        }
+      }
+
+      if (type === 'timeline') {
+        timelineModal.classList.remove('hidden');
+        editingType = type;
+        editingIndex = index;
+        const item = state.timeline[index];
+        if (!item) {
+          document.getElementById('timelineYear').value = '';
+          document.getElementById('timelineTitle').value = '';
+          document.getElementById('timelineText').value = '';
+        } else {
+          document.getElementById('timelineYear').value = item.year || '';
+          document.getElementById('timelineTitle').value = item.title || '';
+          document.getElementById('timelineText').value = item.text || '';
+        }
+      }
+
+      if (type === 'captions') {
+        captionModal.classList.remove('hidden');
+        editingType = type;
+        editingIndex = index;
+        const item = state.captions[index];
+        document.getElementById('captionText').value = item || '';
+      }
+    }
+
+    function closeAllModals() {
+      document.getElementById('editModal').classList.add('hidden');
+      document.getElementById('editTimelineModal').classList.add('hidden');
+      document.getElementById('editCaptionModal').classList.add('hidden');
+    }
+
+    function addNewItem(type) {
+      if (type === 'gallery') state.gallery.push({ src: 'media/photos/01.jpg', title: 'MOMEN BARU', date: '2026' });
+      if (type === 'videos') state.videos.push({ src: 'media/videos/01.mp4', title: 'VIDEO BARU', date: '2026' });
+      if (type === 'timeline') state.timeline.push({ year: '2026', title: 'CHAPTER BARU', text: 'Deskripsi momen baru.' });
+      if (type === 'captions') state.captions.push('Caption baru untuk momen ini.');
+      renderAll();
+      saveData();
+    }
+
+    document.getElementById('editModeToggle').addEventListener('click', () => {
+      document.getElementById('adminPanel').classList.toggle('hidden');
+    });
+
+    document.getElementById('closeAdminBtn').addEventListener('click', () => {
+      document.getElementById('adminPanel').classList.add('hidden');
+    });
+
+    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(`${btn.dataset.tab}Tab`).classList.add('active');
+        currentEditMode = btn.dataset.tab;
+      });
+    });
+
+    document.getElementById('addPhotoBtn').addEventListener('click', () => addNewItem('gallery'));
+    document.getElementById('addVideoBtn').addEventListener('click', () => addNewItem('videos'));
+    document.getElementById('addTimelineBtn').addEventListener('click', () => addNewItem('timeline'));
+    document.getElementById('addCaptionBtn').addEventListener('click', () => addNewItem('captions'));
+
+    document.getElementById('saveAudioBtn').addEventListener('click', () => {
+      state.audio.background = document.getElementById('bgMusicSrc').value.trim();
+      state.audio.click = document.getElementById('clickSrc').value.trim();
+      state.audio.transition = document.getElementById('transitionSrc').value.trim();
+      renderAudioFields();
+      saveData();
+    });
+
+    document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+      state.siteName = document.getElementById('siteNameInput').value.trim() || 'MOMENTARY';
+      state.subtitle = document.getElementById('subtitleInput').value.trim() || 'Jejak Kenangan';
+      state.featuredPhoto = document.getElementById('featuredPhotoInput').value.trim() || 'media/photos/01.jpg';
+      state.closingText = document.getElementById('closingTextInput').value.trim().replace(/\n/g, '<br>');
+      renderAll();
+      saveData();
+    });
+
+    document.getElementById('saveAllBtn').addEventListener('click', () => {
+      saveData();
+      renderAll();
+    });
+
+    document.getElementById('exportDataBtn').addEventListener('click', () => {
+      const text = JSON.stringify(state, null, 2);
+      const blob = new Blob([text], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'momentary-data.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      toast('Data berhasil di-export');
+    });
+
+    document.getElementById('resetDataBtn').addEventListener('click', () => {
+      if (confirm('Yakin reset data ke default?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.mini-btn');
+      if (!btn) return;
+      const action = btn.dataset.action;
+      const type = btn.dataset.type;
+      const index = Number(btn.dataset.index);
+      if (action === 'edit') openEditModal(type, index);
+      if (action === 'delete') {
+        if (type === 'gallery') state.gallery.splice(index, 1);
+        if (type === 'videos') state.videos.splice(index, 1);
+        if (type === 'timeline') state.timeline.splice(index, 1);
+        if (type === 'captions') state.captions.splice(index, 1);
+        renderAll();
+        saveData();
+      }
+    });
+
+    document.getElementById('saveMediaBtn').addEventListener('click', () => {
+      const src = document.getElementById('mediaSrc').value.trim();
+      const title = document.getElementById('mediaTitle').value.trim();
+      const date = document.getElementById('mediaDate').value.trim();
+      if (!src) return toast('Path file tidak boleh kosong');
+      const dataTarget = editingType === 'gallery' ? state.gallery : state.videos;
+      if (editingIndex === null || editingIndex === undefined) {
+        dataTarget.push({ src, title: title || 'MOMEN BARU', date: date || '2026' });
+      } else {
+        dataTarget[editingIndex] = { src, title: title || 'MOMEN BARU', date: date || '2026' };
+      }
+      closeAllModals();
+      renderAll();
+      saveData();
+    });
+
+    document.getElementById('saveTimelineBtn').addEventListener('click', () => {
+      const year = document.getElementById('timelineYear').value.trim();
+      const title = document.getElementById('timelineTitle').value.trim();
+      const text = document.getElementById('timelineText').value.trim();
+      if (!title || !text) return toast('Judul dan deskripsi wajib diisi');
+      if (editingIndex === null || editingIndex === undefined) {
+        state.timeline.push({ year: year || '2026', title, text });
+      } else {
+        state.timeline[editingIndex] = { year: year || '2026', title, text };
+      }
+      closeAllModals();
+      renderAll();
+      saveData();
+    });
+
+    document.getElementById('saveCaptionBtn').addEventListener('click', () => {
+      const value = document.getElementById('captionText').value.trim();
+      if (!value) return toast('Caption tidak boleh kosong');
+      if (editingIndex === null || editingIndex === undefined) {
+        state.captions.push(value);
+      } else {
+        state.captions[editingIndex] = value;
+      }
+      closeAllModals();
+      renderAll();
+      saveData();
+    });
+
+    document.querySelectorAll('.modal-close').forEach(btn => btn.addEventListener('click', closeAllModals));
+    document.getElementById('cancelMediaBtn').addEventListener('click', closeAllModals);
+    document.getElementById('cancelTimelineBtn').addEventListener('click', closeAllModals);
+    document.getElementById('cancelCaptionBtn').addEventListener('click', closeAllModals);
+
+    document.getElementById('enterBtn').addEventListener('click', () => {
+      play(clickAudio, .55);
+      setTimeout(() => play(whoosh, .25), 100);
+      const name = document.getElementById('guestName').value.trim();
+      if (name) {
+        document.getElementById('closingText').innerHTML = `Untuk ${name},<br>time passes. memories stay.`;
+      }
+      document.getElementById('gate').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      document.getElementById('topbar').classList.remove('hidden');
+      if (soundOn) {
+        music.volume = .22;
+        music.play().catch(() => {});
+      }
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    });
+
+    document.getElementById('muteBtn').addEventListener('click', () => {
+      soundOn = !soundOn;
+      document.getElementById('muteBtn').textContent = soundOn ? '♫' : '🔇';
+      if (soundOn) {
+        music.play().catch(() => {});
+      } else {
+        music.pause();
+      }
+    });
+
+    document.getElementById('replay').addEventListener('click', () => {
+      play(clickAudio, .45);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key.toLowerCase() === 'e') {
+        e.preventDefault();
+        document.getElementById('adminPanel').classList.toggle('hidden');
+      }
+      if (e.key === 'Escape') closeAllModals();
+    });
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    let capIndex = 0;
+    const soundtrackObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          captionEl.style.opacity = 0;
+          setTimeout(() => {
+            captionEl.textContent = state.captions[capIndex % state.captions.length];
+            capIndex++;
+            captionEl.style.opacity = 1;
+          }, 220);
+        }
+      });
+    }, { threshold: .5 });
+    soundtrackObs.observe(document.querySelector('.soundtrack'));
+
+    renderAll();
+  </script>
 </body>
 </html>
