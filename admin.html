@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin | Momen Kebersamaan</title>
+    <style>
+      :root {
+        --bg: #f7efe9;
+        --panel: rgba(255,255,255,0.7);
+        --line: rgba(32,38,47,0.12);
+        --text: #1f2430;
+        --muted: #586272;
+        --accent: #8aa3b8;
+        --shadow: 0 18px 50px rgba(83,63,55,0.18);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(180deg, #f7efe9 0%, #f3eae5 100%);
+        color: var(--text);
+      }
+      .wrap {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 48px 24px 80px;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        padding: 28px;
+        backdrop-filter: blur(12px);
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+      }
+      .sub {
+        color: var(--muted);
+        margin: 0 0 28px;
+      }
+      .list {
+        display: grid;
+        gap: 14px;
+      }
+      .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 18px 20px;
+        background: rgba(255,255,255,0.36);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+      }
+      .meta {
+        flex: 1;
+      }
+      .title {
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      a, button {
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        font: inherit;
+      }
+      a {
+        text-decoration: none;
+        color: var(--text);
+      }
+      .primary, .ghost {
+        padding: 10px 16px;
+        border: 1px solid rgba(31,36,48,0.12);
+      }
+      .primary {
+        background: var(--accent);
+        color: white;
+      }
+      .ghost {
+        background: rgba(255,255,255,0.4);
+      }
+      .status {
+        margin: 18px 0;
+        color: var(--muted);
+        min-height: 24px;
+      }
+      @media (max-width: 640px) {
+        .item { flex-direction: column; align-items: flex-start; }
+        .actions { width: 100%; }
+        .actions a, .actions button { flex: 1; text-align: center; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="panel">
+        <h1>Admin Momen Kebersamaan</h1>
+        <p class="sub">Daftar halaman share yang tersimpan di server.</p>
+        <div id="status" class="status">Memuat data...</div>
+        <div id="list" class="list"></div>
+      </div>
+    </div>
+
+    <script>
+      async function loadPages() {
+        const status = document.getElementById('status');
+        const list = document.getElementById('list');
+        status.textContent = 'Memuat data...';
+        list.innerHTML = '';
+
+        try {
+          const res = await fetch('/api/admin/pages');
+          const data = await res.json();
+
+          if (!data.ok || !Array.isArray(data.pages) || !data.pages.length) {
+            status.textContent = 'Belum ada halaman yang tersimpan.';
+            return;
+          }
+
+          status.textContent = `${data.pages.length} halaman tersimpan.`;
+
+          data.pages.forEach((page) => {
+            const item = document.createElement('div');
+            item.className = 'item';
+            item.innerHTML = `
+              <div class="meta">
+                <div class="title">${page.title || 'Untitled page'}</div>
+                <div class="muted">ID: ${page.id} • Diperbarui: ${new Date(page.updatedAt).toLocaleString('id-ID')}</div>
+              </div>
+              <div class="actions">
+                <a class="primary" href="/?page=${page.id}" target="_blank">Buka</a>
+                <button class="ghost" data-copy="${page.id}">Salin link</button>
+              </div>
+            `;
+            list.appendChild(item);
+          });
+
+          document.querySelectorAll('[data-copy]').forEach((button) => {
+            button.addEventListener('click', async () => {
+              const id = button.getAttribute('data-copy');
+              const url = `${window.location.origin}/?page=${id}`;
+              try {
+                await navigator.clipboard.writeText(url);
+                button.textContent = 'Tersalin';
+                setTimeout(() => { button.textContent = 'Salin link'; }, 1200);
+              } catch (error) {
+                alert('Gagal menyalin: ' + url);
+              }
+            });
+          });
+        } catch (error) {
+          status.textContent = 'Gagal memuat data admin.';
+          console.error(error);
+        }
+      }
+
+      loadPages();
+    </script>
+  </body>
+</html>
