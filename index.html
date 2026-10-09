@@ -37,7 +37,7 @@
     }
 
     img, video, audio { max-width: 100%; display: block; }
-    button, input, textarea { font: inherit; }
+    button, input, textarea, select { font: inherit; }
     a { color: inherit; text-decoration: none; }
 
     .hidden { display: none !important; }
@@ -233,10 +233,7 @@
       font-size: 1.1rem;
     }
 
-    #app {
-      position: relative;
-      z-index: 2;
-    }
+    #app { position: relative; z-index: 2; }
 
     .hero {
       position: relative;
@@ -334,10 +331,7 @@
       position: relative;
     }
 
-    .section-inner {
-      max-width: 1180px;
-      margin: 0 auto;
-    }
+    .section-inner { max-width: 1180px; margin: 0 auto; }
 
     .intro {
       text-align: center;
@@ -404,13 +398,9 @@
       color: var(--muted);
     }
 
-    .gallery-section {
-      padding-top: 5.5rem;
-    }
+    .gallery-section { padding-top: 5.5rem; }
 
-    .heading {
-      margin-bottom: 35px;
-    }
+    .heading { margin-bottom: 35px; }
 
     .heading h3 {
       margin: 18px 0 10px;
@@ -460,11 +450,8 @@
     .memory-card:nth-child(3n + 1) { grid-column: span 5; }
     .memory-card:nth-child(3n + 2) { grid-column: span 4; }
     .memory-card:nth-child(3n + 3) { grid-column: span 3; }
-
     .memory-card:nth-child(5n + 1),
-    .memory-card:nth-child(5n + 4) {
-      min-height: 400px;
-    }
+    .memory-card:nth-child(5n + 4) { min-height: 400px; }
 
     .memory-card img {
       width: 100%;
@@ -553,7 +540,6 @@
       background: linear-gradient(180deg, #d9bfdb, #9fc3df, #efb7b2);
       animation: audioWave 1.25s ease-in-out infinite alternate;
     }
-
     .bars span:nth-child(1){ height: 28%; animation-delay: 0.1s; }
     .bars span:nth-child(2){ height: 46%; animation-delay: 0.2s; }
     .bars span:nth-child(3){ height: 68%; animation-delay: 0.3s; }
@@ -577,9 +563,7 @@
       font-weight: 700;
     }
 
-    .video-section {
-      background: rgba(255,255,255,0.14);
-    }
+    .video-section { background: rgba(255,255,255,0.14); }
 
     .video-grid {
       display: grid;
@@ -614,9 +598,7 @@
       font-weight: 700;
     }
 
-    .timeline-section {
-      padding-bottom: 4rem;
-    }
+    .timeline-section { padding-bottom: 4rem; }
 
     .timeline {
       position: relative;
@@ -667,9 +649,7 @@
       max-width: 620px;
     }
 
-    .wall-section {
-      padding-top: 5rem;
-    }
+    .wall-section { padding-top: 5rem; }
 
     .memory-wall {
       display: grid;
@@ -762,7 +742,7 @@
       top: 16px;
       right: 16px;
       z-index: 150;
-      width: min(430px, calc(100vw - 30px));
+      width: min(460px, calc(100vw - 30px));
       max-height: calc(100vh - 32px);
       overflow: auto;
       background: rgba(254, 250, 247, 0.9);
@@ -842,7 +822,8 @@
     }
 
     .panel-input,
-    .panel-textarea {
+    .panel-textarea,
+    .inline-input {
       width: 100%;
       padding: 11px 12px;
       border: 1px solid rgba(27,32,40,0.12);
@@ -911,37 +892,40 @@
       background: linear-gradient(135deg, rgba(163,191,219,0.5), rgba(225,197,204,0.55)) !important;
     }
 
-    .gallery-list {
+    .list-stack {
       display: grid;
-      gap: 10px;
+      gap: 12px;
       margin-top: 12px;
     }
 
-    .gallery-item-card {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      background: rgba(255,255,255,0.55);
+    .editor-card {
+      display: grid;
+      gap: 8px;
+      background: rgba(255,255,255,0.4);
       border: 1px solid rgba(27,32,40,0.08);
-      border-radius: 12px;
-      padding: 8px 10px;
+      border-radius: 14px;
+      padding: 10px;
     }
 
-    .gallery-item-card img {
-      width: 56px;
-      height: 56px;
+    .mini-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .media-preview {
+      width: 100%;
+      height: 100px;
       border-radius: 10px;
       object-fit: cover;
-      flex-shrink: 0;
+      display: block;
+      background: #e8d8d1;
     }
 
-    .gallery-item-card .meta {
-      flex: 1;
-      min-width: 0;
-      font-size: 0.72rem;
-      color: var(--muted);
-      line-height: 1.5;
-      word-break: break-word;
+    .editor-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
     }
 
     .mini-btn {
@@ -970,13 +954,12 @@
         min-height: 300px;
       }
       .soundtrack-inner,
-      .video-grid {
-        grid-template-columns: 1fr;
-      }
+      .video-grid { grid-template-columns: 1fr; }
       .memory-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .edit-panel { top: 12px; right: 12px; width: min(92vw, 420px); }
       .panel-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .hero-copy h2 { font-size: clamp(2.6rem, 15vw, 5rem); }
+      .mini-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -1013,7 +996,7 @@
 
     <div class="panel-tabs">
       <button class="tab-btn active" type="button" data-tab="general">Umum</button>
-      <button class="tab-btn" type="button" data-tab="media">Foto</button>
+      <button class="tab-btn" type="button" data-tab="media">Media</button>
       <button class="tab-btn" type="button" data-tab="audio">Audio</button>
     </div>
 
@@ -1063,6 +1046,7 @@
     <div id="mediaTab" class="panel-tab">
       <div class="panel-group">
         <label>Foto utama</label>
+        <input id="featuredUrlInput" class="panel-input" type="url" placeholder="https://.../foto.jpg" />
         <div class="file-box">
           <input id="featuredUploadInput" type="file" accept="image/*" />
         </div>
@@ -1070,25 +1054,26 @@
       </div>
 
       <div class="panel-group">
-        <label>Tambah foto gallery</label>
-        <div class="file-box">
-          <input id="galleryUploadInput" type="file" accept="image/*" multiple />
-        </div>
+        <label>Foto gallery</label>
+        <button id="addGalleryItemBtn" class="mini-btn" type="button" style="width:100%; margin-bottom:8px;">+ Tambah foto</button>
+        <div id="galleryEditor" class="list-stack"></div>
       </div>
 
       <div class="panel-group">
-        <label>Daftar foto</label>
-        <div id="galleryList" class="gallery-list"></div>
+        <label>Video</label>
+        <button id="addVideoItemBtn" class="mini-btn" type="button" style="width:100%; margin-bottom:8px;">+ Tambah video</button>
+        <div id="videoEditor" class="list-stack"></div>
       </div>
     </div>
 
     <div id="audioTab" class="panel-tab">
       <div class="panel-group">
         <label>Audio latar</label>
+        <input id="audioUrlInput" class="panel-input" type="url" placeholder="https://.../audio.mp3" />
         <div class="file-box">
           <input id="audioUploadInput" type="file" accept="audio/*" />
         </div>
-        <div class="tiny-label">Jika tidak ada file dipilih, audio akan tetap dinonaktifkan.</div>
+        <div class="tiny-label">Jika kosong, audio tidak akan diputar.</div>
       </div>
     </div>
 
@@ -1257,8 +1242,6 @@
     const app = document.getElementById('app');
     const topbar = document.getElementById('topbar');
     const music = document.getElementById('music');
-    const bgPreview = document.getElementById('bgPreview');
-    const featuredPreview = document.getElementById('featuredPreview');
 
     function loadState() {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -1274,13 +1257,25 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
+    function normalizeGallery() {
+      if (!Array.isArray(state.gallery) || !state.gallery.length) state.gallery = defaultState.gallery.slice();
+      state.gallery = state.gallery.filter(item => item && (item.src || item.url));
+    }
+
+    function normalizeVideos() {
+      if (!Array.isArray(state.videos) || !state.videos.length) state.videos = defaultState.videos.slice();
+      state.videos = state.videos.filter(item => item && (item.src || item.url));
+    }
+
     function updateInputs() {
       document.getElementById('titleInput').value = state.siteTitle;
       document.getElementById('subtitleInput').value = state.siteSubtitle;
-      document.getElementById('introTitleInput').value = state.introTitle.replace(/<[^>]*>/g, '') || 'Kebersamaan kita';
+      document.getElementById('introTitleInput').value = (state.introTitle || '').replace(/<[^>]*>/g, '') || 'Kebersamaan kita';
       document.getElementById('introTextInput').value = state.introText;
       document.getElementById('closingTextInput').value = state.closingText;
       document.getElementById('bgTypeInput').value = state.backgroundType || 'video';
+      document.getElementById('featuredUrlInput').value = state.featuredPhoto || '';
+      document.getElementById('audioUrlInput').value = state.audioSource || '';
       document.getElementById('siteTitle').textContent = state.siteTitle;
       document.getElementById('siteSubtitle').textContent = state.siteSubtitle;
       document.getElementById('brandName').textContent = state.siteTitle;
@@ -1289,8 +1284,8 @@
       document.getElementById('closingText').textContent = state.closingText;
       document.getElementById('closingTitle').textContent = state.siteTitle;
       document.getElementById('featuredYear').textContent = state.featuredYear || '2026';
-      document.getElementById('featuredImg').src = state.featuredPhoto;
-      document.getElementById('captionText').textContent = state.captions[0] || 'Every little moment can become a story worth keeping.'
+      document.getElementById('featuredImg').src = state.featuredPhoto || defaultState.featuredPhoto;
+      document.getElementById('captionText').textContent = (state.captions && state.captions[0]) || 'Every little moment can become a story worth keeping.';
     }
 
     function renderBackground() {
@@ -1318,16 +1313,17 @@
     function renderGallery() {
       const gallery = document.getElementById('gallery');
       gallery.innerHTML = '';
+      normalizeGallery();
       const items = state.gallery.slice(0, 10);
 
-      items.forEach((item, idx) => {
+      items.forEach((item) => {
         const figure = document.createElement('figure');
         figure.className = 'memory-card';
         figure.innerHTML = `
-          <img src="${item.src}" alt="${item.title}" loading="lazy" />
+          <img src="${item.src}" alt="${item.title || 'Foto'}" loading="lazy" />
           <figcaption>
-            <span>${item.title}</span>
-            <span>${item.date}</span>
+            <span>${item.title || 'Momen baru'}</span>
+            <span>${item.date || '2026'}</span>
           </figcaption>
         `;
         gallery.appendChild(figure);
@@ -1337,11 +1333,12 @@
     function renderMemoryWall() {
       const wall = document.getElementById('memoryWall');
       wall.innerHTML = '';
+      normalizeGallery();
       const items = state.gallery.slice(0, 8);
       items.forEach((item) => {
         const div = document.createElement('div');
         div.className = 'memory-wall-item';
-        div.innerHTML = `<img src="${item.src}" alt="${item.title}" loading="lazy" />`;
+        div.innerHTML = `<img src="${item.src}" alt="${item.title || 'Memory'}" loading="lazy" />`;
         wall.appendChild(div);
       });
     }
@@ -1349,30 +1346,57 @@
     function renderVideoGrid() {
       const grid = document.getElementById('videoGrid');
       grid.innerHTML = '';
+      normalizeVideos();
       const videos = state.videos && state.videos.length ? state.videos : defaultState.videos;
       videos.forEach((item) => {
         const figure = document.createElement('figure');
         figure.className = 'video-card';
         figure.innerHTML = `
           <video controls preload="metadata" src="${item.src}"></video>
-          <figcaption>${item.title}</figcaption>
+          <figcaption>${item.title || 'Video'}</figcaption>
         `;
         grid.appendChild(figure);
       });
     }
 
-    function renderGalleryList() {
-      const list = document.getElementById('galleryList');
-      list.innerHTML = '';
-      state.gallery.forEach((item, idx) => {
-        const row = document.createElement('div');
-        row.className = 'gallery-item-card';
-        row.innerHTML = `
-          <img src="${item.src}" alt="${item.title}" />
-          <div class="meta">${item.title}<br>${item.date}</div>
-          <button type="button" class="mini-btn" data-remove="${idx}">✕</button>
+    function renderGalleryEditor() {
+      const container = document.getElementById('galleryEditor');
+      container.innerHTML = '';
+      normalizeGallery();
+      state.gallery.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'editor-card';
+        card.innerHTML = `
+          <img class="media-preview" src="${item.src}" alt="${item.title || 'Foto'}" />
+          <input class="inline-input" data-gallery-field="title" data-gallery-index="${index}" value="${item.title || ''}" placeholder="Judul foto" />
+          <div class="mini-row">
+            <input class="inline-input" data-gallery-field="date" data-gallery-index="${index}" value="${item.date || ''}" placeholder="Tahun" />
+            <input class="inline-input" data-gallery-field="src" data-gallery-index="${index}" value="${item.src || ''}" placeholder="URL foto" />
+          </div>
+          <div class="editor-actions">
+            <button type="button" class="mini-btn" data-gallery-remove="${index}">Hapus</button>
+          </div>
         `;
-        list.appendChild(row);
+        container.appendChild(card);
+      });
+    }
+
+    function renderVideoEditor() {
+      const container = document.getElementById('videoEditor');
+      container.innerHTML = '';
+      normalizeVideos();
+      state.videos.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'editor-card';
+        card.innerHTML = `
+          <video class="media-preview" controls preload="metadata" src="${item.src}"></video>
+          <input class="inline-input" data-video-field="title" data-video-index="${index}" value="${item.title || ''}" placeholder="Judul video" />
+          <input class="inline-input" data-video-field="src" data-video-index="${index}" value="${item.src || ''}" placeholder="URL video" />
+          <div class="editor-actions">
+            <button type="button" class="mini-btn" data-video-remove="${index}">Hapus</button>
+          </div>
+        `;
+        container.appendChild(card);
       });
     }
 
@@ -1386,12 +1410,15 @@
     }
 
     function renderAll() {
+      normalizeGallery();
+      normalizeVideos();
       updateInputs();
       renderBackground();
       renderGallery();
       renderMemoryWall();
       renderVideoGrid();
-      renderGalleryList();
+      renderGalleryEditor();
+      renderVideoEditor();
       renderAudio();
       document.getElementById('bgPreview').classList.add('hidden');
       document.getElementById('featuredPreview').classList.add('hidden');
@@ -1417,17 +1444,9 @@
     }
 
     function setFeaturedPreview(result) {
-      featuredPreview.classList.remove('hidden');
-      featuredPreview.innerHTML = `<img src="${result}" alt="Preview" />`;
-    }
-
-    function applyAudioFile(file) {
-      if (!file) return;
-      fileToDataUrl(file).then(dataUrl => {
-        state.audioSource = dataUrl;
-        saveState();
-        renderAudio();
-      }).catch(() => alert('Audio gagal diproses. Coba file lain.'));
+      const preview = document.getElementById('featuredPreview');
+      preview.classList.remove('hidden');
+      preview.innerHTML = `<img src="${result}" alt="Preview" />`;
     }
 
     document.getElementById('startBtn').addEventListener('click', () => {
@@ -1484,7 +1503,7 @@
       state.backgroundSource = result;
       state.backgroundType = file.type.startsWith('video/') ? 'video' : 'image';
       document.getElementById('bgTypeInput').value = state.backgroundType;
-      setBackgroundPreview(bgPreview, result, state.backgroundType);
+      setBackgroundPreview(document.getElementById('bgPreview'), result, state.backgroundType);
       saveState();
     });
 
@@ -1494,37 +1513,97 @@
       const result = await fileToDataUrl(file);
       state.featuredPhoto = result;
       setFeaturedPreview(result);
+      document.getElementById('featuredUrlInput').value = result;
       saveState();
       renderAll();
     });
 
-    document.getElementById('galleryUploadInput').addEventListener('change', async (e) => {
-      const files = Array.from(e.target.files || []);
-      if (!files.length) return;
-      const inserted = [];
-      for (const file of files) {
-        const dataUrl = await fileToDataUrl(file);
-        inserted.push({ src: dataUrl, title: file.name.split('.')[0] || 'Momen Baru', date: new Date().getFullYear().toString() });
-      }
-      state.gallery = [...inserted, ...state.gallery].slice(0, 20);
+    document.getElementById('featuredUrlInput').addEventListener('input', (e) => {
+      const value = e.target.value.trim();
+      if (!value) return;
+      state.featuredPhoto = value;
+      document.getElementById('featuredImg').src = value;
       saveState();
-      renderAll();
-      e.target.value = '';
     });
 
-    document.getElementById('audioUploadInput').addEventListener('change', (e) => {
+    document.getElementById('addGalleryItemBtn').addEventListener('click', () => {
+      state.gallery.push({ src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80', title: 'Momen baru', date: new Date().getFullYear().toString() });
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById('addVideoItemBtn').addEventListener('click', () => {
+      state.videos.push({ src: 'https://videos.pexels.com/video-files/3209828/3209828-hd_1920_1080.mp4', title: 'Video baru' });
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById('audioUploadInput').addEventListener('change', async (e) => {
       const file = e.target.files[0];
-      applyAudioFile(file);
+      if (!file) return;
+      const dataUrl = await fileToDataUrl(file);
+      state.audioSource = dataUrl;
+      document.getElementById('audioUrlInput').value = dataUrl;
+      saveState();
+      renderAudio();
       e.target.value = '';
+    });
+
+    document.getElementById('audioUrlInput').addEventListener('input', (e) => {
+      const value = e.target.value.trim();
+      state.audioSource = value;
+      saveState();
+      renderAudio();
     });
 
     document.addEventListener('click', (e) => {
-      const btn = e.target.closest('[data-remove]');
-      if (!btn) return;
-      const idx = Number(btn.getAttribute('data-remove'));
-      state.gallery.splice(idx, 1);
-      saveState();
-      renderAll();
+      const removeGallery = e.target.closest('[data-gallery-remove]');
+      if (removeGallery) {
+        const index = Number(removeGallery.getAttribute('data-gallery-remove'));
+        state.gallery.splice(index, 1);
+        saveState();
+        renderAll();
+        return;
+      }
+
+      const removeVideo = e.target.closest('[data-video-remove]');
+      if (removeVideo) {
+        const index = Number(removeVideo.getAttribute('data-video-remove'));
+        state.videos.splice(index, 1);
+        saveState();
+        renderAll();
+      }
+    });
+
+    document.addEventListener('input', (e) => {
+      const galleryField = e.target.getAttribute('data-gallery-field');
+      if (galleryField) {
+        const idx = Number(e.target.getAttribute('data-gallery-index'));
+        const value = e.target.value;
+        if (!state.gallery[idx]) return;
+        state.gallery[idx][galleryField] = value;
+        if (galleryField === 'src') {
+          const preview = e.target.closest('.editor-card')?.querySelector('.media-preview');
+          if (preview) preview.src = value;
+        }
+        saveState();
+        renderAll();
+        return;
+      }
+
+      const videoField = e.target.getAttribute('data-video-field');
+      if (videoField) {
+        const idx = Number(e.target.getAttribute('data-video-index'));
+        const value = e.target.value;
+        if (!state.videos[idx]) return;
+        state.videos[idx][videoField] = value;
+        if (videoField === 'src') {
+          const preview = e.target.closest('.editor-card')?.querySelector('.media-preview');
+          if (preview) preview.src = value;
+        }
+        saveState();
+        renderAll();
+      }
     });
 
     document.getElementById('saveBtn').addEventListener('click', () => {
@@ -1534,6 +1613,8 @@
       state.introText = document.getElementById('introTextInput').value.trim() || 'Kebersamaan puncak kejayaannya.';
       state.closingText = document.getElementById('closingTextInput').value.trim() || 'Terimakasih sudah melihat pustaka kami. Semoga bisa menghibur dan menginspirasi.';
       state.backgroundType = document.getElementById('bgTypeInput').value;
+      state.featuredPhoto = document.getElementById('featuredUrlInput').value.trim() || state.featuredPhoto;
+      state.audioSource = document.getElementById('audioUrlInput').value.trim() || state.audioSource;
       saveState();
       renderAll();
       document.getElementById('editPanel').classList.add('hidden');
