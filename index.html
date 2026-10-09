@@ -3,52 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#080b14" />
-  <title>MOMENTARY — Jejak Kenangan</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#f7efe9" />
+  <title>MOMENTARY | Jejak Kebersamaan Kita</title>
   <style>
     :root {
-      --bg: #070a12;
-      --panel: #0d1220;
-      --text: #f2f4fb;
-      --muted: #99a3ba;
-      --blue: #a8c1ff;
-      --lav: #c7b8ff;
-      --line: rgba(255,255,255,.11);
-      --card: rgba(255,255,255,.03);
-      --success: #6ee7b7;
-      --danger: #fca5a5;
-      --warning: #fcd34d;
+      --bg: #f7efe9;
+      --bg-deep: #efe3dd;
+      --panel: rgba(255,255,255,0.68);
+      --panel-strong: rgba(255,255,255,0.9);
+      --text: #1f2430;
+      --muted: #586272;
+      --line: rgba(37, 42, 56, 0.12);
+      --shadow: 0 18px 50px rgba(83, 63, 55, 0.18);
+      --soft-peach: #f6d4c4;
+      --soft-pink: #f2c0d3;
+      --soft-rose: #d8bfdc;
+      --soft-mint: #dfeadf;
+      --soft-blue: #cfe1f7;
+      --soft-gold: #edd9a6;
+      --dark: #1d2430;
+      --white: #fffdfd;
+      --accent: #8aa3b8;
     }
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
-      background: radial-gradient(circle at 50% -5%, #1a2743, #080b14 38%, #05070c 100%);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(180deg, var(--bg) 0%, #f2e6e0 100%);
       color: var(--text);
-      font-family: Manrope, sans-serif;
       overflow-x: hidden;
     }
-    body:before {
-      content: "";
+
+    img, video, audio { max-width: 100%; display: block; }
+    button, input, textarea { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+
+    .hidden { display: none !important; }
+
+    .loading {
       position: fixed;
       inset: 0;
-      pointer-events: none;
-      z-index: 20;
-      opacity: .11;
-      background-image: radial-gradient(#fff 1px, transparent 1px);
-      background-size: 62px 62px;
-      mask-image: linear-gradient(#000, transparent 75%);
+      z-index: 200;
+      display: grid;
+      place-items: center;
+      background: rgba(18, 18, 18, 0.68);
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+      transition: opacity 0.4s ease, visibility 0.4s ease;
     }
-    a { color: inherit; }
-    button, input, textarea, select { font: inherit; }
-    .hidden { display: none !important; }
-    .eyebrow, .label {
-      font: 500 .67rem "DM Mono", monospace;
-      letter-spacing: .2em;
-      color: #aebbe0;
+
+    .loading.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .edit-toggle {
+      position: fixed;
+      right: 18px;
+      top: 18px;
+      z-index: 120;
+      border: 1px solid rgba(29, 36, 48, 0.15);
+      background: rgba(255,255,255,0.72);
+      color: var(--dark);
+      padding: 11px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
     }
 
     .gate {
@@ -57,844 +87,1143 @@
       z-index: 100;
       display: grid;
       place-items: center;
-      text-align: center;
-      background: radial-gradient(circle at 50% 42%, #172542, #0a0f1d 43%, #05070d);
+      background: radial-gradient(circle at top, rgba(255,255,255,0.55), rgba(16,18,22,0.12)),
+                  linear-gradient(135deg, rgba(240,203,197,0.54), rgba(200,220,235,0.58), rgba(224,209,231,0.48));
+      overflow: hidden;
     }
-    .gate-glow {
+
+    .gate::before {
+      content: "";
       position: absolute;
-      width: 55vw;
-      height: 55vw;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(168,193,255,.18), transparent 66%);
-      animation: pulse 5s infinite;
+      inset: 0;
+      background: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+      filter: grayscale(0.2) brightness(0.75);
+      transform: scale(1.08);
     }
-    .gate-content { position: relative; width: min(760px, 90%); }
-    .gate h1 {
-      font-size: clamp(3.3rem, 12vw, 8rem);
-      letter-spacing: .08em;
-      margin: 10px 0 0;
-      font-weight: 600;
+
+    .gate-inner {
+      position: relative;
+      z-index: 1;
+      width: min(760px, 92vw);
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.28);
     }
-    .gate-content > p {
-      margin: 0;
-      color: var(--muted);
-      letter-spacing: .35em;
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.68rem;
+      letter-spacing: 0.26em;
       text-transform: uppercase;
+      color: rgba(255,255,255,0.9);
+      font-weight: 700;
     }
+
+    .gate h1 {
+      margin: 18px 0 8px;
+      font-size: clamp(3.4rem, 9vw, 8rem);
+      line-height: 0.9;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .gate-subtitle {
+      margin: 0;
+      font-size: 0.9rem;
+      letter-spacing: 0.42em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
+    }
+
     .gate-card {
-      margin: 38px auto 0;
-      width: min(390px, 100%);
-      padding: 20px;
-      border: 1px solid var(--line);
+      width: min(420px, 90vw);
+      margin: 32px auto 0;
+      padding: 22px 20px 18px;
+      background: rgba(16, 21, 31, 0.28);
+      border: 1px solid rgba(255,255,255,0.18);
       border-radius: 24px;
-      background: rgba(255,255,255,.04);
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
       text-align: left;
     }
+
     .gate-card label {
       display: block;
-      color: #b7bfd1;
-      font-size: .75rem;
       margin-bottom: 8px;
+      color: rgba(255,255,255,0.82);
+      font-size: 0.74rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
-    .gate-card label span { color: #69748d; }
+
     .gate-card input {
       width: 100%;
-      border: 1px solid var(--line);
-      background: #090d17;
-      color: #fff;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.18);
       border-radius: 12px;
-      padding: 12px 13px;
-      outline: 0;
-    }
-    .gate-card input:focus { border-color: #93adf0; }
-    .gate-card button, #replay {
-      width: 100%;
-      margin-top: 12px;
-      padding: 13px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.24);
-      background: rgba(255,255,255,.07);
+      padding: 12px 14px;
       color: #fff;
-      cursor: pointer;
+      outline: none;
     }
+
+    .gate-card input::placeholder { color: rgba(255,255,255,0.5); }
+
+    .gate-card button {
+      width: 100%;
+      margin-top: 16px;
+      border: none;
+      padding: 13px 16px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.28), rgba(255,255,255,0.18));
+      color: white;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    .gate-card button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
     .gate-card small {
       display: block;
+      margin-top: 14px;
       text-align: center;
-      color: #68738a;
-      font-size: .65rem;
-      margin-top: 13px;
+      color: rgba(255,255,255,0.7);
+      font-size: 0.68rem;
+      letter-spacing: 0.09em;
     }
 
     .topbar {
       position: fixed;
-      z-index: 40;
       top: 0;
       left: 0;
       right: 0;
-      padding: 17px 22px;
+      z-index: 40;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: linear-gradient(rgba(5,7,13,.7), transparent);
+      padding: 18px 26px;
+      background: linear-gradient(180deg, rgba(18, 19, 23, 0.48), rgba(18, 19, 23, 0));
       pointer-events: none;
     }
+
     .topbar > * { pointer-events: auto; }
+
     .brand {
-      font: 500 .7rem "DM Mono";
-      letter-spacing: .18em;
-      color: #fff;
-      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.21em;
+      color: rgba(255,255,255,0.92);
+      text-transform: uppercase;
+      font-weight: 700;
     }
-    .icon-btn {
+
+    .mute-btn {
       width: 42px;
       height: 42px;
       border-radius: 50%;
-      border: 1px solid var(--line);
-      background: rgba(8,11,20,.55);
-      color: #fff;
-      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.24);
+      background: rgba(17,20,25,0.22);
+      color: white;
+      backdrop-filter: blur(8px);
       cursor: pointer;
+      font-size: 1.1rem;
+    }
+
+    #app {
+      position: relative;
+      z-index: 2;
     }
 
     .hero {
-      min-height: 100svh;
+      position: relative;
+      min-height: 100vh;
       display: grid;
       place-items: center;
-      padding: 90px 7vw;
-      position: relative;
+      overflow: hidden;
+      background: #222;
     }
-    .hero-copy { text-align: center; max-width: 900px; position: relative; z-index: 2; }
-    .hero h2 {
-      font-size: clamp(3.2rem, 8.5vw, 8rem);
-      line-height: .94;
-      letter-spacing: -.055em;
-      font-weight: 500;
-      margin: 20px 0;
-    }
-    .hero h2 i, .intro i, .heading i, .soundtrack i, .video-section i, .timeline i {
-      color: var(--blue);
-      font-style: normal;
-      font-weight: 300;
-    }
-    .hero-copy > p {
-      max-width: 600px;
-      margin: auto;
-      color: var(--muted);
-      line-height: 1.8;
-    }
-    .scroll-cue {
-      margin-top: 68px;
-      font: 500 .62rem "DM Mono";
-      letter-spacing: .16em;
-      color: #8994aa;
-    }
-    .scroll-cue span {
-      display: block;
-      width: 1px;
-      height: 52px;
-      margin: 0 auto 12px;
-      background: linear-gradient(var(--blue), transparent);
-      animation: drop 2s infinite;
-    }
-    .side {
-      position: absolute;
-      top: 50%;
-      color: #68738c;
-      font: 500 .58rem "DM Mono";
-      letter-spacing: .13em;
-      line-height: 1.8;
-      writing-mode: vertical-rl;
-    }
-    .side.left { left: 18px; }
-    .side.right { right: 18px; }
-    .hero-orbit {
-      position: absolute;
-      border: 1px solid rgba(168,193,255,.1);
-      border-radius: 50%;
-    }
-    .hero-orbit.a { width: 55vw; height: 55vw; right: -25vw; top: 15%; }
-    .hero-orbit.b { width: 35vw; height: 35vw; left: -18vw; bottom: 0; }
 
-    .intro, .gallery-section, .soundtrack, .video-section, .timeline, .memory-wall {
-      max-width: 1180px;
-      margin: auto;
-      padding: 17vh 7vw;
-    }
-    .intro { text-align: center; }
-    .intro h3, .heading h3, .soundtrack h3, .video-section h3, .timeline h3 {
-      font-size: clamp(2.4rem, 5vw, 5.3rem);
-      line-height: 1;
-      letter-spacing: -.045em;
-      font-weight: 400;
-      margin: 22px 0;
-    }
-    .intro p { max-width: 670px; margin: 40px auto 0; color: var(--muted); line-height: 1.9; }
-
-    .featured { max-width: 1300px; margin: auto; position: relative; padding: 0 0 14vh; }
-    .media { position: relative; overflow: hidden; }
-    .photo { min-height: 78svh; background: linear-gradient(135deg,#17243c,#10182b 50%,#292741); }
-    .media img, .memory-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .placeholder {
+    .hero-media {
       position: absolute;
       inset: 0;
-      display: grid;
-      place-items: center;
+      overflow: hidden;
+      background: #111;
+    }
+
+    .hero-media video,
+    .hero-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(1.05) brightness(0.66) contrast(1.1);
+      transform: scale(1.08);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(16,18,22,0.08), rgba(16,18,22,0.2), rgba(16,18,22,0.5));
+    }
+
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+      width: min(960px, 84vw);
       text-align: center;
-      background: radial-gradient(circle at 70% 25%, rgba(199,184,255,.22), transparent 32%), linear-gradient(135deg,#17243c,#10182b 50%,#292741);
+      color: white;
     }
-    .placeholder b { font: 500 .8rem "DM Mono"; letter-spacing: .18em; }
-    .placeholder small {
+
+    .hero-copy .eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      opacity: 0.9;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .hero-copy h2 {
+      font-size: clamp(3.2rem, 7vw, 7.5rem);
+      line-height: 0.96;
+      margin: 22px 0 18px;
+      letter-spacing: -0.05em;
+      font-weight: 500;
+    }
+
+    .hero-copy h2 .ital {
+      color: #e2d6d0;
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .hero-copy p {
+      max-width: 650px;
+      margin: 0 auto;
+      color: rgba(255,255,255,0.82);
+      font-size: 1.08rem;
+      line-height: 1.8;
+    }
+
+    .scroll-hint {
+      margin-top: 42px;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .scroll-hint span {
       display: block;
-      margin-top: 10px;
-      color: #8995ad;
-      font-size: .65rem;
+      width: 1px;
+      height: 54px;
+      margin: 0 auto 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0));
+      animation: floatLine 1.8s ease-in-out infinite;
     }
-    .media-meta {
+
+    @keyframes floatLine {
+      0% { transform: translateY(0); opacity: 0.1; }
+      50% { transform: translateY(16px); opacity: 1; }
+      100% { transform: translateY(0); opacity: 0.1; }
+    }
+
+    .section {
+      padding: 7.5rem 6vw;
+      position: relative;
+    }
+
+    .section-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .intro {
+      text-align: center;
+      background: rgba(255,255,255,0.18);
+    }
+
+    .intro h3 {
+      margin: 20px 0 14px;
+      font-size: clamp(2.4rem, 5vw, 5.2rem);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+      font-weight: 400;
+    }
+
+    .intro h3 .ital {
+      color: #7f9ab2;
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .intro p {
+      max-width: 720px;
+      margin: 0 auto;
+      color: var(--muted);
+      line-height: 1.9;
+      font-size: 1.05rem;
+    }
+
+    .featured-wrap {
+      padding-top: 4rem;
+      padding-bottom: 2rem;
+    }
+
+    .featured-main {
+      position: relative;
+      max-width: 1220px;
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(38, 43, 53, 0.08);
+      background: #e7d7d0;
+    }
+
+    .featured-main img {
+      width: 100%;
+      height: min(72vh, 780px);
+      object-fit: cover;
+      display: block;
+      filter: saturate(1.08) contrast(1.05);
+    }
+
+    .featured-meta {
+      width: min(1220px, 88vw);
+      margin: 0 auto;
       display: flex;
       justify-content: space-between;
-      padding: 17px 7vw;
-      font: 500 .62rem "DM Mono";
-      letter-spacing: .15em;
-      color: #aab3c6;
+      align-items: center;
+      padding: 18px 0 0;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
-    .heading { margin-bottom: 65px; }
-    .heading p { color: var(--muted); line-height: 1.7; }
 
-    .gallery { display: grid; grid-template-columns: 1.1fr .9fr; gap: 14px; }
+    .gallery-section {
+      padding-top: 5.5rem;
+    }
+
+    .heading {
+      margin-bottom: 35px;
+    }
+
+    .heading h3 {
+      margin: 18px 0 10px;
+      font-size: clamp(2.2rem, 4vw, 4.2rem);
+      line-height: 1.04;
+      letter-spacing: -0.05em;
+      font-weight: 400;
+    }
+
+    .heading .ital {
+      color: #7f9ab2;
+      font-style: italic;
+      font-weight: 300;
+    }
+
+    .heading p {
+      max-width: 650px;
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.9;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 16px;
+    }
+
     .memory-card {
       position: relative;
-      min-height: 360px;
       overflow: hidden;
-      background: #11182a;
-      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 24px;
+      background: #ddd;
+      border: 1px solid rgba(25, 33, 41, 0.08);
+      box-shadow: 0 12px 24px rgba(42, 35, 49, 0.08);
+      min-height: 280px;
+      grid-column: span 4;
+      transform: translateY(0);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
     }
-    .memory-card:nth-child(3n) { min-height: 520px; grid-row: span 2; }
-    .memory-card.wide { grid-column: 1 / -1; min-height: 430px; }
-    .memory-card img { transition: transform .9s; }
+
+    .memory-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 35px rgba(42, 35, 49, 0.12);
+    }
+
+    .memory-card:nth-child(3n + 1) { grid-column: span 5; }
+    .memory-card:nth-child(3n + 2) { grid-column: span 4; }
+    .memory-card:nth-child(3n + 3) { grid-column: span 3; }
+
+    .memory-card:nth-child(5n + 1),
+    .memory-card:nth-child(5n + 4) {
+      min-height: 400px;
+    }
+
+    .memory-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+
     .memory-card:hover img { transform: scale(1.04); }
-    .memory-card .caption {
+
+    .memory-card figcaption {
       position: absolute;
-      left: 18px;
-      right: 18px;
-      bottom: 16px;
+      inset: auto 0 0 0;
       display: flex;
       justify-content: space-between;
-      font: 500 .6rem "DM Mono";
-      letter-spacing: .12em;
-      text-shadow: 0 2px 12px #000;
+      gap: 16px;
+      padding: 16px 18px 14px;
+      background: linear-gradient(180deg, rgba(9,11,17,0), rgba(9,11,17,0.76));
+      color: white;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
     }
 
-    .soundtrack { display: grid; grid-template-columns: 1fr 1fr; gap: 9vw; align-items: center; }
-    .soundtrack p { color: #b2bbcc; line-height: 1.9; }
-    .sound-card {
-      height: 330px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: rgba(255,255,255,.025);
+    .soundtrack {
+      padding-top: 6rem;
+      padding-bottom: 5rem;
+    }
+
+    .soundtrack-inner {
       display: grid;
-      place-items: center;
-      align-content: center;
-      gap: 28px;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 36px;
+      align-items: center;
+      max-width: 1180px;
+      margin: 0 auto;
     }
-    .sound-card > span { font: 500 .6rem "DM Mono"; letter-spacing: .18em; color: #737e96; }
-    .bars { height: 75px; display: flex; gap: 7px; align-items: center; }
-    .bars i {
-      width: 5px;
-      border-radius: 9px;
-      background: linear-gradient(var(--blue), var(--lav));
-      animation: eq 1.2s ease-in-out infinite alternate;
-    }
-    .bars i:nth-child(1){height:25px}. .bars i:nth-child(2){height:55px;animation-delay:.1s}. .bars i:nth-child(3){height:72px;animation-delay:.2s}. .bars i:nth-child(4){height:42px;animation-delay:.3s}. .bars i:nth-child(5){height:68px;animation-delay:.4s}. .bars i:nth-child(6){height:35px;animation-delay:.5s}. .bars i:nth-child(7){height:60px;animation-delay:.6s}. .bars i:nth-child(8){height:45px;animation-delay:.7s}. .bars i:nth-child(9){height:30px;animation-delay:.8s}
 
-    .videos { display: grid; gap: 18px; margin-top: 55px; }
-    .video-card { background: #05070d; border: 1px solid var(--line); position: relative; }
-    .video-card video { width: 100%; display: block; max-height: 78vh; }
-    .video-card figcaption { padding: 12px 15px; font: 500 .6rem "DM Mono"; letter-spacing: .12em; color: #8d98af; }
+    .soundtrack-copy h3 {
+      margin: 18px 0 12px;
+      font-weight: 400;
+      font-size: clamp(2.3rem, 4vw, 4.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.05em;
+    }
 
-    .timeline-list { margin-top: 70px; border-left: 1px solid rgba(168,193,255,.35); }
-    .timeline-item {
-      position: relative;
-      display: grid;
-      grid-template-columns: 70px 1fr;
-      gap: 25px;
-      padding: 0 0 75px 28px;
+    .soundtrack-copy .ital {
+      color: #829ab2;
+      font-style: italic;
+      font-weight: 300;
     }
-    .timeline-item:before {
-      content: "";
-      position: absolute;
-      left: -5px;
-      top: 3px;
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--blue);
-      box-shadow: 0 0 24px var(--blue);
-    }
-    .timeline-item .num { font: 500 .65rem "DM Mono"; color: var(--blue); }
-    .timeline-item small { font: 500 .6rem "DM Mono"; letter-spacing: .15em; color: #77839c; }
-    .timeline-item h4 { font-size: 1.4rem; margin: 8px 0; }
-    .timeline-item p { margin: 0; color: var(--muted); line-height: 1.7; }
 
-    .wall {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 9px;
-      margin-top: 50px;
+    .soundtrack-copy p {
+      margin: 0;
+      max-width: 630px;
+      line-height: 1.9;
+      color: var(--muted);
     }
-    .wall div {
-      aspect-ratio: 1;
-      overflow: hidden;
-      background: linear-gradient(135deg,#18243c,#29273e);
-      display: grid;
-      place-items: center;
-      color: #8b96ad;
-      font: 500 .55rem "DM Mono";
-      letter-spacing: .1em;
-    }
-    .wall img { width: 100%; height: 100%; object-fit: cover; }
 
-    .closing {
-      min-height: 95svh;
+    .sound-box {
+      background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
+      border: 1px solid rgba(25,33,41,0.08);
+      border-radius: 30px;
+      min-height: 290px;
+      box-shadow: var(--shadow);
       display: grid;
       place-items: center;
       text-align: center;
-      padding: 15vh 7vw;
-    }
-    .closing h2 { font-size: clamp(4rem, 13vw, 10rem); letter-spacing: .08em; margin: 18px 0; }
-    .closing p { color: #9da7bb; line-height: 2; }
-    .closing button { width: min(260px, 80vw); }
-
-    .reveal { opacity: 0; transform: translateY(45px); transition: opacity 1s, transform 1s; }
-    .reveal.visible { opacity: 1; transform: none; }
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 24px;
-      transform: translate(-50%, 20px);
-      padding: 10px 16px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(8,11,20,.85);
-      backdrop-filter: blur(12px);
-      font-size: .7rem;
-      color: #c8d0e0;
-      opacity: 0;
-      pointer-events: none;
-      transition: .3s;
-      z-index: 80;
-    }
-    .toast.show { opacity: 1; transform: translate(-50%, 0); }
-
-    .edit-mode-btn {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 80;
-      border: 1px solid rgba(255,255,255,.18);
-      background: rgba(10,14,20,.8);
-      color: white;
-      padding: 12px 16px;
-      border-radius: 999px;
-      cursor: pointer;
-      font: 500 .65rem "DM Mono";
-      letter-spacing: .12em;
+      padding: 20px;
     }
 
-    .admin-panel {
-      position: fixed;
-      right: 18px;
-      top: 18px;
-      bottom: 18px;
-      width: min(430px, calc(100vw - 36px));
-      background: rgba(8, 11, 20, .96);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      z-index: 90;
-      box-shadow: 0 20px 60px rgba(0,0,0,.45);
-      overflow: auto;
-      padding: 18px;
-    }
-    .admin-header {
+    .bars {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .admin-header h2 {
-      margin: 0;
-      font: 500 .8rem "DM Mono";
-      letter-spacing: .18em;
-    }
-    .close-btn {
-      border: 1px solid var(--line);
-      background: transparent;
-      color: white;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-    .admin-tabs {
-      display: flex;
-      flex-wrap: wrap;
+      align-items: end;
       gap: 8px;
-      margin: 14px 0 18px;
+      height: 100px;
+      margin-bottom: 14px;
     }
-    .admin-tab-btn {
-      border: 1px solid var(--line);
-      background: transparent;
-      color: #dfe8ff;
-      padding: 8px 10px;
-      border-radius: 10px;
-      cursor: pointer;
-      font: 500 .58rem "DM Mono";
-      letter-spacing: .08em;
-    }
-    .admin-tab-btn.active {
-      background: rgba(168,193,255,.12);
-      border-color: rgba(168,193,255,.4);
-    }
-    .admin-tab-content { display: none; }
-    .admin-tab-content.active { display: block; }
 
-    .admin-section { margin-bottom: 26px; }
-    .admin-section h3 {
-      margin: 0 0 12px;
-      font-size: 1.1rem;
+    .bars span {
+      display: block;
+      width: 8px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #d9bfdb, #9fc3df, #efb7b2);
+      animation: audioWave 1.25s ease-in-out infinite alternate;
     }
-    .small-text { color: var(--muted); font-size: .8rem; margin-top: 6px; }
 
-    .input-field, .textarea-field, .input-select {
-      width: 100%;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.02);
-      color: white;
-      border-radius: 12px;
-      padding: 10px 12px;
-      outline: none;
-      margin-top: 8px;
+    .bars span:nth-child(1){ height: 28%; animation-delay: 0.1s; }
+    .bars span:nth-child(2){ height: 46%; animation-delay: 0.2s; }
+    .bars span:nth-child(3){ height: 68%; animation-delay: 0.3s; }
+    .bars span:nth-child(4){ height: 52%; animation-delay: 0.4s; }
+    .bars span:nth-child(5){ height: 82%; animation-delay: 0.5s; }
+    .bars span:nth-child(6){ height: 58%; animation-delay: 0.6s; }
+    .bars span:nth-child(7){ height: 90%; animation-delay: 0.7s; }
+    .bars span:nth-child(8){ height: 62%; animation-delay: 0.8s; }
+    .bars span:nth-child(9){ height: 44%; animation-delay: 0.9s; }
+
+    @keyframes audioWave {
+      0% { transform: scaleY(0.42); opacity: 0.55; }
+      100% { transform: scaleY(1); opacity: 1; }
     }
-    .textarea-field { resize: vertical; min-height: 90px; }
 
-    .btn {
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      color: white;
-      background: transparent;
-      cursor: pointer;
-      padding: 10px 12px;
-      font-size: .75rem;
-      letter-spacing: .08em;
-      margin-top: 10px;
+    .sound-box .small-label {
+      font-size: 0.69rem;
+      letter-spacing: 0.21em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 700;
     }
-    .btn-primary { background: rgba(168,193,255,.12); }
-    .btn-success { background: rgba(110,231,183,.12); }
-    .btn-secondary { background: rgba(255,255,255,.05); }
-    .btn-warning { background: rgba(252,211,77,.12); }
-    .btn-danger { background: rgba(252,165,165,.12); }
 
-    .media-list {
+    .video-section {
+      background: rgba(255,255,255,0.14);
+    }
+
+    .video-grid {
       display: grid;
-      gap: 12px;
-      margin-top: 16px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 22px;
+      max-width: 1180px;
+      margin: 0 auto;
     }
-    .media-item {
-      background: rgba(255,255,255,.02);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px;
+
+    .video-card {
+      overflow: hidden;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(25,33,41,0.08);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
     }
-    .media-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
+
+    .video-card video {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      display: block;
+      background: #0f1116;
+    }
+
+    .video-card figcaption {
+      padding: 14px 18px 16px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .timeline-section {
+      padding-bottom: 4rem;
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 1100px;
+      margin: 0 auto;
+      border-left: 1px solid rgba(51,58,67,0.12);
+      padding-left: 34px;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding: 0 0 34px 18px;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -41px;
+      top: 8px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c7a0fa, #9cc2e3);
+      box-shadow: 0 0 0 6px rgba(173, 186, 208, 0.2);
+    }
+
+    .timeline-time {
+      color: #7382a0;
+      font-size: 0.66rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+      display: block;
       margin-bottom: 8px;
     }
-    .media-item strong { font-size: .8rem; }
-    .mini-btn {
-      border: 1px solid var(--line);
-      background: transparent;
-      color: white;
-      border-radius: 8px;
-      padding: 6px 8px;
-      cursor: pointer;
+
+    .timeline-item h4 {
+      margin: 0 0 8px;
+      font-size: clamp(1.5rem, 2.3vw, 2.5rem);
+      letter-spacing: -0.04em;
+      font-weight: 500;
     }
-    .audio-section { margin-top: 16px; }
-    .audio-item { margin-top: 16px; }
-    .audio-item label { display: block; font-size: .75rem; color: #dfe7ff; }
-    .setting-item { margin-top: 16px; }
-    .setting-item label { font-size: .75rem; color: #dfe7ff; }
-    .admin-footer {
+
+    .timeline-item p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+      max-width: 620px;
+    }
+
+    .wall-section {
+      padding-top: 5rem;
+    }
+
+    .memory-wall {
       display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      max-width: 1180px;
+      margin: 28px auto 0;
+    }
+
+    .memory-wall-item {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: 18px;
+      box-shadow: 0 10px 18px rgba(26, 23, 30, 0.09);
+      background: #ddd;
+    }
+
+    .memory-wall-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .closing {
+      padding-top: 5rem;
+      padding-bottom: 7rem;
+      text-align: center;
+    }
+
+    .closing h2 {
+      margin: 18px 0 12px;
+      font-size: clamp(3.2rem, 9vw, 7.5rem);
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .closing p {
+      max-width: 700px;
+      margin: 0 auto;
+      color: var(--muted);
+      line-height: 1.95;
+      font-size: 1.08rem;
+    }
+
+    .closing button {
+      margin-top: 30px;
+      border: 1px solid rgba(28,36,42,0.08);
+      background: rgba(255,255,255,0.72);
+      color: var(--dark);
+      border-radius: 999px;
+      padding: 14px 22px;
+      cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      box-shadow: 0 12px 26px rgba(48,36,26,0.08);
+    }
+
+    .back-to-top {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 80;
+      width: 48px;
+      height: 48px;
+      border: 1px solid rgba(25,35,44,0.12);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.7);
+      color: var(--dark);
+      font-size: 1.3rem;
+      cursor: pointer;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+      opacity: 0;
+      transform: translateY(16px);
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    .back-to-top.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .edit-panel {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 150;
+      width: min(430px, calc(100vw - 30px));
+      max-height: calc(100vh - 32px);
+      overflow: auto;
+      background: rgba(254, 250, 247, 0.9);
+      border: 1px solid rgba(26, 31, 40, 0.08);
+      border-radius: 26px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      padding: 18px 18px 20px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .panel-head h3 {
+      margin: 0;
+      font-size: 0.8rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .close-panel {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(27,32,40,0.1);
+      background: rgba(255,255,255,0.5);
+      color: var(--dark);
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    .panel-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
+      margin: 12px 0 16px;
+    }
+
+    .tab-btn {
+      border: 1px solid rgba(27,32,40,0.08);
+      background: rgba(255,255,255,0.3);
+      color: var(--muted);
+      padding: 9px 8px;
+      border-radius: 12px;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .tab-btn.active {
+      background: rgba(159,192,219,0.24);
+      color: var(--dark);
+      border-color: rgba(126,153,182,0.4);
+    }
+
+    .panel-tab { display: none; }
+    .panel-tab.active { display: block; }
+
+    .panel-group {
+      margin-bottom: 14px;
+    }
+
+    .panel-group label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .panel-input,
+    .panel-textarea {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid rgba(27,32,40,0.12);
+      border-radius: 12px;
+      background: rgba(255,255,255,0.48);
+      color: var(--text);
+      outline: none;
+    }
+
+    .panel-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .file-box {
+      background: rgba(255,255,255,0.38);
+      border: 1px dashed rgba(27,32,40,0.18);
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-top: 8px;
+    }
+
+    .file-box input[type="file"] {
+      width: 100%;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .preview-mini {
+      width: 100%;
+      margin-top: 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(27,32,40,0.08);
+      background: #e8d8d1;
+    }
+
+    .preview-mini img,
+    .preview-mini video {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .panel-actions {
+      display: flex;
+      gap: 10px;
       margin-top: 20px;
     }
 
-    .modal {
-      position: fixed;
-      inset: 0;
-      z-index: 120;
-      display: grid;
-      place-items: center;
-      background: rgba(0,0,0,.72);
-      padding: 18px;
-    }
-    .modal-content {
-      width: min(500px, 100%);
-      background: rgba(14,18,30,.98);
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 20px;
-      position: relative;
-    }
-    .modal-close {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      background: transparent;
-      border: 1px solid var(--line);
-      width: 34px;
-      height: 34px;
-      color: white;
-      border-radius: 50%;
+    .panel-actions button {
+      flex: 1;
+      border: 1px solid rgba(27,32,40,0.08);
+      background: rgba(255,255,255,0.55);
+      color: var(--dark);
+      border-radius: 12px;
+      padding: 12px 14px;
       cursor: pointer;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
-    .form-group { margin-top: 14px; }
-    .form-group label { display: block; margin-bottom: 6px; font-size: .75rem; color: #dfe7ff; }
-    .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
-    .modal-actions .btn { flex: 1; }
 
-    @keyframes pulse { 50% { transform: scale(1.12); opacity: .65; } }
-    @keyframes drop { 50% { transform: translateY(11px); opacity: .35; } }
-    @keyframes eq { to { transform: scaleY(.4); } }
+    .primary-btn {
+      background: linear-gradient(135deg, rgba(163,191,219,0.5), rgba(225,197,204,0.55)) !important;
+    }
 
-    @media (max-width: 700px) {
-      .side { display: none; }
-      .intro, .gallery-section, .soundtrack, .video-section, .timeline, .memory-wall { padding-left: 24px; padding-right: 24px; }
+    .gallery-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .gallery-item-card {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(27,32,40,0.08);
+      border-radius: 12px;
+      padding: 8px 10px;
+    }
+
+    .gallery-item-card img {
+      width: 56px;
+      height: 56px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .gallery-item-card .meta {
+      flex: 1;
+      min-width: 0;
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .mini-btn {
+      border: 1px solid rgba(27,32,40,0.08);
+      background: rgba(255,255,255,0.45);
+      border-radius: 10px;
+      padding: 7px 8px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      color: var(--dark);
+    }
+
+    .tiny-label {
+      display: block;
+      margin-top: 8px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      opacity: 0.8;
+    }
+
+    @media (max-width: 768px) {
+      .section { padding-left: 22px; padding-right: 22px; }
       .gallery { grid-template-columns: 1fr; }
-      .memory-card, .memory-card:nth-child(3n), .memory-card.wide { min-height: 330px; grid-column: auto; grid-row: auto; }
-      .soundtrack { grid-template-columns: 1fr; gap: 35px; }
-      .sound-card { height: 240px; }
-      .wall { grid-template-columns: repeat(2, 1fr); }
-      .timeline-item { grid-template-columns: 45px 1fr; padding-left: 20px; }
-      .timeline-item h4 { font-size: 1.05rem; }
-      .photo { min-height: 72svh; }
-      .gate-card { margin-top: 28px; }
-      .admin-panel { width: calc(100vw - 20px); right: 10px; top: 10px; bottom: 10px; }
+      .memory-card, .memory-card:nth-child(3n + 1), .memory-card:nth-child(3n + 2), .memory-card:nth-child(3n + 3) {
+        grid-column: auto;
+        min-height: 300px;
+      }
+      .soundtrack-inner,
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+      .memory-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .edit-panel { top: 12px; right: 12px; width: min(92vw, 420px); }
+      .panel-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero-copy h2 { font-size: clamp(2.6rem, 15vw, 5rem); }
     }
   </style>
 </head>
 <body>
-  <button id="editModeToggle" class="edit-mode-btn" title="Edit Momen (Ctrl+E)">✎ EDIT</button>
+  <div id="loading" class="loading">Memuat kenangan...</div>
+
+  <button id="editToggle" class="edit-toggle" type="button">✎ EDIT</button>
 
   <div id="gate" class="gate">
-    <div class="grain"></div>
-    <div class="gate-glow"></div>
-    <div class="gate-content">
-      <span class="eyebrow">DIGITAL MEMORY ARCHIVE</span>
+    <div class="gate-inner">
+      <span class="eyebrow">Digital Memory Archive</span>
       <h1 id="siteTitle">MOMENTARY</h1>
-      <p id="siteSubtitle">Jejak Kenangan</p>
+      <p id="siteSubtitle" class="gate-subtitle">Jejak Kebersamaan Kita</p>
+
       <div class="gate-card">
-        <label for="guestName">Nama / panggilan <span>(opsional)</span></label>
-        <input id="guestName" maxlength="30" placeholder="Contoh: Raka">
-        <button id="enterBtn">✦ MULAI ✦</button>
-        <small>Gunakan suara untuk pengalaman terbaik.</small>
+        <label for="guestName">Nama / Panggilan</label>
+        <input id="guestName" type="text" maxlength="30" placeholder="Contoh: Raka" />
+        <button id="startBtn" type="button">✦ MULAI ✦</button>
+        <small>siap menelusuri kenangan bersama kami</small>
       </div>
     </div>
   </div>
 
   <header id="topbar" class="topbar hidden">
     <a href="#top" class="brand" id="brandName">MOMENTARY</a>
-    <button id="muteBtn" class="icon-btn" aria-label="Suara">♫</button>
+    <button id="muteBtn" class="mute-btn" type="button" aria-label="mute/unmute">♫</button>
   </header>
 
-  <div id="adminPanel" class="admin-panel hidden">
-    <div class="admin-header">
-      <h2>ADMIN PANEL</h2>
-      <button id="closeAdminBtn" class="close-btn">✕</button>
+  <aside id="editPanel" class="edit-panel hidden" aria-label="Panel edit web">
+    <div class="panel-head">
+      <h3>Panel Edit</h3>
+      <button id="closePanel" class="close-panel" type="button">×</button>
     </div>
 
-    <div class="admin-tabs">
-      <button class="admin-tab-btn active" data-tab="photos">📸 FOTO</button>
-      <button class="admin-tab-btn" data-tab="videos">🎬 VIDEO</button>
-      <button class="admin-tab-btn" data-tab="audio">🎵 AUDIO</button>
-      <button class="admin-tab-btn" data-tab="timeline">📅 TIMELINE</button>
-      <button class="admin-tab-btn" data-tab="captions">✍️ CAPTION</button>
-      <button class="admin-tab-btn" data-tab="settings">⚙️ PENGATURAN</button>
+    <div class="panel-tabs">
+      <button class="tab-btn active" type="button" data-tab="general">Umum</button>
+      <button class="tab-btn" type="button" data-tab="media">Foto</button>
+      <button class="tab-btn" type="button" data-tab="audio">Audio</button>
     </div>
 
-    <div id="photosTab" class="admin-tab-content active">
-      <div class="admin-section">
-        <h3>Galeri Foto</h3>
-        <button class="btn btn-primary" id="addPhotoBtn">+ TAMBAH FOTO</button>
-        <div id="photosList" class="media-list"></div>
+    <div id="generalTab" class="panel-tab active">
+      <div class="panel-group">
+        <label for="titleInput">Judul</label>
+        <input id="titleInput" class="panel-input" type="text" />
       </div>
-    </div>
 
-    <div id="videosTab" class="admin-tab-content">
-      <div class="admin-section">
-        <h3>Dokumentasi Video</h3>
-        <button class="btn btn-primary" id="addVideoBtn">+ TAMBAH VIDEO</button>
-        <div id="videosList" class="media-list"></div>
+      <div class="panel-group">
+        <label for="subtitleInput">Subtitle</label>
+        <input id="subtitleInput" class="panel-input" type="text" />
       </div>
-    </div>
 
-    <div id="audioTab" class="admin-tab-content">
-      <div class="admin-section">
-        <h3>Musik Latar & Sound Effect</h3>
+      <div class="panel-group">
+        <label for="introTitleInput">Judul Intro</label>
+        <input id="introTitleInput" class="panel-input" type="text" />
+      </div>
 
-        <div class="audio-section">
-          <h4>🎵 Background Music</h4>
-          <div class="audio-item">
-            <label>Path Musik</label>
-            <input type="text" id="bgMusicSrc" class="input-field" placeholder="media/audio/background.mp3">
-            <audio id="bgMusicPreview" controls style="width:100%; margin-top: 10px;"></audio>
-          </div>
+      <div class="panel-group">
+        <label for="introTextInput">Deskripsi Intro</label>
+        <textarea id="introTextInput" class="panel-textarea"></textarea>
+      </div>
+
+      <div class="panel-group">
+        <label for="closingTextInput">Pesan Akhir</label>
+        <textarea id="closingTextInput" class="panel-textarea"></textarea>
+      </div>
+
+      <div class="panel-group">
+        <label for="bgTypeInput">Background Utama</label>
+        <select id="bgTypeInput" class="panel-input">
+          <option value="video">Video</option>
+          <option value="image">Gambar</option>
+        </select>
+      </div>
+
+      <div class="panel-group">
+        <label for="bgUploadInput">Upload background</label>
+        <div class="file-box">
+          <input id="bgUploadInput" type="file" accept="image/*,video/*" />
         </div>
+        <div id="bgPreview" class="preview-mini hidden"></div>
+      </div>
+    </div>
 
-        <div class="audio-section" style="margin-top:20px;">
-          <h4>🔊 Sound Effect</h4>
-          <div class="audio-item">
-            <label>Click Sound</label>
-            <input type="text" id="clickSrc" class="input-field" placeholder="media/audio/click.mp3">
-            <audio id="clickPreview" controls style="width:100%; margin-top: 6px;"></audio>
-          </div>
-          <div class="audio-item">
-            <label>Transition Sound</label>
-            <input type="text" id="transitionSrc" class="input-field" placeholder="media/audio/transition.mp3">
-            <audio id="transitionPreview" controls style="width:100%; margin-top: 6px;"></audio>
-          </div>
+    <div id="mediaTab" class="panel-tab">
+      <div class="panel-group">
+        <label>Foto utama</label>
+        <div class="file-box">
+          <input id="featuredUploadInput" type="file" accept="image/*" />
         </div>
-
-        <button class="btn btn-secondary" id="saveAudioBtn" style="margin-top: 16px;">💾 SIMPAN AUDIO</button>
+        <div id="featuredPreview" class="preview-mini hidden"></div>
       </div>
-    </div>
 
-    <div id="timelineTab" class="admin-tab-content">
-      <div class="admin-section">
-        <h3>Timeline</h3>
-        <button class="btn btn-primary" id="addTimelineBtn">+ TAMBAH TIMELINE</button>
-        <div id="timelineList" class="media-list"></div>
-      </div>
-    </div>
-
-    <div id="captionsTab" class="admin-tab-content">
-      <div class="admin-section">
-        <h3>Caption</h3>
-        <button class="btn btn-primary" id="addCaptionBtn">+ TAMBAH CAPTION</button>
-        <div id="captionsList" class="media-list"></div>
-      </div>
-    </div>
-
-    <div id="settingsTab" class="admin-tab-content">
-      <div class="admin-section">
-        <h3>Pengaturan Situs</h3>
-
-        <div class="setting-item">
-          <label>Nama Situs</label>
-          <input id="siteNameInput" class="input-field" type="text" placeholder="MOMENTARY">
+      <div class="panel-group">
+        <label>Tambah foto gallery</label>
+        <div class="file-box">
+          <input id="galleryUploadInput" type="file" accept="image/*" multiple />
         </div>
-        <div class="setting-item">
-          <label>Subtitle</label>
-          <input id="subtitleInput" class="input-field" type="text" placeholder="Jejak Kenangan">
+      </div>
+
+      <div class="panel-group">
+        <label>Daftar foto</label>
+        <div id="galleryList" class="gallery-list"></div>
+      </div>
+    </div>
+
+    <div id="audioTab" class="panel-tab">
+      <div class="panel-group">
+        <label>Audio latar</label>
+        <div class="file-box">
+          <input id="audioUploadInput" type="file" accept="audio/*" />
         </div>
-        <div class="setting-item">
-          <label>Featured Photo</label>
-          <input id="featuredPhotoInput" class="input-field" type="text" placeholder="media/photos/01.jpg">
-        </div>
-        <div class="setting-item">
-          <label>Closing Message</label>
-          <textarea id="closingTextInput" class="textarea-field" rows="3" placeholder="Time passes. Memories stay."></textarea>
-        </div>
-
-        <button class="btn btn-secondary" id="saveSettingsBtn" style="margin-top:16px;">💾 SIMPAN PENGATURAN</button>
+        <div class="tiny-label">Jika tidak ada file dipilih, audio akan tetap dinonaktifkan.</div>
       </div>
     </div>
 
-    <div class="admin-footer">
-      <button class="btn btn-success" id="saveAllBtn">✓ SIMPAN SEMUA DATA</button>
-      <button class="btn btn-warning" id="exportDataBtn">⬇ EXPORT DATA</button>
-      <button class="btn btn-danger" id="resetDataBtn">↻ RESET DATA</button>
+    <div class="panel-actions">
+      <button id="saveBtn" class="primary-btn" type="button">Simpan</button>
+      <button id="resetBtn" type="button">Reset</button>
     </div>
-  </div>
-
-  <div id="editModal" class="modal hidden">
-    <div class="modal-content">
-      <button class="modal-close">&times;</button>
-      <h3 id="modalTitle">Edit Media</h3>
-
-      <div class="form-group">
-        <label>Path File</label>
-        <input id="mediaSrc" class="input-field" type="text" placeholder="media/photos/01.jpg">
-      </div>
-      <div class="form-group">
-        <label>Judul</label>
-        <input id="mediaTitle" class="input-field" type="text" placeholder="A LITTLE MOMENT">
-      </div>
-      <div class="form-group">
-        <label>Tahun / Tanggal</label>
-        <input id="mediaDate" class="input-field" type="text" placeholder="2026">
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn btn-success" id="saveMediaBtn">✓ SIMPAN</button>
-        <button class="btn btn-secondary" id="cancelMediaBtn">BATAL</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="editTimelineModal" class="modal hidden">
-    <div class="modal-content">
-      <button class="modal-close">&times;</button>
-      <h3>Edit Timeline</h3>
-
-      <div class="form-group">
-        <label>Tahun</label>
-        <input id="timelineYear" class="input-field" type="text" placeholder="2026">
-      </div>
-      <div class="form-group">
-        <label>Judul</label>
-        <input id="timelineTitle" class="input-field" type="text" placeholder="THE FIRST STEP">
-      </div>
-      <div class="form-group">
-        <label>Deskripsi</label>
-        <textarea id="timelineText" class="textarea-field" rows="3" placeholder="Awal dari sebuah perjalanan."></textarea>
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn btn-success" id="saveTimelineBtn">✓ SIMPAN</button>
-        <button class="btn btn-secondary" id="cancelTimelineBtn">BATAL</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="editCaptionModal" class="modal hidden">
-    <div class="modal-content">
-      <button class="modal-close">&times;</button>
-      <h3>Edit Caption</h3>
-
-      <div class="form-group">
-        <label>Caption</label>
-        <textarea id="captionText" class="textarea-field" rows="4" placeholder="Text caption..."></textarea>
-      </div>
-
-      <div class="modal-actions">
-        <button class="btn btn-success" id="saveCaptionBtn">✓ SIMPAN</button>
-        <button class="btn btn-secondary" id="cancelCaptionBtn">BATAL</button>
-      </div>
-    </div>
-  </div>
+  </aside>
 
   <main id="app" class="hidden">
     <section id="top" class="hero">
-      <div class="hero-orbit a"></div>
-      <div class="hero-orbit b"></div>
-      <div class="side left">EVERY MOMENT<br>HAS A STORY</div>
-      <div class="side right">ARCHIVE / <span id="archiveNo">01</span></div>
+      <div id="heroMedia" class="hero-media"></div>
+      <div class="hero-overlay"></div>
       <div class="hero-copy">
-        <span class="eyebrow">A DIGITAL MEMORY JOURNAL</span>
-        <h2>Our story,<br><i>frame by frame.</i></h2>
-        <p>Tempat menyimpan tawa, perjalanan, kegiatan, dan cerita yang pernah kita lalui bersama.</p>
-        <div class="scroll-cue"><span></span>SCROLL TO REMEMBER</div>
+        <span class="eyebrow">A Digital Memory Journal</span>
+        <h2 id="introTitle">Kebersamaan<br><span class="ital">kita</span></h2>
+        <p id="introText">Kebersamaan puncak kejayaannya.</p>
+        <div class="scroll-hint"><span></span>Scroll to remember</div>
       </div>
     </section>
 
-    <section class="intro reveal">
-      <span class="label">01 / THE BEGINNING</span>
-      <h3>Some moments are <i>too beautiful to forget.</i></h3>
-      <p>“Kita mungkin tidak sadar saat menjalaninya, tetapi suatu hari nanti momen kecil ini akan menjadi kenangan besar.”</p>
+    <section class="section intro">
+      <div class="section-inner">
+        <span class="eyebrow" style="color: var(--muted);">01 / the beginning</span>
+        <h3>Some moments are <span class="ital">too beautiful to forget.</span></h3>
+        <p>“Jika kamu sudah sampai di titik dimana kamu dipercayai seseorang, jangan sesekali mengecewakan mereka yang sudah berjuang dengan penuh keikhlasan. Karena kebersamaan bukan hanya soal hadir, tetapi juga menjaga hati yang sudah percaya.”</p>
+      </div>
     </section>
 
-    <section class="featured reveal">
-      <div class="media photo">
-        <img id="featuredImage" src="media/photos/01.jpg" alt="Featured memory" />
+    <section class="section featured-wrap">
+      <div class="featured-main">
+        <img id="featuredImg" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1400&q=80" alt="Featured photo" />
       </div>
-      <div class="media-meta">
-        <span>THE MOMENT</span>
+      <div class="featured-meta">
+        <span>the moment</span>
         <span id="featuredYear">2026</span>
       </div>
     </section>
 
-    <section class="gallery-section reveal">
-      <div class="heading">
-        <span class="label">02 / MEMORY GALLERY</span>
-        <h3>Pieces of <i>our memories.</i></h3>
-        <p>Koleksi momen berharga dari perjalanan kita bersama.</p>
-      </div>
-      <div id="gallery" class="gallery"></div>
-    </section>
-
-    <section class="soundtrack reveal">
-      <div>
-        <span class="label">03 / THE SOUNDTRACK</span>
-        <h3>Let the memories <i>have a soundtrack.</i></h3>
-        <p id="caption">Every little moment can become a story worth keeping.</p>
-      </div>
-      <div class="sound-card">
-        <div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <span>BACKGROUND AUDIO</span>
+    <section class="section gallery-section">
+      <div class="section-inner">
+        <div class="heading">
+          <span class="eyebrow" style="color: var(--muted);">02 / memory gallery</span>
+          <h3>Pieces of <span class="ital">our memories.</span></h3>
+          <p>Setiap sudut momen kecil yang kita lewati, kini menjadi bagian dari cerita yang akan terus hidup.</p>
+        </div>
+        <div id="gallery" class="gallery"></div>
       </div>
     </section>
 
-    <section class="video-section reveal">
-      <span class="label">04 / MOVING MEMORIES</span>
-      <h3>Not just a picture.<br><i>A moment in motion.</i></h3>
-      <div id="videos" class="videos"></div>
+    <section class="section soundtrack">
+      <div class="soundtrack-inner">
+        <div class="soundtrack-copy">
+          <span class="eyebrow" style="color: var(--muted);">03 / the soundtrack</span>
+          <h3>Let the memories <span class="ital">have a soundtrack.</span></h3>
+          <p id="captionText">Every little moment can become a story worth keeping.</p>
+        </div>
+
+        <div class="sound-box">
+          <div class="bars" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <div class="small-label">Background audio</div>
+        </div>
+      </div>
     </section>
 
-    <section class="timeline reveal">
-      <span class="label">05 / THE JOURNEY</span>
-      <h3>A few chapters <i>of our story.</i></h3>
-      <div id="timeline" class="timeline-list"></div>
+    <section class="section video-section">
+      <div class="section-inner">
+        <span class="eyebrow" style="color: var(--muted);">04 / moving memories</span>
+        <h3 style="margin:18px 0 26px; font-size: clamp(2.2rem,4vw,4.3rem); font-weight:400; letter-spacing:-0.05em;">Not just a picture.<br><span class="ital">A moment in motion.</span></h3>
+        <div id="videoGrid" class="video-grid"></div>
+      </div>
     </section>
 
-    <section class="memory-wall reveal">
-      <span class="label">06 / MEMORY WALL</span>
-      <div id="wall" class="wall"></div>
+    <section class="section timeline-section">
+      <div class="section-inner">
+        <span class="eyebrow" style="color: var(--muted);">05 / the journey</span>
+        <h3 style="margin:18px 0 26px; font-size: clamp(2.2rem,4vw,4.2rem); font-weight:400; letter-spacing:-0.05em;">A few chapters <span class="ital">of our story.</span></h3>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <span class="timeline-time">2024</span>
+            <h4>The first step</h4>
+            <p>Awal dari perjalanan dan kebersamaan yang mulai tumbuh dengan harapan, semangat, dan rasa percaya.</p>
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-time">2025</span>
+            <h4>The moments</h4>
+            <p>Tawa, kegiatan, dan kebiasaan kecil yang perlahan menjadi cerita yang sulit dilupakan.</p>
+          </div>
+          <div class="timeline-item">
+            <span class="timeline-time">2026</span>
+            <h4>The memory</h4>
+            <p>Hal-hal sederhana yang akhirnya berarti, karena saat kita tumbuh bersama, kenangan itu menjadi bagian dari diri kita.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <section class="closing reveal">
-      <span class="eyebrow">END OF THIS CHAPTER</span>
-      <h2 id="closingHeader">MOMENTARY</h2>
-      <p id="closingText">Time passes.<br>Memories stay.</p>
-      <button id="replay">↻ LIHAT KEMBALI</button>
+    <section class="section wall-section">
+      <div class="section-inner">
+        <span class="eyebrow" style="color: var(--muted);">06 / memory wall</span>
+        <div id="memoryWall" class="memory-wall"></div>
+      </div>
+    </section>
+
+    <section class="section closing">
+      <div class="section-inner">
+        <span class="eyebrow" style="color: var(--muted);">End of this chapter</span>
+        <h2 id="closingTitle">MOMENTARY</h2>
+        <p id="closingText">Terimakasih sudah melihat pustaka kami. Semoga bisa menghibur dan menginspirasi. Selalu ingat bahwa kebersamaan itu adalah bagian terindah dari perjalanan hidup.</p>
+        <button id="backToTop" type="button">↑ kembali ke atas</button>
+      </div>
     </section>
   </main>
 
-  <div id="toast" class="toast"></div>
-  <audio id="music" loop preload="auto" src="media/audio/background.mp3"></audio>
-  <audio id="click" preload="auto" src="media/audio/click.mp3"></audio>
-  <audio id="whoosh" preload="auto" src="media/audio/transition.mp3"></audio>
+  <button id="toTopBtn" class="back-to-top" type="button" aria-label="Kembali ke atas">↑</button>
+
+  <audio id="music" loop preload="auto"></audio>
 
   <script>
-    const STORAGE_KEY = 'momentary_data_v1';
+    const STORAGE_KEY = 'momentary_state_v1';
 
-    const defaultData = {
-      siteName: 'MOMENTARY',
-      subtitle: 'Jejak Kenangan',
-      featuredPhoto: 'media/photos/01.jpg',
+    const defaultState = {
+      siteTitle: 'MOMENTARY',
+      siteSubtitle: 'Jejak Kebersamaan Kita',
+      introTitle: 'Kebersamaan<br><span class="ital">kita</span>',
+      introText: 'Kebersamaan puncak kejayaannya.',
+      closingText: 'Terimakasih sudah melihat pustaka kami. Semoga bisa menghibur dan menginspirasi. Selalu ingat bahwa kebersamaan itu adalah bagian terindah dari perjalanan hidup.',
+      featuredPhoto: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1400&q=80',
       featuredYear: '2026',
-      closingText: 'Time passes.<br>Memories stay.',
-      gallery: [
-        { src: 'media/photos/02.jpg', title: 'A LITTLE MOMENT', date: '2026' },
-        { src: 'media/photos/03.jpg', title: 'TOGETHER', date: '2026' },
-        { src: 'media/photos/04.jpg', title: 'GOOD TIMES', date: '2026' },
-        { src: 'media/photos/05.jpg', title: 'ONE FOR THE ARCHIVE', date: '2026' },
-        { src: 'media/photos/06.jpg', title: 'KEEP THIS MOMENT', date: '2026' },
-        { src: 'media/photos/07.jpg', title: 'WE WERE HERE', date: '2026' }
-      ],
-      videos: [
-        { src: 'media/videos/01.mp4', title: 'DOCUMENTATION / 01' },
-        { src: 'media/videos/02.mp4', title: 'DOCUMENTATION / 02' }
-      ],
-      timeline: [
-        { year: '2026', title: 'THE FIRST STEP', text: 'Awal dari sebuah perjalanan.' },
-        { year: '2026', title: 'THE MOMENTS', text: 'Tawa, kegiatan, dan cerita yang tumbuh bersama.' },
-        { year: '2026', title: 'THE MEMORY', text: 'Hal-hal sederhana yang akhirnya berarti.' }
-      ],
+      backgroundType: 'video',
+      backgroundSource: 'https://videos.pexels.com/video-files/854724/854724-hd_1920_1080.mp4',
+      audioSource: '',
       captions: [
         'Every little moment can become a story worth keeping.',
         'We laughed. We grew. We were here.',
@@ -902,508 +1231,360 @@
         'Time passes. The feeling stays.',
         'This was our story.'
       ],
-      audio: {
-        background: 'media/audio/background.mp3',
-        click: 'media/audio/click.mp3',
-        transition: 'media/audio/transition.mp3'
-      }
+      gallery: [
+        { src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80', title: 'A little moment', date: '2026' },
+        { src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80', title: 'Together', date: '2026' },
+        { src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80', title: 'Good times', date: '2026' },
+        { src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80', title: 'Keep this moment', date: '2026' },
+        { src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80', title: 'One for the archive', date: '2026' },
+        { src: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=900&q=80', title: 'Stories we carry', date: '2026' },
+        { src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80', title: 'Small laughter', date: '2026' },
+        { src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80', title: 'The bond', date: '2026' },
+        { src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80', title: 'We were here', date: '2026' },
+        { src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80', title: 'A memory stays', date: '2026' }
+      ],
+      videos: [
+        { src: 'https://videos.pexels.com/video-files/854724/854724-hd_1920_1080.mp4', title: 'Documentation / 01' },
+        { src: 'https://videos.pexels.com/video-files/3209828/3209828-hd_1920_1080.mp4', title: 'Documentation / 02' }
+      ]
     };
 
-    const state = loadData();
-    const galleryEl = document.getElementById('gallery');
-    const videosEl = document.getElementById('videos');
-    const timelineEl = document.getElementById('timeline');
-    const wallEl = document.getElementById('wall');
-    const captionEl = document.getElementById('caption');
-    const music = document.getElementById('music');
-    const clickAudio = document.getElementById('click');
-    const whoosh = document.getElementById('whoosh');
+    let state = loadState();
     let soundOn = true;
-    let currentCaptionIndex = 0;
-    let currentEditMode = 'photos';
-    let editingIndex = null;
-    let editingType = null;
+    let captionIndex = 0;
 
-    function loadData() {
+    const gate = document.getElementById('gate');
+    const app = document.getElementById('app');
+    const topbar = document.getElementById('topbar');
+    const music = document.getElementById('music');
+    const bgPreview = document.getElementById('bgPreview');
+    const featuredPreview = document.getElementById('featuredPreview');
+
+    function loadState() {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (!saved) return JSON.parse(JSON.stringify(defaultData));
+      if (!saved) return JSON.parse(JSON.stringify(defaultState));
       try {
-        const parsed = JSON.parse(saved);
-        return { ...JSON.parse(JSON.stringify(defaultData)), ...parsed, audio: { ...defaultData.audio, ...(parsed.audio || {}) } };
-      } catch (e) {
-        return JSON.parse(JSON.stringify(defaultData));
+        return { ...JSON.parse(JSON.stringify(defaultState)), ...JSON.parse(saved) };
+      } catch {
+        return JSON.parse(JSON.stringify(defaultState));
       }
     }
 
-    function saveData() {
+    function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      toast('Data berhasil disimpan');
     }
 
-    function toast(message) {
-      const x = document.getElementById('toast');
-      x.textContent = message;
-      x.classList.add('show');
-      setTimeout(() => x.classList.remove('show'), 2200);
-    }
-
-    function play(audioEl, volume = 0.45) {
-      if (!soundOn || !audioEl) return;
-      audioEl.currentTime = 0;
-      audioEl.volume = volume;
-      audioEl.play().catch(() => {});
-    }
-
-    function renderHeader() {
-      document.getElementById('siteTitle').textContent = state.siteName;
-      document.getElementById('siteSubtitle').textContent = state.subtitle;
-      document.getElementById('brandName').textContent = state.siteName;
-      document.getElementById('closingHeader').textContent = state.siteName;
-      document.getElementById('closingText').innerHTML = state.closingText;
-      document.getElementById('featuredImage').src = state.featuredPhoto;
+    function updateInputs() {
+      document.getElementById('titleInput').value = state.siteTitle;
+      document.getElementById('subtitleInput').value = state.siteSubtitle;
+      document.getElementById('introTitleInput').value = state.introTitle.replace(/<[^>]*>/g, '') || 'Kebersamaan kita';
+      document.getElementById('introTextInput').value = state.introText;
+      document.getElementById('closingTextInput').value = state.closingText;
+      document.getElementById('bgTypeInput').value = state.backgroundType || 'video';
+      document.getElementById('siteTitle').textContent = state.siteTitle;
+      document.getElementById('siteSubtitle').textContent = state.siteSubtitle;
+      document.getElementById('brandName').textContent = state.siteTitle;
+      document.getElementById('introTitle').innerHTML = state.introTitle;
+      document.getElementById('introText').textContent = state.introText;
+      document.getElementById('closingText').textContent = state.closingText;
+      document.getElementById('closingTitle').textContent = state.siteTitle;
       document.getElementById('featuredYear').textContent = state.featuredYear || '2026';
+      document.getElementById('featuredImg').src = state.featuredPhoto;
+      document.getElementById('captionText').textContent = state.captions[0] || 'Every little moment can become a story worth keeping.'
+    }
+
+    function renderBackground() {
+      const mediaWrap = document.getElementById('heroMedia');
+      mediaWrap.innerHTML = '';
+      const src = state.backgroundSource || defaultState.backgroundSource;
+
+      if (state.backgroundType === 'video') {
+        const video = document.createElement('video');
+        video.src = src;
+        video.autoplay = true;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.preload = 'auto';
+        mediaWrap.appendChild(video);
+      } else {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = 'Background';
+        mediaWrap.appendChild(img);
+      }
     }
 
     function renderGallery() {
-      galleryEl.innerHTML = '';
-      state.gallery.forEach((item, i) => {
-        const card = document.createElement('figure');
-        card.className = 'memory-card' + (i === 3 ? ' wide' : '');
-        card.innerHTML = `
-          <img src="${item.src}" alt="${item.title}" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML += '<div class=\'placeholder\'><b>${item.title}</b><small>${item.src}</small></div>'">
-          <figcaption class="caption"><span>${item.title}</span><span>${item.date}</span></figcaption>
+      const gallery = document.getElementById('gallery');
+      gallery.innerHTML = '';
+      const items = state.gallery.slice(0, 10);
+
+      items.forEach((item, idx) => {
+        const figure = document.createElement('figure');
+        figure.className = 'memory-card';
+        figure.innerHTML = `
+          <img src="${item.src}" alt="${item.title}" loading="lazy" />
+          <figcaption>
+            <span>${item.title}</span>
+            <span>${item.date}</span>
+          </figcaption>
         `;
-        galleryEl.appendChild(card);
+        gallery.appendChild(figure);
       });
     }
 
-    function renderVideos() {
-      videosEl.innerHTML = '';
-      state.videos.forEach(item => {
-        const f = document.createElement('figure');
-        f.className = 'video-card';
-        f.innerHTML = `
-          <video controls playsinline preload="metadata" src="${item.src}"></video>
+    function renderMemoryWall() {
+      const wall = document.getElementById('memoryWall');
+      wall.innerHTML = '';
+      const items = state.gallery.slice(0, 8);
+      items.forEach((item) => {
+        const div = document.createElement('div');
+        div.className = 'memory-wall-item';
+        div.innerHTML = `<img src="${item.src}" alt="${item.title}" loading="lazy" />`;
+        wall.appendChild(div);
+      });
+    }
+
+    function renderVideoGrid() {
+      const grid = document.getElementById('videoGrid');
+      grid.innerHTML = '';
+      const videos = state.videos && state.videos.length ? state.videos : defaultState.videos;
+      videos.forEach((item) => {
+        const figure = document.createElement('figure');
+        figure.className = 'video-card';
+        figure.innerHTML = `
+          <video controls preload="metadata" src="${item.src}"></video>
           <figcaption>${item.title}</figcaption>
         `;
-        videosEl.appendChild(f);
+        grid.appendChild(figure);
       });
     }
 
-    function renderTimeline() {
-      timelineEl.innerHTML = '';
-      state.timeline.forEach((item, i) => {
-        const article = document.createElement('article');
-        article.className = 'timeline-item';
-        article.innerHTML = `
-          <span class="num">0${i + 1}</span>
-          <div>
-            <small>${item.year}</small>
-            <h4>${item.title}</h4>
-            <p>${item.text}</p>
-          </div>
-        `;
-        timelineEl.appendChild(article);
-      });
-    }
-
-    function renderWall() {
-      wallEl.innerHTML = '';
-      state.gallery.slice(0, 8).forEach(item => {
-        const d = document.createElement('div');
-        const img = document.createElement('img');
-        img.src = item.src;
-        img.alt = item.title;
-        img.loading = 'lazy';
-        img.onerror = () => { d.textContent = item.title; };
-        d.appendChild(img);
-        wallEl.appendChild(d);
-      });
-    }
-
-    function renderAudioFields() {
-      document.getElementById('bgMusicSrc').value = state.audio.background;
-      document.getElementById('clickSrc').value = state.audio.click;
-      document.getElementById('transitionSrc').value = state.audio.transition;
-      music.src = state.audio.background;
-      clickAudio.src = state.audio.click;
-      whoosh.src = state.audio.transition;
-      document.getElementById('bgMusicPreview').src = state.audio.background;
-      document.getElementById('clickPreview').src = state.audio.click;
-      document.getElementById('transitionPreview').src = state.audio.transition;
-    }
-
-    function renderSettingsInputs() {
-      document.getElementById('siteNameInput').value = state.siteName;
-      document.getElementById('subtitleInput').value = state.subtitle;
-      document.getElementById('featuredPhotoInput').value = state.featuredPhoto;
-      document.getElementById('closingTextInput').value = state.closingText.replace(/<br>/g, '\n');
-    }
-
-    function renderCaptions() {
-      if (state.captions.length > 0) {
-        captionEl.textContent = state.captions[currentCaptionIndex % state.captions.length];
-      }
-    }
-
-    function renderAdminLists() {
-      renderPhotosList();
-      renderVideosList();
-      renderTimelineList();
-      renderCaptionsList();
-    }
-
-    function renderPhotosList() {
-      const list = document.getElementById('photosList');
+    function renderGalleryList() {
+      const list = document.getElementById('galleryList');
       list.innerHTML = '';
       state.gallery.forEach((item, idx) => {
-        const div = document.createElement('div');
-        div.className = 'media-item';
-        div.innerHTML = `
-          <div class="media-row">
-            <strong>${item.title}</strong>
-            <div>
-              <button class="mini-btn" data-action="edit" data-type="gallery" data-index="${idx}">✎</button>
-              <button class="mini-btn" data-action="delete" data-type="gallery" data-index="${idx}">🗑</button>
-            </div>
-          </div>
-          <div style="font-size:.72rem; color:#9aa8bc;">${item.src}</div>
+        const row = document.createElement('div');
+        row.className = 'gallery-item-card';
+        row.innerHTML = `
+          <img src="${item.src}" alt="${item.title}" />
+          <div class="meta">${item.title}<br>${item.date}</div>
+          <button type="button" class="mini-btn" data-remove="${idx}">✕</button>
         `;
-        list.appendChild(div);
+        list.appendChild(row);
       });
     }
 
-    function renderVideosList() {
-      const list = document.getElementById('videosList');
-      list.innerHTML = '';
-      state.videos.forEach((item, idx) => {
-        const div = document.createElement('div');
-        div.className = 'media-item';
-        div.innerHTML = `
-          <div class="media-row">
-            <strong>${item.title}</strong>
-            <div>
-              <button class="mini-btn" data-action="edit" data-type="videos" data-index="${idx}">✎</button>
-              <button class="mini-btn" data-action="delete" data-type="videos" data-index="${idx}">🗑</button>
-            </div>
-          </div>
-          <div style="font-size:.72rem; color:#9aa8bc;">${item.src}</div>
-        `;
-        list.appendChild(div);
-      });
-    }
-
-    function renderTimelineList() {
-      const list = document.getElementById('timelineList');
-      list.innerHTML = '';
-      state.timeline.forEach((item, idx) => {
-        const div = document.createElement('div');
-        div.className = 'media-item';
-        div.innerHTML = `
-          <div class="media-row">
-            <strong>${item.title}</strong>
-            <div>
-              <button class="mini-btn" data-action="edit" data-type="timeline" data-index="${idx}">✎</button>
-              <button class="mini-btn" data-action="delete" data-type="timeline" data-index="${idx}">🗑</button>
-            </div>
-          </div>
-          <div style="font-size:.72rem; color:#9aa8bc;">${item.year} • ${item.text}</div>
-        `;
-        list.appendChild(div);
-      });
-    }
-
-    function renderCaptionsList() {
-      const list = document.getElementById('captionsList');
-      list.innerHTML = '';
-      state.captions.forEach((item, idx) => {
-        const div = document.createElement('div');
-        div.className = 'media-item';
-        div.innerHTML = `
-          <div class="media-row">
-            <strong>Caption ${idx + 1}</strong>
-            <div>
-              <button class="mini-btn" data-action="edit" data-type="captions" data-index="${idx}">✎</button>
-              <button class="mini-btn" data-action="delete" data-type="captions" data-index="${idx}">🗑</button>
-            </div>
-          </div>
-          <div style="font-size:.72rem; color:#9aa8bc;">${item}</div>
-        `;
-        list.appendChild(div);
-      });
+    function renderAudio() {
+      if (state.audioSource) {
+        music.src = state.audioSource;
+        music.play().catch(() => {});
+      } else {
+        music.removeAttribute('src');
+      }
     }
 
     function renderAll() {
-      renderHeader();
+      updateInputs();
+      renderBackground();
       renderGallery();
-      renderVideos();
-      renderTimeline();
-      renderWall();
-      renderCaptions();
-      renderAudioFields();
-      renderSettingsInputs();
-      renderAdminLists();
+      renderMemoryWall();
+      renderVideoGrid();
+      renderGalleryList();
+      renderAudio();
+      document.getElementById('bgPreview').classList.add('hidden');
+      document.getElementById('featuredPreview').classList.add('hidden');
     }
 
-    function openEditModal(type, index = null) {
-      const modal = document.getElementById('editModal');
-      const timelineModal = document.getElementById('editTimelineModal');
-      const captionModal = document.getElementById('editCaptionModal');
-
-      modal.classList.add('hidden');
-      timelineModal.classList.add('hidden');
-      captionModal.classList.add('hidden');
-
-      if (type === 'gallery' || type === 'videos') {
-        modal.classList.remove('hidden');
-        editingType = type;
-        editingIndex = index;
-
-        const item = type === 'gallery' ? state.gallery[index] : state.videos[index];
-        if (!item) {
-          document.getElementById('mediaSrc').value = '';
-          document.getElementById('mediaTitle').value = '';
-          document.getElementById('mediaDate').value = '';
-        } else {
-          document.getElementById('mediaSrc').value = item.src || '';
-          document.getElementById('mediaTitle').value = item.title || '';
-          document.getElementById('mediaDate').value = item.date || '';
-        }
-      }
-
-      if (type === 'timeline') {
-        timelineModal.classList.remove('hidden');
-        editingType = type;
-        editingIndex = index;
-        const item = state.timeline[index];
-        if (!item) {
-          document.getElementById('timelineYear').value = '';
-          document.getElementById('timelineTitle').value = '';
-          document.getElementById('timelineText').value = '';
-        } else {
-          document.getElementById('timelineYear').value = item.year || '';
-          document.getElementById('timelineTitle').value = item.title || '';
-          document.getElementById('timelineText').value = item.text || '';
-        }
-      }
-
-      if (type === 'captions') {
-        captionModal.classList.remove('hidden');
-        editingType = type;
-        editingIndex = index;
-        const item = state.captions[index];
-        document.getElementById('captionText').value = item || '';
-      }
-    }
-
-    function closeAllModals() {
-      document.getElementById('editModal').classList.add('hidden');
-      document.getElementById('editTimelineModal').classList.add('hidden');
-      document.getElementById('editCaptionModal').classList.add('hidden');
-    }
-
-    function addNewItem(type) {
-      if (type === 'gallery') state.gallery.push({ src: 'media/photos/01.jpg', title: 'MOMEN BARU', date: '2026' });
-      if (type === 'videos') state.videos.push({ src: 'media/videos/01.mp4', title: 'VIDEO BARU', date: '2026' });
-      if (type === 'timeline') state.timeline.push({ year: '2026', title: 'CHAPTER BARU', text: 'Deskripsi momen baru.' });
-      if (type === 'captions') state.captions.push('Caption baru untuk momen ini.');
-      renderAll();
-      saveData();
-    }
-
-    document.getElementById('editModeToggle').addEventListener('click', () => {
-      document.getElementById('adminPanel').classList.toggle('hidden');
-    });
-
-    document.getElementById('closeAdminBtn').addEventListener('click', () => {
-      document.getElementById('adminPanel').classList.add('hidden');
-    });
-
-    document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(`${btn.dataset.tab}Tab`).classList.add('active');
-        currentEditMode = btn.dataset.tab;
+    function fileToDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
       });
-    });
+    }
 
-    document.getElementById('addPhotoBtn').addEventListener('click', () => addNewItem('gallery'));
-    document.getElementById('addVideoBtn').addEventListener('click', () => addNewItem('videos'));
-    document.getElementById('addTimelineBtn').addEventListener('click', () => addNewItem('timeline'));
-    document.getElementById('addCaptionBtn').addEventListener('click', () => addNewItem('captions'));
-
-    document.getElementById('saveAudioBtn').addEventListener('click', () => {
-      state.audio.background = document.getElementById('bgMusicSrc').value.trim();
-      state.audio.click = document.getElementById('clickSrc').value.trim();
-      state.audio.transition = document.getElementById('transitionSrc').value.trim();
-      renderAudioFields();
-      saveData();
-    });
-
-    document.getElementById('saveSettingsBtn').addEventListener('click', () => {
-      state.siteName = document.getElementById('siteNameInput').value.trim() || 'MOMENTARY';
-      state.subtitle = document.getElementById('subtitleInput').value.trim() || 'Jejak Kenangan';
-      state.featuredPhoto = document.getElementById('featuredPhotoInput').value.trim() || 'media/photos/01.jpg';
-      state.closingText = document.getElementById('closingTextInput').value.trim().replace(/\n/g, '<br>');
-      renderAll();
-      saveData();
-    });
-
-    document.getElementById('saveAllBtn').addEventListener('click', () => {
-      saveData();
-      renderAll();
-    });
-
-    document.getElementById('exportDataBtn').addEventListener('click', () => {
-      const text = JSON.stringify(state, null, 2);
-      const blob = new Blob([text], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'momentary-data.json';
-      a.click();
-      URL.revokeObjectURL(url);
-      toast('Data berhasil di-export');
-    });
-
-    document.getElementById('resetDataBtn').addEventListener('click', () => {
-      if (confirm('Yakin reset data ke default?')) {
-        localStorage.removeItem(STORAGE_KEY);
-        location.reload();
-      }
-    });
-
-    document.addEventListener('click', (e) => {
-      const btn = e.target.closest('.mini-btn');
-      if (!btn) return;
-      const action = btn.dataset.action;
-      const type = btn.dataset.type;
-      const index = Number(btn.dataset.index);
-      if (action === 'edit') openEditModal(type, index);
-      if (action === 'delete') {
-        if (type === 'gallery') state.gallery.splice(index, 1);
-        if (type === 'videos') state.videos.splice(index, 1);
-        if (type === 'timeline') state.timeline.splice(index, 1);
-        if (type === 'captions') state.captions.splice(index, 1);
-        renderAll();
-        saveData();
-      }
-    });
-
-    document.getElementById('saveMediaBtn').addEventListener('click', () => {
-      const src = document.getElementById('mediaSrc').value.trim();
-      const title = document.getElementById('mediaTitle').value.trim();
-      const date = document.getElementById('mediaDate').value.trim();
-      if (!src) return toast('Path file tidak boleh kosong');
-      const dataTarget = editingType === 'gallery' ? state.gallery : state.videos;
-      if (editingIndex === null || editingIndex === undefined) {
-        dataTarget.push({ src, title: title || 'MOMEN BARU', date: date || '2026' });
+    function setBackgroundPreview(previewEl, result, type) {
+      previewEl.innerHTML = '';
+      previewEl.classList.remove('hidden');
+      if (type === 'video') {
+        previewEl.innerHTML = `<video src="${result}" autoplay muted loop playsinline></video>`;
       } else {
-        dataTarget[editingIndex] = { src, title: title || 'MOMEN BARU', date: date || '2026' };
+        previewEl.innerHTML = `<img src="${result}" alt="Preview" />`;
       }
-      closeAllModals();
-      renderAll();
-      saveData();
-    });
+    }
 
-    document.getElementById('saveTimelineBtn').addEventListener('click', () => {
-      const year = document.getElementById('timelineYear').value.trim();
-      const title = document.getElementById('timelineTitle').value.trim();
-      const text = document.getElementById('timelineText').value.trim();
-      if (!title || !text) return toast('Judul dan deskripsi wajib diisi');
-      if (editingIndex === null || editingIndex === undefined) {
-        state.timeline.push({ year: year || '2026', title, text });
-      } else {
-        state.timeline[editingIndex] = { year: year || '2026', title, text };
+    function setFeaturedPreview(result) {
+      featuredPreview.classList.remove('hidden');
+      featuredPreview.innerHTML = `<img src="${result}" alt="Preview" />`;
+    }
+
+    function applyAudioFile(file) {
+      if (!file) return;
+      fileToDataUrl(file).then(dataUrl => {
+        state.audioSource = dataUrl;
+        saveState();
+        renderAudio();
+      }).catch(() => alert('Audio gagal diproses. Coba file lain.'));
+    }
+
+    document.getElementById('startBtn').addEventListener('click', () => {
+      const guest = document.getElementById('guestName').value.trim();
+      if (guest) {
+        document.getElementById('closingText').textContent = `Untuk ${guest}, terimakasih sudah melihat pustaka kami. Semoga bisa menghibur dan menginspirasi.`;
       }
-      closeAllModals();
-      renderAll();
-      saveData();
-    });
-
-    document.getElementById('saveCaptionBtn').addEventListener('click', () => {
-      const value = document.getElementById('captionText').value.trim();
-      if (!value) return toast('Caption tidak boleh kosong');
-      if (editingIndex === null || editingIndex === undefined) {
-        state.captions.push(value);
-      } else {
-        state.captions[editingIndex] = value;
-      }
-      closeAllModals();
-      renderAll();
-      saveData();
-    });
-
-    document.querySelectorAll('.modal-close').forEach(btn => btn.addEventListener('click', closeAllModals));
-    document.getElementById('cancelMediaBtn').addEventListener('click', closeAllModals);
-    document.getElementById('cancelTimelineBtn').addEventListener('click', closeAllModals);
-    document.getElementById('cancelCaptionBtn').addEventListener('click', closeAllModals);
-
-    document.getElementById('enterBtn').addEventListener('click', () => {
-      play(clickAudio, .55);
-      setTimeout(() => play(whoosh, .25), 100);
-      const name = document.getElementById('guestName').value.trim();
-      if (name) {
-        document.getElementById('closingText').innerHTML = `Untuk ${name},<br>time passes. memories stay.`;
-      }
-      document.getElementById('gate').classList.add('hidden');
-      document.getElementById('app').classList.remove('hidden');
-      document.getElementById('topbar').classList.remove('hidden');
-      if (soundOn) {
-        music.volume = .22;
+      gate.classList.add('hidden');
+      app.classList.remove('hidden');
+      topbar.classList.remove('hidden');
+      if (soundOn && state.audioSource) {
+        music.volume = 0.35;
         music.play().catch(() => {});
       }
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
     document.getElementById('muteBtn').addEventListener('click', () => {
       soundOn = !soundOn;
       document.getElementById('muteBtn').textContent = soundOn ? '♫' : '🔇';
-      if (soundOn) {
+      if (soundOn && state.audioSource) {
+        music.volume = 0.35;
         music.play().catch(() => {});
       } else {
         music.pause();
       }
     });
 
-    document.getElementById('replay').addEventListener('click', () => {
-      play(clickAudio, .45);
+    document.getElementById('editToggle').addEventListener('click', () => {
+      document.getElementById('editPanel').classList.toggle('hidden');
+    });
+
+    document.getElementById('closePanel').addEventListener('click', () => {
+      document.getElementById('editPanel').classList.add('hidden');
+    });
+
+    document.querySelectorAll('.tab-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(item => item.classList.remove('active'));
+        document.querySelectorAll('.panel-tab').forEach(tab => tab.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(`${btn.dataset.tab}Tab`).classList.add('active');
+      });
+    });
+
+    document.getElementById('bgTypeInput').addEventListener('change', (e) => {
+      state.backgroundType = e.target.value;
+    });
+
+    document.getElementById('bgUploadInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const result = await fileToDataUrl(file);
+      state.backgroundSource = result;
+      state.backgroundType = file.type.startsWith('video/') ? 'video' : 'image';
+      document.getElementById('bgTypeInput').value = state.backgroundType;
+      setBackgroundPreview(bgPreview, result, state.backgroundType);
+      saveState();
+    });
+
+    document.getElementById('featuredUploadInput').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const result = await fileToDataUrl(file);
+      state.featuredPhoto = result;
+      setFeaturedPreview(result);
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById('galleryUploadInput').addEventListener('change', async (e) => {
+      const files = Array.from(e.target.files || []);
+      if (!files.length) return;
+      const inserted = [];
+      for (const file of files) {
+        const dataUrl = await fileToDataUrl(file);
+        inserted.push({ src: dataUrl, title: file.name.split('.')[0] || 'Momen Baru', date: new Date().getFullYear().toString() });
+      }
+      state.gallery = [...inserted, ...state.gallery].slice(0, 20);
+      saveState();
+      renderAll();
+      e.target.value = '';
+    });
+
+    document.getElementById('audioUploadInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      applyAudioFile(file);
+      e.target.value = '';
+    });
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-remove]');
+      if (!btn) return;
+      const idx = Number(btn.getAttribute('data-remove'));
+      state.gallery.splice(idx, 1);
+      saveState();
+      renderAll();
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      state.siteTitle = document.getElementById('titleInput').value.trim() || 'MOMENTARY';
+      state.siteSubtitle = document.getElementById('subtitleInput').value.trim() || 'Jejak Kebersamaan Kita';
+      state.introTitle = document.getElementById('introTitleInput').value.trim() || 'Kebersamaan kita';
+      state.introText = document.getElementById('introTextInput').value.trim() || 'Kebersamaan puncak kejayaannya.';
+      state.closingText = document.getElementById('closingTextInput').value.trim() || 'Terimakasih sudah melihat pustaka kami. Semoga bisa menghibur dan menginspirasi.';
+      state.backgroundType = document.getElementById('bgTypeInput').value;
+      saveState();
+      renderAll();
+      document.getElementById('editPanel').classList.add('hidden');
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (!confirm('Reset semua data ke default?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = JSON.parse(JSON.stringify(defaultState));
+      renderAll();
+      document.getElementById('editPanel').classList.add('hidden');
+    });
+
+    document.getElementById('backToTop').addEventListener('click', () => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.ctrlKey && e.key.toLowerCase() === 'e') {
-        e.preventDefault();
-        document.getElementById('adminPanel').classList.toggle('hidden');
-      }
-      if (e.key === 'Escape') closeAllModals();
+    document.getElementById('toTopBtn').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    window.addEventListener('scroll', () => {
+      const btn = document.getElementById('toTopBtn');
+      btn.classList.toggle('show', window.scrollY > 800);
     });
 
     const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
-      });
-    }, { threshold: .12 });
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-    let capIndex = 0;
-    const soundtrackObs = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          captionEl.style.opacity = 0;
-          setTimeout(() => {
-            captionEl.textContent = state.captions[capIndex % state.captions.length];
-            capIndex++;
-            captionEl.style.opacity = 1;
-          }, 220);
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
         }
       });
-    }, { threshold: .5 });
-    soundtrackObs.observe(document.querySelector('.soundtrack'));
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.section, .hero, .featured-wrap').forEach((el) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+      revealObserver.observe(el);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.getElementById('loading').classList.add('hidden');
+      }, 500);
+    });
 
     renderAll();
+    document.getElementById('bgPreview').classList.add('hidden');
+    document.getElementById('featuredPreview').classList.add('hidden');
   </script>
 </body>
 </html>
