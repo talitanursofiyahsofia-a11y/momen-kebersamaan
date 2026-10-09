@@ -2,22 +2,26 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const multer = require('multer');
+const sharp = require('sharp');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, 'data');
+const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
 const DATA_FILE = path.join(DATA_DIR, 'pages.json');
 
-function ensureDataFile() {
+function ensureDirs() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
   if (!fs.existsSync(DATA_FILE)) {
     fs.writeFileSync(DATA_FILE, JSON.stringify({}, null, 2), 'utf8');
   }
 }
 
 function readPages() {
-  ensureDataFile();
+  ensureDirs();
   try {
     const raw = fs.readFileSync(DATA_FILE, 'utf8');
     return JSON.parse(raw || '{}');
@@ -27,7 +31,7 @@ function readPages() {
 }
 
 function writePages(pages) {
-  ensureDataFile();
+  ensureDirs();
   fs.writeFileSync(DATA_FILE, JSON.stringify(pages, null, 2), 'utf8');
 }
 
@@ -81,8 +85,23 @@ function defaultState() {
   };
 }
 
-app.use(express.json({ limit: '20mb' }));
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage,
+  limits: { fileSize: 50 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/webm'];
+    if (allowed.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('File type not allowed'));
+    }
+  }
+});
+
+app.use(express.json({ limit: '50mb' }));
 app.use(express.static(ROOT));
+app.use('/uploads', express.static(UPLOADS_DIR));
 
 app.get('/api/health', (req, res) => {
   res.json({ ok: true, message: 'service is running' });
@@ -102,7 +121,7 @@ app.post('/api/page', (req, res) => {
   const pages = readPages();
   const id = crypto.randomUUID();
   const state = req.body?.state || defaultState();
-  const entry = { id, state, updatedAt: new Date().toISOString() };
+  const entry = { id, state, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
   pages[id] = entry;
   writePages(pages);
 
@@ -127,6 +146,44 @@ app.post('/api/page/:id', (req, res) => {
   res.json({ ok: true, page: { id: req.params.id, state }, shareUrl });
 });
 
+app.post('/api/upload', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ ok: false, error: 'no file provided' });
+    }
+
+    const ext = req.file.mimetype.startsWith('image/') ? '.webp' : '.mp4';
+    const filename = `${crypto.randomBytes(8).toString('hex')}${ext}`;
+    const filepath = path.join(UPLOADS_DIR, filename);
+
+    if (req.file.mimetype.startsWith('image/')) {
+      await sharp(req.file.buffer)
+        .resize(1920, 1080, { fit: 'inside', withoutEnlargement: true })
+        .webp({ quality: 80 })
+        .toFile(filepath);
+    } else {
+      fs.writeFileSync(filepath, req.file.buffer);
+    }
+
+    const url = `/uploads/${filename}`;
+    res.json({ ok: true, url });
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+app.get('/api/admin/pages', (req, res) => {
+  const pages = readPages();
+  const list = Object.values(pages).map((p) => ({
+    id: p.id,
+    title: p.state?.siteTitle || 'Untitled',
+    createdAt: p.createdAt,
+    updatedAt: p.updatedAt
+  }));
+  res.json({ ok: true, pages: list });
+});
+
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api/')) {
     return next();
@@ -135,6 +192,8 @@ app.get('*', (req, res, next) => {
   res.sendFile(path.join(ROOT, 'index.html'));
 });
 
+ensureDirs();
 app.listen(PORT, () => {
-  console.log(`Momentary backend running on http://localhost:${PORT}`);
+  console.log(`\n🎉 Momentary backend running on http://localhost:${PORT}\n`);
+  console.log(`Admin page: http://localhost:${PORT}/admin.html\n`);
 });
