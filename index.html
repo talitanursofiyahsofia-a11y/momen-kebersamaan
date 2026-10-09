@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#080b14">
+    <title>MOMENTARY — Jejak Kenangan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <!-- EDIT MODE BUTTON (Always visible di corner) -->
+    <button id="editModeToggle" class="edit-mode-btn" title="Edit Momen (Ctrl+E)">✎ EDIT</button>
+
+    <div id="gate" class="gate">
+        <div class="grain"></div>
+        <div class="gate-glow"></div>
+        <div class="gate-content">
+            <span class="eyebrow">DIGITAL MEMORY ARCHIVE</span>
+            <h1>MOMENTARY</h1>
+            <p>Jejak Kenangan</p>
+            <div class="gate-card">
+                <label for="guestName">Nama / panggilan <span>(opsional)</span></label>
+                <input id="guestName" maxlength="30" placeholder="Contoh: Raka">
+                <button id="enterBtn">✦ MULAI ✦</button>
+                <small>Gunakan suara untuk pengalaman terbaik.</small>
+            </div>
+        </div>
+    </div>
+
+    <header id="topbar" class="topbar hidden">
+        <a href="#top" class="brand">MOMENTARY</a>
+        <button id="muteBtn" class="icon-btn" aria-label="Suara">♫</button>
+    </header>
+
+    <!-- ADMIN PANEL (Hidden by default) -->
+    <div id="adminPanel" class="admin-panel hidden">
+        <div class="admin-header">
+            <h2>ADMIN PANEL</h2>
+            <button id="closeAdminBtn" class="close-btn">✕</button>
+        </div>
+        
+        <div class="admin-tabs">
+            <button class="admin-tab-btn active" data-tab="photos">📸 FOTO</button>
+            <button class="admin-tab-btn" data-tab="videos">🎬 VIDEO</button>
+            <button class="admin-tab-btn" data-tab="audio">🎵 AUDIO</button>
+            <button class="admin-tab-btn" data-tab="timeline">📅 TIMELINE</button>
+            <button class="admin-tab-btn" data-tab="captions">✍️ CAPTION</button>
+            <button class="admin-tab-btn" data-tab="settings">⚙️ PENGATURAN</button>
+        </div>
+
+        <!-- TAB: FOTO -->
+        <div id="photosTab" class="admin-tab-content active">
+            <div class="admin-section">
+                <h3>Galeri Foto</h3>
+                <button class="btn btn-primary" id="addPhotoBtn">+ TAMBAH FOTO</button>
+                <div id="photosList" class="media-list"></div>
+            </div>
+        </div>
+
+        <!-- TAB: VIDEO -->
+        <div id="videosTab" class="admin-tab-content">
+            <div class="admin-section">
+                <h3>Dokumentasi Video</h3>
+                <button class="btn btn-primary" id="addVideoBtn">+ TAMBAH VIDEO</button>
+                <div id="videosList" class="media-list"></div>
+            </div>
+        </div>
+
+        <!-- TAB: AUDIO -->
+        <div id="audioTab" class="admin-tab-content">
+            <div class="admin-section">
+                <h3>Musik Latar & Sound Effects</h3>
+                
+                <div class="audio-section">
+                    <h4>🎵 Background Music</h4>
+                    <p class="small-text">Musik yang akan di-loop otomatis (3-5 menit ideal)</p>
+                    <div class="audio-item">
+                        <input type="text" id="bgMusicSrc" placeholder="Path: media/audio/background.mp3" class="input-field">
+                        <div class="audio-controls">
+                            <audio id="bgMusicPreview" controls style="width: 100%; margin-top: 10px;"></audio>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="audio-section" style="margin-top: 30px;">
+                    <h4>🔊 Sound Effects</h4>
+                    <p class="small-text">Efek suara untuk klik tombol dan transisi</p>
+                    
+                    <div class="audio-item">
+                        <label>Click Sound</label>
+                        <input type="text" id="clickSrc" placeholder="Path: media/audio/click.mp3" class="input-field">
+                        <audio id="clickPreview" controls style="width: 100%; margin-top: 5px;"></audio>
+                    </div>
+                    <div class="audio-item">
+                        <label>Transition Sound</label>
+                        <input type="text" id="transitionSrc" placeholder="Path: media/audio/transition.mp3" class="input-field">
+                        <audio id="transitionPreview" controls style="width: 100%; margin-top: 5px;"></audio>
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary" id="saveAudioBtn" style="margin-top: 20px;">💾 SIMPAN AUDIO</button>
+            </div>
+        </div>
+
+        <!-- TAB: TIMELINE -->
+        <div id="timelineTab" class="admin-tab-content">
+            <div class="admin-section">
+                <h3>Timeline Perjalanan</h3>
+                <button class="btn btn-primary" id="addTimelineBtn">+ TAMBAH TIMELINE</button>
+                <div id="timelineList" class="media-list"></div>
+            </div>
+        </div>
+
+        <!-- TAB: CAPTIONS -->
+        <div id="captionsTab" class="admin-tab-content">
+            <div class="admin-section">
+                <h3>Caption & Subtitle</h3>
+                <p class="small-text">Caption ini akan berganti saat user scroll ke section musik</p>
+                <button class="btn btn-primary" id="addCaptionBtn">+ TAMBAH CAPTION</button>
+                <div id="captionsList" class="media-list"></div>
+            </div>
+        </div>
+
+        <!-- TAB: SETTINGS -->
+        <div id="settingsTab" class="admin-tab-content">
+            <div class="admin-section">
+                <h3>Pengaturan Situs</h3>
+                
+                <div class="setting-item">
+                    <label>Nama Situs</label>
+                    <input type="text" id="siteName" class="input-field" placeholder="MOMENTARY">
+                </div>
+
+                <div class="setting-item">
+                    <label>Subtitle</label>
+                    <input type="text" id="subtitle" class="input-field" placeholder="Jejak Kenangan">
+                </div>
+
+                <div class="setting-item">
+                    <label>Featured Photo (Media Path)</label>
+                    <input type="text" id="featuredPhoto" class="input-field" placeholder="media/photos/01.jpg">
+                </div>
+
+                <div class="setting-item">
+                    <label>Closing Message</label>
+                    <textarea id="closingText" class="textarea-field" rows="3" placeholder="Time passes.&#10;Memories stay."></textarea>
+                </div>
+
+                <button class="btn btn-secondary" id="saveSettingsBtn" style="margin-top: 20px;">💾 SIMPAN PENGATURAN</button>
+            </div>
+        </div>
+
+        <!-- ACTION BUTTONS -->
+        <div class="admin-footer">
+            <button class="btn btn-success" id="saveAllBtn">✓ SIMPAN SEMUA DATA</button>
+            <button class="btn btn-warning" id="exportDataBtn">⬇ EXPORT DATA</button>
+            <button class="btn btn-danger" id="resetDataBtn">↻ RESET (HATI-HATI!)</button>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT FOTO/VIDEO -->
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3 id="modalTitle">Edit Media</h3>
+            
+            <div class="form-group">
+                <label>Tipe Media</label>
+                <select id="mediaType" class="input-field">
+                    <option value="foto">Foto</option>
+                    <option value="video">Video</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Path File (Contoh: media/photos/01.jpg)</label>
+                <input type="text" id="mediaSrc" class="input-field" placeholder="media/photos/01.jpg">
+            </div>
+
+            <div class="form-group">
+                <label>Judul Momen</label>
+                <input type="text" id="mediaTitle" class="input-field" placeholder="A LITTLE MOMENT">
+            </div>
+
+            <div class="form-group">
+                <label>Tahun/Tanggal</label>
+                <input type="text" id="mediaDate" class="input-field" placeholder="2026">
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-success" id="saveMediaBtn">✓ SIMPAN</button>
+                <button class="btn btn-secondary" id="cancelMediaBtn">BATAL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT TIMELINE -->
+    <div id="editTimelineModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3>Edit Timeline</h3>
+            
+            <div class="form-group">
+                <label>Tahun</label>
+                <input type="text" id="timelineYear" class="input-field" placeholder="2026">
+            </div>
+
+            <div class="form-group">
+                <label>Judul Chapter</label>
+                <input type="text" id="timelineTitle" class="input-field" placeholder="THE FIRST STEP">
+            </div>
+
+            <div class="form-group">
+                <label>Deskripsi</label>
+                <textarea id="timelineText" class="textarea-field" rows="3" placeholder="Awal dari sebuah perjalanan."></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-success" id="saveTimelineBtn">✓ SIMPAN</button>
+                <button class="btn btn-secondary" id="cancelTimelineBtn">BATAL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT CAPTION -->
+    <div id="editCaptionModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <h3>Edit Caption</h3>
+            
+            <div class="form-group">
+                <label>Teks Caption</label>
+                <textarea id="captionText" class="textarea-field" rows="4" placeholder="Ketik caption/subtitle di sini..."></textarea>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-success" id="saveCaptionBtn">✓ SIMPAN</button>
+                <button class="btn btn-secondary" id="cancelCaptionBtn">BATAL</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <main id="app" class="hidden">
+        <section id="top" class="hero">
+            <div class="hero-orbit a"></div>
+            <div class="hero-orbit b"></div>
+            <div class="side left">EVERY MOMENT<br>HAS A STORY</div>
+            <div class="side right">ARCHIVE / <span id="archiveNo">01</span></div>
+            <div class="hero-copy">
+                <span class="eyebrow">A DIGITAL MEMORY JOURNAL</span>
+                <h2>Our story,<br><i>frame by frame.</i></h2>
+                <p>Tempat menyimpan tawa, perjalanan, kegiatan, dan cerita yang pernah kita lalui bersama.</p>
+                <div class="scroll-cue"><span></span>SCROLL TO REMEMBER</div>
+            </div>
+        </section>
+        <section class="intro reveal">
+            <span class="label">01 / THE BEGINNING</span>
+            <h3>Some moments are <i>too beautiful to forget.</i></h3>
+            <p>"Kita mungkin tidak sadar saat menjalaninya, tetapi suatu hari nanti momen kecil ini akan menjadi kenangan besar."</p>
+        </section>
+        <section class="featured reveal">
+            <div class="media photo" data-src="media/photos/01.jpg">
+                <div class="placeholder"><b>FOTO UTAMA</b><small>media/photos/01.jpg</small></div>
+            </div>
+            <div class="media-meta">
+                <span>THE MOMENT</span>
+                <span>2026</span>
+            </div>
+        </section>
+        <section class="gallery-section reveal">
+            <div class="heading">
+                <span class="label">02 / MEMORY GALLERY</span>
+                <h3>Pieces of <i>our memories.</i></h3>
+                <p>Koleksi momen berharga dari perjalanan kita bersama.</p>
+            </div>
+            <div id="gallery" class="gallery"></div>
+        </section>
+        <section class="soundtrack reveal">
+            <div>
+                <span class="label">03 / THE SOUNDTRACK</span>
+                <h3>Let the memories <i>have a soundtrack.</i></h3>
+                <p id="caption">Every little moment can become a story worth keeping.</p>
+            </div>
+            <div class="sound-card">
+                <div class="bars">
+                    <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+                </div>
+                <span>BACKGROUND AUDIO</span>
+            </div>
+        </section>
+        <section class="video-section reveal">
+            <span class="label">04 / MOVING MEMORIES</span>
+            <h3>Not just a picture.<br><i>A moment in motion.</i></h3>
+            <div id="videos" class="videos"></div>
+        </section>
+        <section class="timeline reveal">
+            <span class="label">05 / THE JOURNEY</span>
+            <h3>A few chapters <i>of our story.</i></h3>
+            <div id="timeline" class="timeline-list"></div>
+        </section>
+        <section class="memory-wall reveal">
+            <span class="label">06 / MEMORY WALL</span>
+            <div id="wall" class="wall"></div>
+        </section>
+        <section class="closing reveal">
+            <span class="eyebrow">END OF THIS CHAPTER</span>
+            <h2>MOMENTARY</h2>
+            <p id="closingText">Time passes.<br>Memories stay.</p>
+            <button id="replay">↻ LIHAT KEMBALI</button>
+        </section>
+    </main>
+
+    <div id="toast" class="toast"></div>
+    <audio id="music" loop preload="auto" src="media/audio/background.mp3"></audio>
+    <audio id="click" preload="auto" src="media/audio/click.mp3"></audio>
+    <audio id="whoosh" preload="auto" src="media/audio/transition.mp3"></audio>
+
+    <script src="storage.js"></script>
+    <script src="script.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
