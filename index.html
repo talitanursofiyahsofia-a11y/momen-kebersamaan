@@ -1,1671 +1,1343 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#f7efe9" />
-  <title>MOMENTARY | Jejak Kebersamaan Kita</title>
-  <style>
-    :root {
-      --bg: #f7efe9;
-      --bg-deep: #efe3dd;
-      --panel: rgba(255,255,255,0.68);
-      --panel-strong: rgba(255,255,255,0.9);
-      --text: #1f2430;
-      --muted: #586272;
-      --line: rgba(37, 42, 56, 0.12);
-      --shadow: 0 18px 50px rgba(83, 63, 55, 0.18);
-      --soft-peach: #f6d4c4;
-      --soft-pink: #f2c0d3;
-      --soft-rose: #d8bfdc;
-      --soft-mint: #dfeadf;
-      --soft-blue: #cfe1f7;
-      --soft-gold: #edd9a6;
-      --dark: #1d2430;
-      --white: #fffdfd;
-      --accent: #8aa3b8;
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(180deg, var(--bg) 0%, #f2e6e0 100%);
-      color: var(--text);
-      overflow-x: hidden;
-    }
-
-    img, video, audio { max-width: 100%; display: block; }
-    button, input, textarea, select { font: inherit; }
-    a { color: inherit; text-decoration: none; }
-
-    .hidden { display: none !important; }
-
-    .loading {
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      display: grid;
-      place-items: center;
-      background: rgba(18, 18, 18, 0.68);
-      color: #fff;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      backdrop-filter: blur(10px);
-      transition: opacity 0.4s ease, visibility 0.4s ease;
-    }
-
-    .loading.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .edit-toggle {
-      position: fixed;
-      right: 18px;
-      top: 18px;
-      z-index: 120;
-      border: 1px solid rgba(29, 36, 48, 0.15);
-      background: rgba(255,255,255,0.72);
-      color: var(--dark);
-      padding: 11px 16px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      backdrop-filter: blur(12px);
-      box-shadow: var(--shadow);
-    }
-
-    .gate {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      display: grid;
-      place-items: center;
-      background: radial-gradient(circle at top, rgba(255,255,255,0.55), rgba(16,18,22,0.12)),
-                  linear-gradient(135deg, rgba(240,203,197,0.54), rgba(200,220,235,0.58), rgba(224,209,231,0.48));
-      overflow: hidden;
-    }
-
-    .gate::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
-      filter: grayscale(0.2) brightness(0.75);
-      transform: scale(1.08);
-    }
-
-    .gate-inner {
-      position: relative;
-      z-index: 1;
-      width: min(760px, 92vw);
-      text-align: center;
-      color: #fff;
-      text-shadow: 0 10px 30px rgba(0,0,0,0.28);
-    }
-
-    .eyebrow {
-      display: inline-block;
-      font-size: 0.68rem;
-      letter-spacing: 0.26em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.9);
-      font-weight: 700;
-    }
-
-    .gate h1 {
-      margin: 18px 0 8px;
-      font-size: clamp(3.4rem, 9vw, 8rem);
-      line-height: 0.9;
-      letter-spacing: 0.08em;
-      font-weight: 700;
-    }
-
-    .gate-subtitle {
-      margin: 0;
-      font-size: 0.9rem;
-      letter-spacing: 0.42em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.8);
-    }
-
-    .gate-card {
-      width: min(420px, 90vw);
-      margin: 32px auto 0;
-      padding: 22px 20px 18px;
-      background: rgba(16, 21, 31, 0.28);
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 24px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-      text-align: left;
-    }
-
-    .gate-card label {
-      display: block;
-      margin-bottom: 8px;
-      color: rgba(255,255,255,0.82);
-      font-size: 0.74rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .gate-card input {
-      width: 100%;
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 12px;
-      padding: 12px 14px;
-      color: #fff;
-      outline: none;
-    }
-
-    .gate-card input::placeholder { color: rgba(255,255,255,0.5); }
-
-    .gate-card button {
-      width: 100%;
-      margin-top: 16px;
-      border: none;
-      padding: 13px 16px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.28), rgba(255,255,255,0.18));
-      color: white;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      cursor: pointer;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.18);
-    }
-
-    .gate-card button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
-    }
-
-    .gate-card small {
-      display: block;
-      margin-top: 14px;
-      text-align: center;
-      color: rgba(255,255,255,0.7);
-      font-size: 0.68rem;
-      letter-spacing: 0.09em;
-    }
-
-    .topbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 40;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 26px;
-      background: linear-gradient(180deg, rgba(18, 19, 23, 0.48), rgba(18, 19, 23, 0));
-      pointer-events: none;
-    }
-
-    .topbar > * { pointer-events: auto; }
-
-    .brand {
-      font-size: 0.72rem;
-      letter-spacing: 0.21em;
-      color: rgba(255,255,255,0.92);
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
-    .mute-btn {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.24);
-      background: rgba(17,20,25,0.22);
-      color: white;
-      backdrop-filter: blur(8px);
-      cursor: pointer;
-      font-size: 1.1rem;
-    }
-
-    #app { position: relative; z-index: 2; }
-
-    .hero {
-      position: relative;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      background: #222;
-    }
-
-    .hero-media {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      background: #111;
-    }
-
-    .hero-media video,
-    .hero-media img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: saturate(1.05) brightness(0.66) contrast(1.1);
-      transform: scale(1.08);
-    }
-
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(180deg, rgba(16,18,22,0.08), rgba(16,18,22,0.2), rgba(16,18,22,0.5));
-    }
-
-    .hero-copy {
-      position: relative;
-      z-index: 2;
-      width: min(960px, 84vw);
-      text-align: center;
-      color: white;
-    }
-
-    .hero-copy .eyebrow {
-      font-size: 0.7rem;
-      letter-spacing: 0.25em;
-      opacity: 0.9;
-      color: rgba(255,255,255,0.8);
-    }
-
-    .hero-copy h2 {
-      font-size: clamp(3.2rem, 7vw, 7.5rem);
-      line-height: 0.96;
-      margin: 22px 0 18px;
-      letter-spacing: -0.05em;
-      font-weight: 500;
-    }
-
-    .hero-copy h2 .ital {
-      color: #e2d6d0;
-      font-style: italic;
-      font-weight: 300;
-    }
-
-    .hero-copy p {
-      max-width: 650px;
-      margin: 0 auto;
-      color: rgba(255,255,255,0.82);
-      font-size: 1.08rem;
-      line-height: 1.8;
-    }
-
-    .scroll-hint {
-      margin-top: 42px;
-      font-size: 0.68rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.8);
-    }
-
-    .scroll-hint span {
-      display: block;
-      width: 1px;
-      height: 54px;
-      margin: 0 auto 12px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0));
-      animation: floatLine 1.8s ease-in-out infinite;
-    }
-
-    @keyframes floatLine {
-      0% { transform: translateY(0); opacity: 0.1; }
-      50% { transform: translateY(16px); opacity: 1; }
-      100% { transform: translateY(0); opacity: 0.1; }
-    }
-
-    .section {
-      padding: 7.5rem 6vw;
-      position: relative;
-    }
-
-    .section-inner { max-width: 1180px; margin: 0 auto; }
-
-    .intro {
-      text-align: center;
-      background: rgba(255,255,255,0.18);
-    }
-
-    .intro h3 {
-      margin: 20px 0 14px;
-      font-size: clamp(2.4rem, 5vw, 5.2rem);
-      line-height: 1.04;
-      letter-spacing: -0.04em;
-      font-weight: 400;
-    }
-
-    .intro h3 .ital {
-      color: #7f9ab2;
-      font-style: italic;
-      font-weight: 300;
-    }
-
-    .intro p {
-      max-width: 720px;
-      margin: 0 auto;
-      color: var(--muted);
-      line-height: 1.9;
-      font-size: 1.05rem;
-    }
-
-    .featured-wrap {
-      padding-top: 4rem;
-      padding-bottom: 2rem;
-    }
-
-    .featured-main {
-      position: relative;
-      max-width: 1220px;
-      margin: 0 auto;
-      overflow: hidden;
-      border-radius: 32px;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(38, 43, 53, 0.08);
-      background: #e7d7d0;
-    }
-
-    .featured-main img {
-      width: 100%;
-      height: min(72vh, 780px);
-      object-fit: cover;
-      display: block;
-      filter: saturate(1.08) contrast(1.05);
-    }
-
-    .featured-meta {
-      width: min(1220px, 88vw);
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 18px 0 0;
-      font-size: 0.66rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .gallery-section { padding-top: 5.5rem; }
-
-    .heading { margin-bottom: 35px; }
-
-    .heading h3 {
-      margin: 18px 0 10px;
-      font-size: clamp(2.2rem, 4vw, 4.2rem);
-      line-height: 1.04;
-      letter-spacing: -0.05em;
-      font-weight: 400;
-    }
-
-    .heading .ital {
-      color: #7f9ab2;
-      font-style: italic;
-      font-weight: 300;
-    }
-
-    .heading p {
-      max-width: 650px;
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.9;
-    }
-
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .memory-card {
-      position: relative;
-      overflow: hidden;
-      border-radius: 24px;
-      background: #ddd;
-      border: 1px solid rgba(25, 33, 41, 0.08);
-      box-shadow: 0 12px 24px rgba(42, 35, 49, 0.08);
-      min-height: 280px;
-      grid-column: span 4;
-      transform: translateY(0);
-      transition: transform 0.35s ease, box-shadow 0.35s ease;
-    }
-
-    .memory-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 35px rgba(42, 35, 49, 0.12);
-    }
-
-    .memory-card:nth-child(3n + 1) { grid-column: span 5; }
-    .memory-card:nth-child(3n + 2) { grid-column: span 4; }
-    .memory-card:nth-child(3n + 3) { grid-column: span 3; }
-    .memory-card:nth-child(5n + 1),
-    .memory-card:nth-child(5n + 4) { min-height: 400px; }
-
-    .memory-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transition: transform 0.6s ease;
-    }
-
-    .memory-card:hover img { transform: scale(1.04); }
-
-    .memory-card figcaption {
-      position: absolute;
-      inset: auto 0 0 0;
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 16px 18px 14px;
-      background: linear-gradient(180deg, rgba(9,11,17,0), rgba(9,11,17,0.76));
-      color: white;
-      font-size: 0.7rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
-    .soundtrack {
-      padding-top: 6rem;
-      padding-bottom: 5rem;
-    }
-
-    .soundtrack-inner {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 36px;
-      align-items: center;
-      max-width: 1180px;
-      margin: 0 auto;
-    }
-
-    .soundtrack-copy h3 {
-      margin: 18px 0 12px;
-      font-weight: 400;
-      font-size: clamp(2.3rem, 4vw, 4.4rem);
-      line-height: 1.02;
-      letter-spacing: -0.05em;
-    }
-
-    .soundtrack-copy .ital {
-      color: #829ab2;
-      font-style: italic;
-      font-weight: 300;
-    }
-
-    .soundtrack-copy p {
-      margin: 0;
-      max-width: 630px;
-      line-height: 1.9;
-      color: var(--muted);
-    }
-
-    .sound-box {
-      background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
-      border: 1px solid rgba(25,33,41,0.08);
-      border-radius: 30px;
-      min-height: 290px;
-      box-shadow: var(--shadow);
-      display: grid;
-      place-items: center;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .bars {
-      display: flex;
-      align-items: end;
-      gap: 8px;
-      height: 100px;
-      margin-bottom: 14px;
-    }
-
-    .bars span {
-      display: block;
-      width: 8px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, #d9bfdb, #9fc3df, #efb7b2);
-      animation: audioWave 1.25s ease-in-out infinite alternate;
-    }
-    .bars span:nth-child(1){ height: 28%; animation-delay: 0.1s; }
-    .bars span:nth-child(2){ height: 46%; animation-delay: 0.2s; }
-    .bars span:nth-child(3){ height: 68%; animation-delay: 0.3s; }
-    .bars span:nth-child(4){ height: 52%; animation-delay: 0.4s; }
-    .bars span:nth-child(5){ height: 82%; animation-delay: 0.5s; }
-    .bars span:nth-child(6){ height: 58%; animation-delay: 0.6s; }
-    .bars span:nth-child(7){ height: 90%; animation-delay: 0.7s; }
-    .bars span:nth-child(8){ height: 62%; animation-delay: 0.8s; }
-    .bars span:nth-child(9){ height: 44%; animation-delay: 0.9s; }
-
-    @keyframes audioWave {
-      0% { transform: scaleY(0.42); opacity: 0.55; }
-      100% { transform: scaleY(1); opacity: 1; }
-    }
-
-    .sound-box .small-label {
-      font-size: 0.69rem;
-      letter-spacing: 0.21em;
-      text-transform: uppercase;
-      color: var(--muted);
-      font-weight: 700;
-    }
-
-    .video-section { background: rgba(255,255,255,0.14); }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 22px;
-      max-width: 1180px;
-      margin: 0 auto;
-    }
-
-    .video-card {
-      overflow: hidden;
-      background: rgba(255,255,255,0.6);
-      border: 1px solid rgba(25,33,41,0.08);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-    }
-
-    .video-card video {
-      width: 100%;
-      height: 420px;
-      object-fit: cover;
-      display: block;
-      background: #0f1116;
-    }
-
-    .video-card figcaption {
-      padding: 14px 18px 16px;
-      color: var(--muted);
-      font-size: 0.76rem;
-      letter-spacing: 0.13em;
-      text-transform: uppercase;
-      font-weight: 700;
-    }
-
-    .timeline-section { padding-bottom: 4rem; }
-
-    .timeline {
-      position: relative;
-      max-width: 1100px;
-      margin: 0 auto;
-      border-left: 1px solid rgba(51,58,67,0.12);
-      padding-left: 34px;
-    }
-
-    .timeline-item {
-      position: relative;
-      padding: 0 0 34px 18px;
-    }
-
-    .timeline-item::before {
-      content: "";
-      position: absolute;
-      left: -41px;
-      top: 8px;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #c7a0fa, #9cc2e3);
-      box-shadow: 0 0 0 6px rgba(173, 186, 208, 0.2);
-    }
-
-    .timeline-time {
-      color: #7382a0;
-      font-size: 0.66rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      font-weight: 700;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .timeline-item h4 {
-      margin: 0 0 8px;
-      font-size: clamp(1.5rem, 2.3vw, 2.5rem);
-      letter-spacing: -0.04em;
-      font-weight: 500;
-    }
-
-    .timeline-item p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      max-width: 620px;
-    }
-
-    .wall-section { padding-top: 5rem; }
-
-    .memory-wall {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      max-width: 1180px;
-      margin: 28px auto 0;
-    }
-
-    .memory-wall-item {
-      position: relative;
-      aspect-ratio: 1 / 1;
-      overflow: hidden;
-      border-radius: 18px;
-      box-shadow: 0 10px 18px rgba(26, 23, 30, 0.09);
-      background: #ddd;
-    }
-
-    .memory-wall-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .closing {
-      padding-top: 5rem;
-      padding-bottom: 7rem;
-      text-align: center;
-    }
-
-    .closing h2 {
-      margin: 18px 0 12px;
-      font-size: clamp(3.2rem, 9vw, 7.5rem);
-      letter-spacing: 0.08em;
-      font-weight: 700;
-      color: var(--dark);
-    }
-
-    .closing p {
-      max-width: 700px;
-      margin: 0 auto;
-      color: var(--muted);
-      line-height: 1.95;
-      font-size: 1.08rem;
-    }
-
-    .closing button {
-      margin-top: 30px;
-      border: 1px solid rgba(28,36,42,0.08);
-      background: rgba(255,255,255,0.72);
-      color: var(--dark);
-      border-radius: 999px;
-      padding: 14px 22px;
-      cursor: pointer;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      box-shadow: 0 12px 26px rgba(48,36,26,0.08);
-    }
-
-    .back-to-top {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 80;
-      width: 48px;
-      height: 48px;
-      border: 1px solid rgba(25,35,44,0.12);
-      border-radius: 50%;
-      background: rgba(255,255,255,0.7);
-      color: var(--dark);
-      font-size: 1.3rem;
-      cursor: pointer;
-      box-shadow: 0 14px 30px rgba(0,0,0,0.12);
-      opacity: 0;
-      transform: translateY(16px);
-      pointer-events: none;
-      transition: opacity 0.25s ease, transform 0.25s ease;
-    }
-
-    .back-to-top.show {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .edit-panel {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      z-index: 150;
-      width: min(460px, calc(100vw - 30px));
-      max-height: calc(100vh - 32px);
-      overflow: auto;
-      background: rgba(254, 250, 247, 0.9);
-      border: 1px solid rgba(26, 31, 40, 0.08);
-      border-radius: 26px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
-      padding: 18px 18px 20px;
-    }
-
-    .panel-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .panel-head h3 {
-      margin: 0;
-      font-size: 0.8rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-
-    .close-panel {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      border: 1px solid rgba(27,32,40,0.1);
-      background: rgba(255,255,255,0.5);
-      color: var(--dark);
-      cursor: pointer;
-      font-size: 1.2rem;
-    }
-
-    .panel-tabs {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin: 12px 0 16px;
-    }
-
-    .tab-btn {
-      border: 1px solid rgba(27,32,40,0.08);
-      background: rgba(255,255,255,0.3);
-      color: var(--muted);
-      padding: 9px 8px;
-      border-radius: 12px;
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .tab-btn.active {
-      background: rgba(159,192,219,0.24);
-      color: var(--dark);
-      border-color: rgba(126,153,182,0.4);
-    }
-
-    .panel-tab { display: none; }
-    .panel-tab.active { display: block; }
-
-    .panel-group {
-      margin-bottom: 14px;
-    }
-
-    .panel-group label {
-      display: block;
-      font-size: 0.72rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 8px;
-      font-weight: 700;
-    }
-
-    .panel-input,
-    .panel-textarea,
-    .inline-input {
-      width: 100%;
-      padding: 11px 12px;
-      border: 1px solid rgba(27,32,40,0.12);
-      border-radius: 12px;
-      background: rgba(255,255,255,0.48);
-      color: var(--text);
-      outline: none;
-    }
-
-    .panel-textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
-    .file-box {
-      background: rgba(255,255,255,0.38);
-      border: 1px dashed rgba(27,32,40,0.18);
-      border-radius: 14px;
-      padding: 10px 12px;
-      margin-top: 8px;
-    }
-
-    .file-box input[type="file"] {
-      width: 100%;
-      color: var(--muted);
-      font-size: 0.78rem;
-    }
-
-    .preview-mini {
-      width: 100%;
-      margin-top: 12px;
-      border-radius: 12px;
-      overflow: hidden;
-      border: 1px solid rgba(27,32,40,0.08);
-      background: #e8d8d1;
-    }
-
-    .preview-mini img,
-    .preview-mini video {
-      width: 100%;
-      height: 170px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .panel-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .panel-actions button {
-      flex: 1;
-      border: 1px solid rgba(27,32,40,0.08);
-      background: rgba(255,255,255,0.55);
-      color: var(--dark);
-      border-radius: 12px;
-      padding: 12px 14px;
-      cursor: pointer;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .primary-btn {
-      background: linear-gradient(135deg, rgba(163,191,219,0.5), rgba(225,197,204,0.55)) !important;
-    }
-
-    .list-stack {
-      display: grid;
-      gap: 12px;
-      margin-top: 12px;
-    }
-
-    .editor-card {
-      display: grid;
-      gap: 8px;
-      background: rgba(255,255,255,0.4);
-      border: 1px solid rgba(27,32,40,0.08);
-      border-radius: 14px;
-      padding: 10px;
-    }
-
-    .mini-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-
-    .media-preview {
-      width: 100%;
-      height: 100px;
-      border-radius: 10px;
-      object-fit: cover;
-      display: block;
-      background: #e8d8d1;
-    }
-
-    .editor-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
-    .mini-btn {
-      border: 1px solid rgba(27,32,40,0.08);
-      background: rgba(255,255,255,0.45);
-      border-radius: 10px;
-      padding: 7px 8px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      color: var(--dark);
-    }
-
-    .tiny-label {
-      display: block;
-      margin-top: 8px;
-      font-size: 0.7rem;
-      color: var(--muted);
-      opacity: 0.8;
-    }
-
-    @media (max-width: 768px) {
-      .section { padding-left: 22px; padding-right: 22px; }
-      .gallery { grid-template-columns: 1fr; }
-      .memory-card, .memory-card:nth-child(3n + 1), .memory-card:nth-child(3n + 2), .memory-card:nth-child(3n + 3) {
-        grid-column: auto;
-        min-height: 300px;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f7efe9" />
+    <title>MOMENTARY | Jejak Kebersamaan Kita</title>
+    <style>
+      :root {
+        --bg: #f7efe9;
+        --bg-deep: #efe3dd;
+        --panel: rgba(255, 255, 255, 0.68);
+        --panel-strong: rgba(255, 255, 255, 0.9);
+        --text: #1f2430;
+        --muted: #586272;
+        --line: rgba(37, 42, 56, 0.12);
+        --shadow: 0 18px 50px rgba(83, 63, 55, 0.18);
+        --soft-peach: #f6d4c4;
+        --soft-pink: #f2c0d3;
+        --soft-rose: #d8bfdc;
+        --soft-mint: #dfeadf;
+        --soft-blue: #cfe1f7;
+        --soft-gold: #edd9a6;
+        --dark: #1d2430;
+        --white: #fffdfd;
+        --accent: #8aa3b8;
       }
-      .soundtrack-inner,
-      .video-grid { grid-template-columns: 1fr; }
-      .memory-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .edit-panel { top: 12px; right: 12px; width: min(92vw, 420px); }
-      .panel-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .hero-copy h2 { font-size: clamp(2.6rem, 15vw, 5rem); }
-      .mini-row { grid-template-columns: 1fr; }
-    }
-  </style>
-</head>
-<body>
-  <div id="loading" class="loading">Memuat kenangan...</div>
 
-  <button id="editToggle" class="edit-toggle" type="button">✎ EDIT</button>
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(180deg, var(--bg) 0%, #f2e6e0 100%);
+        color: var(--text);
+        overflow-x: hidden;
+      }
 
-  <div id="gate" class="gate">
-    <div class="gate-inner">
-      <span class="eyebrow">Digital Memory Archive</span>
-      <h1 id="siteTitle">MOMENTARY</h1>
-      <p id="siteSubtitle" class="gate-subtitle">Jejak Kebersamaan Kita</p>
+      img, video, audio { max-width: 100%; display: block; }
+      button, input, textarea, select { font: inherit; }
+      a { color: inherit; text-decoration: none; }
+      .hidden { display: none !important; }
 
-      <div class="gate-card">
-        <label for="guestName">Nama / Panggilan</label>
-        <input id="guestName" type="text" maxlength="30" placeholder="Contoh: Raka" />
-        <button id="startBtn" type="button">✦ MULAI ✦</button>
-        <small>siap menelusuri kenangan bersama kami</small>
-      </div>
-    </div>
-  </div>
+      .loading {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        display: grid;
+        place-items: center;
+        background: rgba(18, 18, 18, 0.68);
+        color: #fff;
+        font-weight: 600;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        backdrop-filter: blur(10px);
+      }
 
-  <header id="topbar" class="topbar hidden">
-    <a href="#top" class="brand" id="brandName">MOMENTARY</a>
-    <button id="muteBtn" class="mute-btn" type="button" aria-label="mute/unmute">♫</button>
-  </header>
+      .loading.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
 
-  <aside id="editPanel" class="edit-panel hidden" aria-label="Panel edit web">
-    <div class="panel-head">
-      <h3>Panel Edit</h3>
-      <button id="closePanel" class="close-panel" type="button">×</button>
-    </div>
+      .edit-toggle {
+        position: fixed;
+        right: 18px;
+        top: 18px;
+        z-index: 120;
+        border: 1px solid rgba(29, 36, 48, 0.15);
+        background: rgba(255,255,255,0.72);
+        color: var(--dark);
+        padding: 11px 16px;
+        border-radius: 999px;
+        cursor: pointer;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        backdrop-filter: blur(12px);
+        box-shadow: var(--shadow);
+      }
 
-    <div class="panel-tabs">
-      <button class="tab-btn active" type="button" data-tab="general">Umum</button>
-      <button class="tab-btn" type="button" data-tab="media">Media</button>
-      <button class="tab-btn" type="button" data-tab="audio">Audio</button>
-    </div>
+      .gate {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        background: radial-gradient(circle at top, rgba(255,255,255,0.55), rgba(16,18,22,0.12)), linear-gradient(135deg, rgba(240,203,197,0.54), rgba(200,220,235,0.58), rgba(224,209,231,0.48));
+        overflow: hidden;
+      }
 
-    <div id="generalTab" class="panel-tab active">
-      <div class="panel-group">
-        <label for="titleInput">Judul</label>
-        <input id="titleInput" class="panel-input" type="text" />
-      </div>
+      .gate::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;
+        filter: grayscale(0.2) brightness(0.75);
+        transform: scale(1.08);
+      }
 
-      <div class="panel-group">
-        <label for="subtitleInput">Subtitle</label>
-        <input id="subtitleInput" class="panel-input" type="text" />
-      </div>
+      .gate-inner {
+        position: relative;
+        z-index: 1;
+        width: min(760px, 92vw);
+        text-align: center;
+        color: #fff;
+        text-shadow: 0 10px 30px rgba(0,0,0,0.28);
+      }
 
-      <div class="panel-group">
-        <label for="introTitleInput">Judul Intro</label>
-        <input id="introTitleInput" class="panel-input" type="text" />
-      </div>
+      .eyebrow {
+        display: inline-block;
+        font-size: 0.68rem;
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.9);
+        font-weight: 700;
+      }
 
-      <div class="panel-group">
-        <label for="introTextInput">Deskripsi Intro</label>
-        <textarea id="introTextInput" class="panel-textarea"></textarea>
-      </div>
+      .gate h1 {
+        margin: 18px 0 8px;
+        font-size: clamp(3.4rem, 9vw, 8rem);
+        line-height: 0.9;
+        letter-spacing: 0.08em;
+        font-weight: 700;
+      }
 
-      <div class="panel-group">
-        <label for="closingTextInput">Pesan Akhir</label>
-        <textarea id="closingTextInput" class="panel-textarea"></textarea>
-      </div>
+      .gate-subtitle {
+        margin: 0;
+        font-size: 0.9rem;
+        letter-spacing: 0.42em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.8);
+      }
 
-      <div class="panel-group">
-        <label for="bgTypeInput">Background Utama</label>
-        <select id="bgTypeInput" class="panel-input">
-          <option value="video">Video</option>
-          <option value="image">Gambar</option>
-        </select>
-      </div>
+      .gate-card {
+        width: min(420px, 90vw);
+        margin: 32px auto 0;
+        padding: 22px 20px 18px;
+        background: rgba(16, 21, 31, 0.28);
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 24px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        text-align: left;
+      }
 
-      <div class="panel-group">
-        <label for="bgUploadInput">Upload background</label>
-        <div class="file-box">
-          <input id="bgUploadInput" type="file" accept="image/*,video/*" />
+      .gate-card label {
+        display: block;
+        margin-bottom: 8px;
+        color: rgba(255,255,255,0.82);
+        font-size: 0.74rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .gate-card input {
+        width: 100%;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.18);
+        border-radius: 12px;
+        padding: 12px 14px;
+        color: #fff;
+        outline: none;
+      }
+
+      .gate-card input::placeholder { color: rgba(255,255,255,0.5); }
+      .gate-card button {
+        width: 100%;
+        margin-top: 16px;
+        border: none;
+        padding: 13px 16px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, rgba(255,255,255,0.28), rgba(255,255,255,0.18));
+        color: white;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.18);
+      }
+
+      .gate-card button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+      }
+
+      .topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 40;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 26px;
+        background: linear-gradient(180deg, rgba(18, 19, 23, 0.48), rgba(18, 19, 23, 0));
+        pointer-events: none;
+      }
+
+      .topbar > * { pointer-events: auto; }
+      .brand {
+        font-size: 0.72rem;
+        letter-spacing: 0.21em;
+        color: rgba(255,255,255,0.92);
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+
+      .mute-btn {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.24);
+        background: rgba(17,20,25,0.22);
+        color: white;
+        backdrop-filter: blur(8px);
+        cursor: pointer;
+        font-size: 1.1rem;
+      }
+
+      .hero {
+        position: relative;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background: #222;
+      }
+
+      .hero-media {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        background: #111;
+      }
+
+      .hero-media video,
+      .hero-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: saturate(1.05) brightness(0.66) contrast(1.1);
+        transform: scale(1.08);
+      }
+
+      .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, rgba(16,18,22,0.08), rgba(16,18,22,0.2), rgba(16,18,22,0.5));
+      }
+
+      .hero-copy {
+        position: relative;
+        z-index: 2;
+        width: min(960px, 84vw);
+        text-align: center;
+        color: white;
+      }
+
+      .hero-copy h2 {
+        font-size: clamp(3.2rem, 7vw, 7.5rem);
+        line-height: 0.96;
+        margin: 22px 0 18px;
+        letter-spacing: -0.05em;
+        font-weight: 500;
+      }
+
+      .hero-copy h2 .ital {
+        color: #e2d6d0;
+        font-style: italic;
+        font-weight: 300;
+      }
+
+      .hero-copy p {
+        max-width: 650px;
+        margin: 0 auto;
+        color: rgba(255,255,255,0.82);
+        font-size: 1.08rem;
+        line-height: 1.8;
+      }
+
+      .scroll-hint {
+        margin-top: 42px;
+        font-size: 0.68rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .scroll-hint span {
+        display: block;
+        width: 1px;
+        height: 54px;
+        margin: 0 auto 12px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0));
+        animation: floatLine 1.8s ease-in-out infinite;
+      }
+
+      @keyframes floatLine {
+        0% { transform: translateY(0); opacity: 0.1; }
+        50% { transform: translateY(16px); opacity: 1; }
+        100% { transform: translateY(0); opacity: 0.1; }
+      }
+
+      .section {
+        padding: 7.5rem 6vw;
+        position: relative;
+      }
+
+      .section-inner { max-width: 1180px; margin: 0 auto; }
+      .intro {
+        text-align: center;
+        background: rgba(255,255,255,0.18);
+      }
+
+      .intro h3 {
+        margin: 20px 0 14px;
+        font-size: clamp(2.4rem, 5vw, 5.2rem);
+        line-height: 1.04;
+        letter-spacing: -0.04em;
+        font-weight: 400;
+      }
+
+      .intro h3 .ital {
+        color: #7f9ab2;
+        font-style: italic;
+        font-weight: 300;
+      }
+
+      .intro p {
+        max-width: 720px;
+        margin: 0 auto;
+        color: var(--muted);
+        line-height: 1.9;
+        font-size: 1.05rem;
+      }
+
+      .featured-wrap {
+        padding-top: 4rem;
+        padding-bottom: 2rem;
+      }
+
+      .featured-main {
+        position: relative;
+        max-width: 1220px;
+        margin: 0 auto;
+        overflow: hidden;
+        border-radius: 32px;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(38, 43, 53, 0.08);
+        background: #e7d7d0;
+      }
+
+      .featured-main img {
+        width: 100%;
+        height: min(72vh, 780px);
+        object-fit: cover;
+        display: block;
+        filter: saturate(1.08) contrast(1.05);
+      }
+
+      .featured-meta {
+        width: min(1220px, 88vw);
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 0 0;
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .gallery { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+      .memory-card {
+        position: relative;
+        overflow: hidden;
+        border-radius: 24px;
+        background: #ddd;
+        border: 1px solid rgba(25, 33, 41, 0.08);
+        box-shadow: 0 12px 24px rgba(42, 35, 49, 0.08);
+        min-height: 280px;
+        grid-column: span 4;
+      }
+
+      .memory-card:nth-child(3n + 1) { grid-column: span 5; }
+      .memory-card:nth-child(3n + 2) { grid-column: span 4; }
+      .memory-card:nth-child(3n + 3) { grid-column: span 3; }
+      .memory-card:nth-child(5n + 1),
+      .memory-card:nth-child(5n + 4) { min-height: 400px; }
+
+      .memory-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .memory-card figcaption {
+        position: absolute;
+        inset: auto 0 0 0;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 16px 18px 14px;
+        background: linear-gradient(180deg, rgba(9,11,17,0), rgba(9,11,17,0.76));
+        color: white;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+
+      .soundtrack { padding-top: 6rem; padding-bottom: 5rem; }
+      .soundtrack-inner {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 36px;
+        align-items: center;
+        max-width: 1180px;
+        margin: 0 auto;
+      }
+
+      .soundtrack-copy h3 {
+        margin: 18px 0 12px;
+        font-weight: 400;
+        font-size: clamp(2.3rem, 4vw, 4.4rem);
+        line-height: 1.02;
+        letter-spacing: -0.05em;
+      }
+
+      .soundtrack-copy .ital {
+        color: #829ab2;
+        font-style: italic;
+        font-weight: 300;
+      }
+
+      .soundtrack-copy p {
+        margin: 0;
+        max-width: 630px;
+        line-height: 1.9;
+        color: var(--muted);
+      }
+
+      .sound-box {
+        background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
+        border: 1px solid rgba(25,33,41,0.08);
+        border-radius: 30px;
+        min-height: 290px;
+        box-shadow: var(--shadow);
+        display: grid;
+        place-items: center;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .bars {
+        display: flex;
+        align-items: end;
+        gap: 8px;
+        height: 100px;
+        margin-bottom: 14px;
+      }
+
+      .bars span {
+        display: block;
+        width: 8px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #d9bfdb, #9fc3df, #efb7b2);
+        animation: audioWave 1.25s ease-in-out infinite alternate;
+      }
+      .bars span:nth-child(1){ height: 28%; animation-delay: 0.1s; }
+      .bars span:nth-child(2){ height: 46%; animation-delay: 0.2s; }
+      .bars span:nth-child(3){ height: 68%; animation-delay: 0.3s; }
+      .bars span:nth-child(4){ height: 52%; animation-delay: 0.4s; }
+      .bars span:nth-child(5){ height: 82%; animation-delay: 0.5s; }
+      .bars span:nth-child(6){ height: 58%; animation-delay: 0.6s; }
+      .bars span:nth-child(7){ height: 90%; animation-delay: 0.7s; }
+      .bars span:nth-child(8){ height: 62%; animation-delay: 0.8s; }
+      .bars span:nth-child(9){ height: 44%; animation-delay: 0.9s; }
+
+      @keyframes audioWave {
+        0% { transform: scaleY(0.42); opacity: 0.55; }
+        100% { transform: scaleY(1); opacity: 1; }
+      }
+
+      .video-section { background: rgba(255,255,255,0.14); }
+      .video-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+        max-width: 1180px;
+        margin: 0 auto;
+      }
+
+      .video-card {
+        overflow: hidden;
+        background: rgba(255,255,255,0.6);
+        border: 1px solid rgba(25,33,41,0.08);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+      }
+
+      .video-card video {
+        width: 100%;
+        height: 420px;
+        object-fit: cover;
+        display: block;
+        background: #0f1116;
+      }
+
+      .video-card figcaption {
+        padding: 14px 18px 16px;
+        color: var(--muted);
+        font-size: 0.76rem;
+        letter-spacing: 0.13em;
+        text-transform: uppercase;
+        font-weight: 700;
+      }
+
+      .timeline-section { padding-bottom: 4rem; }
+      .timeline {
+        position: relative;
+        max-width: 1100px;
+        margin: 0 auto;
+        border-left: 1px solid rgba(51,58,67,0.12);
+        padding-left: 34px;
+      }
+
+      .timeline-item {
+        position: relative;
+        padding: 0 0 34px 18px;
+      }
+
+      .timeline-item::before {
+        content: "";
+        position: absolute;
+        left: -41px;
+        top: 8px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #c7a0fa, #9cc2e3);
+        box-shadow: 0 0 0 6px rgba(173, 186, 208, 0.2);
+      }
+
+      .timeline-time {
+        color: #7382a0;
+        font-size: 0.66rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .timeline-item h4 {
+        margin: 0 0 8px;
+        font-size: clamp(1.5rem, 2.3vw, 2.5rem);
+        letter-spacing: -0.04em;
+        font-weight: 500;
+      }
+
+      .timeline-item p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 620px;
+      }
+
+      .wall-section { padding-top: 5rem; }
+      .memory-wall {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        max-width: 1180px;
+        margin: 28px auto 0;
+      }
+
+      .memory-wall-item {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border-radius: 18px;
+        box-shadow: 0 10px 18px rgba(26, 23, 30, 0.09);
+        background: #ddd;
+      }
+
+      .memory-wall-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .closing {
+        padding-top: 5rem;
+        padding-bottom: 7rem;
+        text-align: center;
+      }
+
+      .closing h2 {
+        margin: 18px 0 12px;
+        font-size: clamp(3.2rem, 9vw, 7.5rem);
+        letter-spacing: 0.08em;
+        font-weight: 700;
+        color: var(--dark);
+      }
+
+      .closing p {
+        max-width: 700px;
+        margin: 0 auto;
+        color: var(--muted);
+        line-height: 1.95;
+        font-size: 1.08rem;
+      }
+
+      .back-to-top {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 80;
+        width: 48px;
+        height: 48px;
+        border: 1px solid rgba(25,35,44,0.12);
+        border-radius: 50%;
+        background: rgba(255,255,255,0.7);
+        color: var(--dark);
+        font-size: 1.3rem;
+        cursor: pointer;
+        box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+        opacity: 0;
+        transform: translateY(16px);
+        pointer-events: none;
+        transition: opacity 0.25s ease, transform 0.25s ease;
+      }
+
+      .back-to-top.show {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .edit-panel {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        z-index: 150;
+        width: min(460px, calc(100vw - 30px));
+        max-height: calc(100vh - 32px);
+        overflow: auto;
+        background: rgba(254, 250, 247, 0.92);
+        border: 1px solid rgba(26, 31, 40, 0.08);
+        border-radius: 26px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+        padding: 18px 18px 20px;
+      }
+
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .panel-head h3 {
+        margin: 0;
+        font-size: 0.8rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .close-panel {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1px solid rgba(27,32,40,0.1);
+        background: rgba(255,255,255,0.5);
+        color: var(--dark);
+        cursor: pointer;
+        font-size: 1.2rem;
+      }
+
+      .panel-tabs {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin: 12px 0 16px;
+      }
+
+      .tab-btn {
+        border: 1px solid rgba(27,32,40,0.08);
+        background: rgba(255,255,255,0.3);
+        color: var(--muted);
+        padding: 9px 8px;
+        border-radius: 12px;
+        font-size: 0.65rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .tab-btn.active {
+        background: rgba(159,192,219,0.24);
+        color: var(--dark);
+        border-color: rgba(126,153,182,0.4);
+      }
+
+      .panel-tab { display: none; }
+      .panel-tab.active { display: block; }
+      .panel-group { margin-bottom: 14px; }
+      .panel-group label {
+        display: block;
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+        font-weight: 700;
+      }
+
+      .panel-input,
+      .panel-textarea,
+      .inline-input {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid rgba(27,32,40,0.12);
+        border-radius: 12px;
+        background: rgba(255,255,255,0.48);
+        color: var(--text);
+        outline: none;
+      }
+
+      .panel-textarea { min-height: 100px; resize: vertical; }
+      .file-box {
+        background: rgba(255,255,255,0.38);
+        border: 1px dashed rgba(27,32,40,0.18);
+        border-radius: 14px;
+        padding: 10px 12px;
+        margin-top: 8px;
+      }
+      .file-box input[type="file"] {
+        width: 100%;
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      .preview-mini {
+        width: 100%;
+        margin-top: 12px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(27,32,40,0.08);
+        background: #e8d8d1;
+      }
+
+      .preview-mini img,
+      .preview-mini video {
+        width: 100%;
+        height: 170px;
+        object-fit: cover;
+        display: block;
+      }
+
+      .panel-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .panel-actions button {
+        flex: 1;
+        border: 1px solid rgba(27,32,40,0.08);
+        background: rgba(255,255,255,0.55);
+        color: var(--dark);
+        border-radius: 12px;
+        padding: 12px 14px;
+        cursor: pointer;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .primary-btn {
+        background: linear-gradient(135deg, rgba(163,191,219,0.5), rgba(225,197,204,0.55)) !important;
+      }
+
+      .share-box {
+        margin-top: 10px;
+        padding: 12px;
+        border-radius: 12px;
+        background: rgba(255,255,255,0.45);
+        border: 1px solid rgba(27,32,40,0.08);
+        display: none;
+        font-size: 0.72rem;
+        word-break: break-all;
+      }
+
+      .share-box.show { display: block; }
+
+      @media (max-width: 768px) {
+        .gallery { grid-template-columns: 1fr; }
+        .memory-card, .memory-card:nth-child(3n + 1), .memory-card:nth-child(3n + 2), .memory-card:nth-child(3n + 3) {
+          grid-column: auto;
+          min-height: 300px;
+        }
+        .soundtrack-inner,
+        .video-grid { grid-template-columns: 1fr; }
+        .memory-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .edit-panel { top: 12px; right: 12px; width: min(92vw, 420px); }
+        .panel-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .hero-copy h2 { font-size: clamp(2.6rem, 15vw, 5rem); }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading" class="loading">Memuat kenangan...</div>
+    <button id="editToggle" class="edit-toggle" type="button">✎ EDIT</button>
+
+    <div id="gate" class="gate">
+      <div class="gate-inner">
+        <span class="eyebrow">Digital Memory Archive</span>
+        <h1 id="siteTitle">MOMENTARY</h1>
+        <p id="siteSubtitle" class="gate-subtitle">Jejak Kebersamaan Kita</p>
+        <div class="gate-card">
+          <label for="guestName">Nama / Panggilan</label>
+          <input id="guestName" type="text" maxlength="30" placeholder="Contoh: Raka" />
+          <button id="startBtn" type="button">✦ MULAI ✦</button>
+          <small>siap menelusuri kenangan bersama kami</small>
         </div>
-        <div id="bgPreview" class="preview-mini hidden"></div>
       </div>
     </div>
 
-    <div id="mediaTab" class="panel-tab">
-      <div class="panel-group">
-        <label>Foto utama</label>
-        <input id="featuredUrlInput" class="panel-input" type="url" placeholder="https://.../foto.jpg" />
-        <div class="file-box">
-          <input id="featuredUploadInput" type="file" accept="image/*" />
+    <header id="topbar" class="topbar hidden">
+      <a href="#top" class="brand" id="brandName">MOMENTARY</a>
+      <button id="muteBtn" class="mute-btn" type="button" aria-label="mute/unmute">♫</button>
+    </header>
+
+    <aside id="editPanel" class="edit-panel hidden" aria-label="Panel edit web">
+      <div class="panel-head">
+        <h3>Panel Edit</h3>
+        <button id="closePanel" class="close-panel" type="button">×</button>
+      </div>
+
+      <div class="panel-tabs">
+        <button class="tab-btn active" type="button" data-tab="general">Umum</button>
+        <button class="tab-btn" type="button" data-tab="media">Media</button>
+        <button class="tab-btn" type="button" data-tab="share">Share</button>
+      </div>
+
+      <div class="panel-tab active" data-panel="general">
+        <div class="panel-group">
+          <label for="editTitle">Judul</label>
+          <input id="editTitle" class="panel-input" type="text" />
         </div>
-        <div id="featuredPreview" class="preview-mini hidden"></div>
-      </div>
-
-      <div class="panel-group">
-        <label>Foto gallery</label>
-        <button id="addGalleryItemBtn" class="mini-btn" type="button" style="width:100%; margin-bottom:8px;">+ Tambah foto</button>
-        <div id="galleryEditor" class="list-stack"></div>
-      </div>
-
-      <div class="panel-group">
-        <label>Video</label>
-        <button id="addVideoItemBtn" class="mini-btn" type="button" style="width:100%; margin-bottom:8px;">+ Tambah video</button>
-        <div id="videoEditor" class="list-stack"></div>
-      </div>
-    </div>
-
-    <div id="audioTab" class="panel-tab">
-      <div class="panel-group">
-        <label>Audio latar</label>
-        <input id="audioUrlInput" class="panel-input" type="url" placeholder="https://.../audio.mp3" />
-        <div class="file-box">
-          <input id="audioUploadInput" type="file" accept="audio/*" />
+        <div class="panel-group">
+          <label for="editSubtitle">Subjudul</label>
+          <input id="editSubtitle" class="panel-input" type="text" />
         </div>
-        <div class="tiny-label">Jika kosong, audio tidak akan diputar.</div>
-      </div>
-    </div>
-
-    <div class="panel-actions">
-      <button id="saveBtn" class="primary-btn" type="button">Simpan</button>
-      <button id="resetBtn" type="button">Reset</button>
-    </div>
-  </aside>
-
-  <main id="app" class="hidden">
-    <section id="top" class="hero">
-      <div id="heroMedia" class="hero-media"></div>
-      <div class="hero-overlay"></div>
-      <div class="hero-copy">
-        <span class="eyebrow">A Digital Memory Journal</span>
-        <h2 id="introTitle">Kebersamaan<br><span class="ital">kita</span></h2>
-        <p id="introText">Kebersamaan puncak kejayaannya.</p>
-        <div class="scroll-hint"><span></span>Scroll to remember</div>
-      </div>
-    </section>
-
-    <section class="section intro">
-      <div class="section-inner">
-        <span class="eyebrow" style="color: var(--muted);">01 / the beginning</span>
-        <h3>Some moments are <span class="ital">too beautiful to forget.</span></h3>
-        <p>“Jika kamu sudah sampai di titik dimana kamu dipercayai seseorang, jangan sesekali mengecewakan mereka yang sudah berjuang dengan penuh keikhlasan. Karena kebersamaan bukan hanya soal hadir, tetapi juga menjaga hati yang sudah percaya.”</p>
-      </div>
-    </section>
-
-    <section class="section featured-wrap">
-      <div class="featured-main">
-        <img id="featuredImg" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1400&q=80" alt="Featured photo" />
-      </div>
-      <div class="featured-meta">
-        <span>the moment</span>
-        <span id="featuredYear">2026</span>
-      </div>
-    </section>
-
-    <section class="section gallery-section">
-      <div class="section-inner">
-        <div class="heading">
-          <span class="eyebrow" style="color: var(--muted);">02 / memory gallery</span>
-          <h3>Pieces of <span class="ital">our memories.</span></h3>
-          <p>Setiap sudut momen kecil yang kita lewati, kini menjadi bagian dari cerita yang akan terus hidup.</p>
+        <div class="panel-group">
+          <label for="editIntroTitle">Judul Intro</label>
+          <input id="editIntroTitle" class="panel-input" type="text" />
         </div>
-        <div id="gallery" class="gallery"></div>
-      </div>
-    </section>
-
-    <section class="section soundtrack">
-      <div class="soundtrack-inner">
-        <div class="soundtrack-copy">
-          <span class="eyebrow" style="color: var(--muted);">03 / the soundtrack</span>
-          <h3>Let the memories <span class="ital">have a soundtrack.</span></h3>
-          <p id="captionText">Every little moment can become a story worth keeping.</p>
+        <div class="panel-group">
+          <label for="editIntroText">Teks Intro</label>
+          <textarea id="editIntroText" class="panel-textarea"></textarea>
         </div>
+        <div class="panel-group">
+          <label for="editClosingText">Teks Penutup</label>
+          <textarea id="editClosingText" class="panel-textarea"></textarea>
+        </div>
+      </div>
 
-        <div class="sound-box">
-          <div class="bars" aria-hidden="true">
-            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+      <div class="panel-tab" data-panel="media">
+        <div class="panel-group">
+          <label>Hero Media</label>
+          <div class="file-box">
+            <input id="heroFile" type="file" accept="image/*,video/*" />
           </div>
-          <div class="small-label">Background audio</div>
+          <div id="heroPreview" class="preview-mini"></div>
+        </div>
+        <div class="panel-group">
+          <label>Featured Image</label>
+          <div class="file-box">
+            <input id="featuredFile" type="file" accept="image/*,video/*" />
+          </div>
+          <div id="featuredPreview" class="preview-mini"></div>
+        </div>
+        <div class="panel-group">
+          <label>Gallery Media 1</label>
+          <div class="file-box">
+            <input id="gallery1File" type="file" accept="image/*,video/*" />
+          </div>
+          <div id="gallery1Preview" class="preview-mini"></div>
+        </div>
+        <div class="panel-group">
+          <label>Gallery Media 2</label>
+          <div class="file-box">
+            <input id="gallery2File" type="file" accept="image/*,video/*" />
+          </div>
+          <div id="gallery2Preview" class="preview-mini"></div>
         </div>
       </div>
-    </section>
 
-    <section class="section video-section">
-      <div class="section-inner">
-        <span class="eyebrow" style="color: var(--muted);">04 / moving memories</span>
-        <h3 style="margin:18px 0 26px; font-size: clamp(2.2rem,4vw,4.3rem); font-weight:400; letter-spacing:-0.05em;">Not just a picture.<br><span class="ital">A moment in motion.</span></h3>
-        <div id="videoGrid" class="video-grid"></div>
+      <div class="panel-tab" data-panel="share">
+        <div class="panel-group">
+          <label>Link Preview</label>
+          <div id="shareBox" class="share-box"></div>
+        </div>
       </div>
-    </section>
 
-    <section class="section timeline-section">
-      <div class="section-inner">
-        <span class="eyebrow" style="color: var(--muted);">05 / the journey</span>
-        <h3 style="margin:18px 0 26px; font-size: clamp(2.2rem,4vw,4.2rem); font-weight:400; letter-spacing:-0.05em;">A few chapters <span class="ital">of our story.</span></h3>
+      <div class="panel-actions">
+        <button id="cancelEdit" type="button">Batal</button>
+        <button id="saveEdit" class="primary-btn" type="button">Simpan</button>
+      </div>
+    </aside>
 
-        <div class="timeline">
+    <div id="app">
+      <div class="hero" id="top">
+        <div class="hero-media" id="heroMedia"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-copy">
+          <span class="eyebrow">Jejak Kebersamaan</span>
+          <h2 id="heroTitle">Bersama <span class="ital">dalam</span> cerita</h2>
+          <p id="heroText">Kenangan indah yang kita lukis bersama, tak pernah hilang walau waktu berganti.</p>
+          <div class="scroll-hint"><span></span>Scroll</div>
+        </div>
+      </div>
+
+      <section class="section intro">
+        <div class="section-inner">
+          <span class="eyebrow">Tentang kami</span>
+          <h3 id="introTitle">Kehidupan <span class="ital">yang menyatukan</span> kita</h3>
+          <p id="introText">Setiap momen yang kita lalui bersama membuat kami lebih berarti. Dari tawa hingga haru, semuanya menjadi bagian dari cerita yang tak tergantikan.</p>
+        </div>
+      </section>
+
+      <section class="section featured-wrap">
+        <div class="featured-main" id="featuredMain"></div>
+        <div class="featured-meta">
+          <span>Memory</span>
+          <span id="featuredMetaText">Momen indah</span>
+        </div>
+      </section>
+
+      <section class="section gallery-section">
+        <div class="section-inner">
+          <div class="heading">
+            <span class="eyebrow">Galeri</span>
+            <h3>Saat <span class="ital">senyum</span> kita tumbuh</h3>
+            <p>Jejak yang tak bisa dibeli, hanya bisa dijaga dan diingat dengan hangat.</p>
+          </div>
+          <div class="gallery" id="galleryGrid"></div>
+        </div>
+      </section>
+
+      <section class="section soundtrack">
+        <div class="soundtrack-inner">
+          <div class="soundtrack-copy">
+            <span class="eyebrow">Soundtrack</span>
+            <h3>Suara <span class="ital">yang</span> mengingatkan</h3>
+            <p id="soundtrackText">Lirik-lirik sederhana ini menjadi pengiring perjalanan kita, menenangkan dan menghangatkan hati ketika rindu datang.</p>
+          </div>
+          <div class="sound-box">
+            <div class="bars" aria-label="equalizer">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="small-label">For us</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section video-section">
+        <div class="section-inner">
+          <div class="heading">
+            <span class="eyebrow">Video</span>
+            <h3>Potongan <span class="ital">kenangan</span> hidup</h3>
+          </div>
+          <div class="video-grid" id="videoGrid"></div>
+        </div>
+      </section>
+
+      <section class="section timeline-section">
+        <div class="section-inner">
+          <div class="heading">
+            <span class="eyebrow">Timeline</span>
+            <h3>Hari <span class="ital">yang</span> menghubungkan</h3>
+          </div>
+          <div class="timeline" id="timelineList"></div>
+        </div>
+      </section>
+
+      <section class="section wall-section">
+        <div class="section-inner">
+          <div class="heading">
+            <span class="eyebrow">Wall</span>
+            <h3>Kenangan <span class="ital">yang</span> selalu hadir</h3>
+          </div>
+          <div class="memory-wall" id="memoryWall"></div>
+        </div>
+      </section>
+
+      <section class="section closing">
+        <div class="section-inner">
+          <span class="eyebrow">Untuk kita</span>
+          <h2 id="closingTitle">FOREVER</h2>
+          <p id="closingText">Semua cerita hari ini adalah bagian dari perjalanan kita. Terima kasih sudah menjadi tempat pulang yang hangat dan penuh arti.</p>
+        </div>
+      </section>
+    </div>
+
+    <button id="backToTop" class="back-to-top" type="button" aria-label="Back to top">↑</button>
+
+    <script>
+      const STORAGE_KEY = 'momentary-state-v1';
+      const DEFAULT_STATE = {
+        siteTitle: 'MOMENTARY',
+        siteSubtitle: 'Jejak Kebersamaan Kita',
+        introTitle: 'Kehidupan <span class="ital">yang menyatukan</span> kita',
+        introText: 'Setiap momen yang kita lalui bersama membuat kami lebih berarti. Dari tawa hingga haru, semuanya menjadi bagian dari cerita yang tak tergantikan.',
+        soundtrackText: 'Lirik-lirik sederhana ini menjadi pengiring perjalanan kita, menenangkan dan menghangatkan hati ketika rindu datang.',
+        closingTitle: 'FOREVER',
+        closingText: 'Semua cerita hari ini adalah bagian dari perjalanan kita. Terima kasih sudah menjadi tempat pulang yang hangat dan penuh arti.',
+        heroTitle: 'Bersama <span class="ital">dalam</span> cerita',
+        heroText: 'Kenangan indah yang kita lukis bersama, tak pernah hilang walau waktu berganti.',
+        featuredMeta: 'Momen indah',
+        heroMedia: {
+          type: 'image',
+          src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1600&q=80'
+        },
+        featuredMedia: {
+          type: 'image',
+          src: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1600&q=80'
+        },
+        gallery: [
+          { label: 'Sunset', src: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80' },
+          { label: 'Smile', src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80' },
+          { label: 'Together', src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80' },
+          { label: 'Joy', src: 'https://images.unsplash.com/photo-1529154691717-3306083d869e?auto=format&fit=crop&w=900&q=80' },
+          { label: 'Run', src: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=900&q=80' },
+          { label: 'Grin', src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80' }
+        ],
+        videos: [
+          { label: 'Moment 1', src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' },
+          { label: 'Moment 2', src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm' }
+        ],
+        timeline: [
+          { time: 'Januari 2024', title: 'Awal perjumpaan', desc: 'Sebuah kenangan dimulai dari percakapan sederhana yang tak pernah lupa.' },
+          { time: 'Maret 2024', title: 'Luka dan tawa', desc: 'Hari-hari yang penuh semangat, cerita ringan, dan senyum yang tak pernah padam.' },
+          { time: 'Juni 2024', title: 'Bertumbuh bersama', desc: 'Kita belajar, menangis, tertawa, dan saling menjaga dengan cara yang unik.' }
+        ],
+        memoryWall: [
+          'https://images.unsplash.com/photo-1529154691717-3306083d869e?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80',
+          'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80'
+        ]
+      };
+
+      let state = loadState();
+
+      const elements = {
+        loading: document.getElementById('loading'),
+        gate: document.getElementById('gate'),
+        topbar: document.getElementById('topbar'),
+        editToggle: document.getElementById('editToggle'),
+        editPanel: document.getElementById('editPanel'),
+        closePanel: document.getElementById('closePanel'),
+        saveEdit: document.getElementById('saveEdit'),
+        cancelEdit: document.getElementById('cancelEdit'),
+        startBtn: document.getElementById('startBtn'),
+        guestName: document.getElementById('guestName'),
+        muteBtn: document.getElementById('muteBtn'),
+        backToTop: document.getElementById('backToTop'),
+        shareBox: document.getElementById('shareBox'),
+        heroMedia: document.getElementById('heroMedia'),
+        featuredMain: document.getElementById('featuredMain'),
+        galleryGrid: document.getElementById('galleryGrid'),
+        videoGrid: document.getElementById('videoGrid'),
+        timelineList: document.getElementById('timelineList'),
+        memoryWall: document.getElementById('memoryWall'),
+        siteTitle: document.getElementById('siteTitle'),
+        siteSubtitle: document.getElementById('siteSubtitle'),
+        brandName: document.getElementById('brandName'),
+        heroTitle: document.getElementById('heroTitle'),
+        heroText: document.getElementById('heroText'),
+        introTitle: document.getElementById('introTitle'),
+        introText: document.getElementById('introText'),
+        soundtrackText: document.getElementById('soundtrackText'),
+        closingTitle: document.getElementById('closingTitle'),
+        closingText: document.getElementById('closingText'),
+        featuredMetaText: document.getElementById('featuredMetaText')
+      };
+
+      const editFields = {
+        title: document.getElementById('editTitle'),
+        subtitle: document.getElementById('editSubtitle'),
+        introTitle: document.getElementById('editIntroTitle'),
+        introText: document.getElementById('editIntroText'),
+        closingText: document.getElementById('editClosingText')
+      };
+
+      function loadState() {
+        const fromHash = decodeHashState();
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (fromHash) return fromHash;
+        if (saved) {
+          try {
+            return JSON.parse(saved);
+          } catch (e) {
+            console.warn('State invalid', e);
+          }
+        }
+        return JSON.parse(JSON.stringify(DEFAULT_STATE));
+      }
+
+      function decodeHashState() {
+        const hash = window.location.hash.replace(/^#/, '');
+        if (!hash || !hash.startsWith('state=')) return null;
+        try {
+          const raw = hash.replace(/^state=/, '');
+          return JSON.parse(decodeURIComponent(escape(atob(raw))));
+        } catch (e) {
+          console.warn('Hash state invalid');
+          return null;
+        }
+      }
+
+      function encodeStateToHash(snapshot) {
+        const json = JSON.stringify(snapshot);
+        const encoded = btoa(unescape(encodeURIComponent(json)));
+        return `${window.location.origin}${window.location.pathname}#state=${encoded}`;
+      }
+
+      function saveStateToLocal(snapshot) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot));
+        const shareUrl = encodeStateToHash(snapshot);
+        elements.shareBox.textContent = shareUrl;
+        elements.shareBox.classList.add('show');
+        return shareUrl;
+      }
+
+      function renderUI() {
+        const titleHtml = state.siteTitle || DEFAULT_STATE.siteTitle;
+        const subtitle = state.siteSubtitle || DEFAULT_STATE.siteSubtitle;
+
+        elements.siteTitle.textContent = titleHtml;
+        elements.siteSubtitle.textContent = subtitle;
+        elements.brandName.textContent = titleHtml;
+        document.title = `${titleHtml} | ${subtitle}`;
+
+        elements.heroTitle.innerHTML = state.heroTitle || DEFAULT_STATE.heroTitle;
+        elements.heroText.textContent = state.heroText || DEFAULT_STATE.heroText;
+        elements.introTitle.innerHTML = state.introTitle || DEFAULT_STATE.introTitle;
+        elements.introText.textContent = state.introText || DEFAULT_STATE.introText;
+        elements.soundtrackText.textContent = state.soundtrackText || DEFAULT_STATE.soundtrackText;
+        elements.closingTitle.textContent = state.closingTitle || DEFAULT_STATE.closingTitle;
+        elements.closingText.textContent = state.closingText || DEFAULT_STATE.closingText;
+        elements.featuredMetaText.textContent = state.featuredMeta || DEFAULT_STATE.featuredMeta;
+
+        renderMedia(elements.heroMedia, state.heroMedia || DEFAULT_STATE.heroMedia, 'hero');
+        renderMedia(elements.featuredMain, state.featuredMedia || DEFAULT_STATE.featuredMedia, 'featured');
+
+        renderGallery();
+        renderVideos();
+        renderTimeline();
+        renderMemoryWall();
+      }
+
+      function renderMedia(container, media, mode) {
+        if (!media || !media.src) return;
+        if (media.type === 'video') {
+          container.innerHTML = `<video controls autoplay muted loop playsinline src="${media.src}"></video>`;
+        } else {
+          container.innerHTML = `<img src="${media.src}" alt="${mode}" />`;
+        }
+      }
+
+      function renderGallery() {
+        const items = state.gallery || DEFAULT_STATE.gallery;
+        elements.galleryGrid.innerHTML = items.map((item, index) => `
+          <figure class="memory-card" key="${index}">
+            <img src="${item.src}" alt="${item.label || 'Memory'}" />
+            <figcaption><span>${item.label || 'Memory'}</span><span>${index + 1}</span></figcaption>
+          </figure>
+        `).join('');
+      }
+
+      function renderVideos() {
+        const videos = state.videos || DEFAULT_STATE.videos;
+        elements.videoGrid.innerHTML = videos.map((video, index) => `
+          <figure class="video-card">
+            <video controls playsinline preload="metadata" src="${video.src}"></video>
+            <figcaption>${video.label || `Video ${index + 1}`}</figcaption>
+          </figure>
+        `).join('');
+      }
+
+      function renderTimeline() {
+        const items = state.timeline || DEFAULT_STATE.timeline;
+        elements.timelineList.innerHTML = items.map((item) => `
           <div class="timeline-item">
-            <span class="timeline-time">2024</span>
-            <h4>The first step</h4>
-            <p>Awal dari perjalanan dan kebersamaan yang mulai tumbuh dengan harapan, semangat, dan rasa percaya.</p>
+            <span class="timeline-time">${item.time}</span>
+            <h4>${item.title}</h4>
+            <p>${item.desc}</p>
           </div>
-          <div class="timeline-item">
-            <span class="timeline-time">2025</span>
-            <h4>The moments</h4>
-            <p>Tawa, kegiatan, dan kebiasaan kecil yang perlahan menjadi cerita yang sulit dilupakan.</p>
-          </div>
-          <div class="timeline-item">
-            <span class="timeline-time">2026</span>
-            <h4>The memory</h4>
-            <p>Hal-hal sederhana yang akhirnya berarti, karena saat kita tumbuh bersama, kenangan itu menjadi bagian dari diri kita.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section wall-section">
-      <div class="section-inner">
-        <span class="eyebrow" style="color: var(--muted);">06 / memory wall</span>
-        <div id="memoryWall" class="memory-wall"></div>
-      </div>
-    </section>
-
-    <section class="section closing">
-      <div class="section-inner">
-        <span class="eyebrow" style="color: var(--muted);">End of this chapter</span>
-        <h2 id="closingTitle">MOMENTARY</h2>
-        <p id="closingText">Terimakasih sudah melihat pustaka kami. Semoga bisa menghibur dan menginspirasi. Selalu ingat bahwa kebersamaan itu adalah bagian terindah dari perjalanan hidup.</p>
-        <button id="backToTop" type="button">↑ kembali ke atas</button>
-      </div>
-    </section>
-  </main>
-
-  <button id="toTopBtn" class="back-to-top" type="button" aria-label="Kembali ke atas">↑</button>
-
-  <audio id="music" loop preload="auto"></audio>
-
-  <script>
-    const STORAGE_KEY = 'momentary_state_v1';
-
-    const defaultState = {
-      siteTitle: 'MOMENTARY',
-      siteSubtitle: 'Jejak Kebersamaan Kita',
-      introTitle: 'Kebersamaan<br><span class="ital">kita</span>',
-      introText: 'Kebersamaan puncak kejayaannya.',
-      closingText: 'Terimakasih sudah melihat pustaka kami. Semoga bisa menghibur dan menginspirasi. Selalu ingat bahwa kebersamaan itu adalah bagian terindah dari perjalanan hidup.',
-      featuredPhoto: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1400&q=80',
-      featuredYear: '2026',
-      backgroundType: 'video',
-      backgroundSource: 'https://videos.pexels.com/video-files/854724/854724-hd_1920_1080.mp4',
-      audioSource: '',
-      captions: [
-        'Every little moment can become a story worth keeping.',
-        'We laughed. We grew. We were here.',
-        'Some memories arrive quietly.',
-        'Time passes. The feeling stays.',
-        'This was our story.'
-      ],
-      gallery: [
-        { src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80', title: 'A little moment', date: '2026' },
-        { src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80', title: 'Together', date: '2026' },
-        { src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80', title: 'Good times', date: '2026' },
-        { src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80', title: 'Keep this moment', date: '2026' },
-        { src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80', title: 'One for the archive', date: '2026' },
-        { src: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=900&q=80', title: 'Stories we carry', date: '2026' },
-        { src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=900&q=80', title: 'Small laughter', date: '2026' },
-        { src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80', title: 'The bond', date: '2026' },
-        { src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80', title: 'We were here', date: '2026' },
-        { src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80', title: 'A memory stays', date: '2026' }
-      ],
-      videos: [
-        { src: 'https://videos.pexels.com/video-files/854724/854724-hd_1920_1080.mp4', title: 'Documentation / 01' },
-        { src: 'https://videos.pexels.com/video-files/3209828/3209828-hd_1920_1080.mp4', title: 'Documentation / 02' }
-      ]
-    };
-
-    let state = loadState();
-    let soundOn = true;
-    let captionIndex = 0;
-
-    const gate = document.getElementById('gate');
-    const app = document.getElementById('app');
-    const topbar = document.getElementById('topbar');
-    const music = document.getElementById('music');
-
-    function loadState() {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (!saved) return JSON.parse(JSON.stringify(defaultState));
-      try {
-        return { ...JSON.parse(JSON.stringify(defaultState)), ...JSON.parse(saved) };
-      } catch {
-        return JSON.parse(JSON.stringify(defaultState));
+        `).join('');
       }
-    }
 
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
-
-    function normalizeGallery() {
-      if (!Array.isArray(state.gallery) || !state.gallery.length) state.gallery = defaultState.gallery.slice();
-      state.gallery = state.gallery.filter(item => item && (item.src || item.url));
-    }
-
-    function normalizeVideos() {
-      if (!Array.isArray(state.videos) || !state.videos.length) state.videos = defaultState.videos.slice();
-      state.videos = state.videos.filter(item => item && (item.src || item.url));
-    }
-
-    function updateInputs() {
-      document.getElementById('titleInput').value = state.siteTitle;
-      document.getElementById('subtitleInput').value = state.siteSubtitle;
-      document.getElementById('introTitleInput').value = (state.introTitle || '').replace(/<[^>]*>/g, '') || 'Kebersamaan kita';
-      document.getElementById('introTextInput').value = state.introText;
-      document.getElementById('closingTextInput').value = state.closingText;
-      document.getElementById('bgTypeInput').value = state.backgroundType || 'video';
-      document.getElementById('featuredUrlInput').value = state.featuredPhoto || '';
-      document.getElementById('audioUrlInput').value = state.audioSource || '';
-      document.getElementById('siteTitle').textContent = state.siteTitle;
-      document.getElementById('siteSubtitle').textContent = state.siteSubtitle;
-      document.getElementById('brandName').textContent = state.siteTitle;
-      document.getElementById('introTitle').innerHTML = state.introTitle;
-      document.getElementById('introText').textContent = state.introText;
-      document.getElementById('closingText').textContent = state.closingText;
-      document.getElementById('closingTitle').textContent = state.siteTitle;
-      document.getElementById('featuredYear').textContent = state.featuredYear || '2026';
-      document.getElementById('featuredImg').src = state.featuredPhoto || defaultState.featuredPhoto;
-      document.getElementById('captionText').textContent = (state.captions && state.captions[0]) || 'Every little moment can become a story worth keeping.';
-    }
-
-    function renderBackground() {
-      const mediaWrap = document.getElementById('heroMedia');
-      mediaWrap.innerHTML = '';
-      const src = state.backgroundSource || defaultState.backgroundSource;
-
-      if (state.backgroundType === 'video') {
-        const video = document.createElement('video');
-        video.src = src;
-        video.autoplay = true;
-        video.muted = true;
-        video.loop = true;
-        video.playsInline = true;
-        video.preload = 'auto';
-        mediaWrap.appendChild(video);
-      } else {
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = 'Background';
-        mediaWrap.appendChild(img);
+      function renderMemoryWall() {
+        const items = state.memoryWall || DEFAULT_STATE.memoryWall;
+        elements.memoryWall.innerHTML = items.map((src) => `
+          <div class="memory-wall-item"><img src="${src}" alt="memory" /></div>
+        `).join('');
       }
-    }
 
-    function renderGallery() {
-      const gallery = document.getElementById('gallery');
-      gallery.innerHTML = '';
-      normalizeGallery();
-      const items = state.gallery.slice(0, 10);
-
-      items.forEach((item) => {
-        const figure = document.createElement('figure');
-        figure.className = 'memory-card';
-        figure.innerHTML = `
-          <img src="${item.src}" alt="${item.title || 'Foto'}" loading="lazy" />
-          <figcaption>
-            <span>${item.title || 'Momen baru'}</span>
-            <span>${item.date || '2026'}</span>
-          </figcaption>
-        `;
-        gallery.appendChild(figure);
-      });
-    }
-
-    function renderMemoryWall() {
-      const wall = document.getElementById('memoryWall');
-      wall.innerHTML = '';
-      normalizeGallery();
-      const items = state.gallery.slice(0, 8);
-      items.forEach((item) => {
-        const div = document.createElement('div');
-        div.className = 'memory-wall-item';
-        div.innerHTML = `<img src="${item.src}" alt="${item.title || 'Memory'}" loading="lazy" />`;
-        wall.appendChild(div);
-      });
-    }
-
-    function renderVideoGrid() {
-      const grid = document.getElementById('videoGrid');
-      grid.innerHTML = '';
-      normalizeVideos();
-      const videos = state.videos && state.videos.length ? state.videos : defaultState.videos;
-      videos.forEach((item) => {
-        const figure = document.createElement('figure');
-        figure.className = 'video-card';
-        figure.innerHTML = `
-          <video controls preload="metadata" src="${item.src}"></video>
-          <figcaption>${item.title || 'Video'}</figcaption>
-        `;
-        grid.appendChild(figure);
-      });
-    }
-
-    function renderGalleryEditor() {
-      const container = document.getElementById('galleryEditor');
-      container.innerHTML = '';
-      normalizeGallery();
-      state.gallery.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'editor-card';
-        card.innerHTML = `
-          <img class="media-preview" src="${item.src}" alt="${item.title || 'Foto'}" />
-          <input class="inline-input" data-gallery-field="title" data-gallery-index="${index}" value="${item.title || ''}" placeholder="Judul foto" />
-          <div class="mini-row">
-            <input class="inline-input" data-gallery-field="date" data-gallery-index="${index}" value="${item.date || ''}" placeholder="Tahun" />
-            <input class="inline-input" data-gallery-field="src" data-gallery-index="${index}" value="${item.src || ''}" placeholder="URL foto" />
-          </div>
-          <div class="editor-actions">
-            <button type="button" class="mini-btn" data-gallery-remove="${index}">Hapus</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    function renderVideoEditor() {
-      const container = document.getElementById('videoEditor');
-      container.innerHTML = '';
-      normalizeVideos();
-      state.videos.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'editor-card';
-        card.innerHTML = `
-          <video class="media-preview" controls preload="metadata" src="${item.src}"></video>
-          <input class="inline-input" data-video-field="title" data-video-index="${index}" value="${item.title || ''}" placeholder="Judul video" />
-          <input class="inline-input" data-video-field="src" data-video-index="${index}" value="${item.src || ''}" placeholder="URL video" />
-          <div class="editor-actions">
-            <button type="button" class="mini-btn" data-video-remove="${index}">Hapus</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    function renderAudio() {
-      if (state.audioSource) {
-        music.src = state.audioSource;
-        music.play().catch(() => {});
-      } else {
-        music.removeAttribute('src');
+      function populateEditor() {
+        editFields.title.value = state.siteTitle || DEFAULT_STATE.siteTitle;
+        editFields.subtitle.value = state.siteSubtitle || DEFAULT_STATE.siteSubtitle;
+        editFields.introTitle.value = state.introTitle || DEFAULT_STATE.introTitle;
+        editFields.introText.value = state.introText || DEFAULT_STATE.introText;
+        editFields.closingText.value = state.closingText || DEFAULT_STATE.closingText;
       }
-    }
 
-    function renderAll() {
-      normalizeGallery();
-      normalizeVideos();
-      updateInputs();
-      renderBackground();
-      renderGallery();
-      renderMemoryWall();
-      renderVideoGrid();
-      renderGalleryEditor();
-      renderVideoEditor();
-      renderAudio();
-      document.getElementById('bgPreview').classList.add('hidden');
-      document.getElementById('featuredPreview').classList.add('hidden');
-    }
+      function openEditor() {
+        elements.editPanel.classList.remove('hidden');
+        populateEditor();
+      }
 
-    function fileToDataUrl(file) {
-      return new Promise((resolve, reject) => {
+      function closeEditor() {
+        elements.editPanel.classList.add('hidden');
+      }
+
+      function handleFileUpload(input, targetKey, srcTarget) {
+        const file = input.files && input.files[0];
+        if (!file) return;
         const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
+        reader.onload = (event) => {
+          const src = event.target.result;
+          state[targetKey] = { type: file.type.startsWith('video/') ? 'video' : 'image', src };
+          const previewContainer = document.getElementById(srcTarget);
+          previewContainer.innerHTML = file.type.startsWith('video/')
+            ? `<video src="${src}" controls playsinline></video>`
+            : `<img src="${src}" alt="preview" />`;
+          renderUI();
+        };
         reader.readAsDataURL(file);
+      }
+
+      function saveFromEditor() {
+        state.siteTitle = editFields.title.value.trim() || DEFAULT_STATE.siteTitle;
+        state.siteSubtitle = editFields.subtitle.value.trim() || DEFAULT_STATE.siteSubtitle;
+        state.introTitle = editFields.introTitle.value.trim() || DEFAULT_STATE.introTitle;
+        state.introText = editFields.introText.value.trim() || DEFAULT_STATE.introText;
+        state.closingText = editFields.closingText.value.trim() || DEFAULT_STATE.closingText;
+
+        const shareUrl = saveStateToLocal(state);
+        renderUI();
+        elements.shareBox.textContent = shareUrl;
+        elements.shareBox.classList.add('show');
+        closeEditor();
+      }
+
+      function setTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.tab === tabName);
+        });
+        document.querySelectorAll('.panel-tab').forEach((panel) => {
+          panel.classList.toggle('active', panel.dataset.panel === tabName);
+        });
+      }
+
+      document.getElementById('startBtn').addEventListener('click', () => {
+        const name = document.getElementById('guestName').value.trim();
+        localStorage.setItem('momentary-guest-name', name || 'Teman');
+        elements.gate.classList.add('hidden');
+        elements.topbar.classList.remove('hidden');
+        elements.loading.classList.add('hidden');
       });
-    }
 
-    function setBackgroundPreview(previewEl, result, type) {
-      previewEl.innerHTML = '';
-      previewEl.classList.remove('hidden');
-      if (type === 'video') {
-        previewEl.innerHTML = `<video src="${result}" autoplay muted loop playsinline></video>`;
-      } else {
-        previewEl.innerHTML = `<img src="${result}" alt="Preview" />`;
-      }
-    }
+      elements.editToggle.addEventListener('click', openEditor);
+      elements.closePanel.addEventListener('click', closeEditor);
+      elements.cancelEdit.addEventListener('click', closeEditor);
+      elements.saveEdit.addEventListener('click', saveFromEditor);
 
-    function setFeaturedPreview(result) {
-      const preview = document.getElementById('featuredPreview');
-      preview.classList.remove('hidden');
-      preview.innerHTML = `<img src="${result}" alt="Preview" />`;
-    }
-
-    document.getElementById('startBtn').addEventListener('click', () => {
-      const guest = document.getElementById('guestName').value.trim();
-      if (guest) {
-        document.getElementById('closingText').textContent = `Untuk ${guest}, terimakasih sudah melihat pustaka kami. Semoga bisa menghibur dan menginspirasi.`;
-      }
-      gate.classList.add('hidden');
-      app.classList.remove('hidden');
-      topbar.classList.remove('hidden');
-      if (soundOn && state.audioSource) {
-        music.volume = 0.35;
-        music.play().catch(() => {});
-      }
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    document.getElementById('muteBtn').addEventListener('click', () => {
-      soundOn = !soundOn;
-      document.getElementById('muteBtn').textContent = soundOn ? '♫' : '🔇';
-      if (soundOn && state.audioSource) {
-        music.volume = 0.35;
-        music.play().catch(() => {});
-      } else {
-        music.pause();
-      }
-    });
-
-    document.getElementById('editToggle').addEventListener('click', () => {
-      document.getElementById('editPanel').classList.toggle('hidden');
-    });
-
-    document.getElementById('closePanel').addEventListener('click', () => {
-      document.getElementById('editPanel').classList.add('hidden');
-    });
-
-    document.querySelectorAll('.tab-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(item => item.classList.remove('active'));
-        document.querySelectorAll('.panel-tab').forEach(tab => tab.classList.remove('active'));
-        btn.classList.add('active');
-        document.getElementById(`${btn.dataset.tab}Tab`).classList.add('active');
+      document.querySelectorAll('.tab-btn').forEach((btn) => {
+        btn.addEventListener('click', () => setTab(btn.dataset.tab));
       });
-    });
 
-    document.getElementById('bgTypeInput').addEventListener('change', (e) => {
-      state.backgroundType = e.target.value;
-    });
+      document.getElementById('heroFile').addEventListener('change', (event) => handleFileUpload(event.target, 'heroMedia', 'heroPreview'));
+      document.getElementById('featuredFile').addEventListener('change', (event) => handleFileUpload(event.target, 'featuredMedia', 'featuredPreview'));
+      document.getElementById('gallery1File').addEventListener('change', (event) => handleFileUpload(event.target, 'galleryOne', 'gallery1Preview'));
+      document.getElementById('gallery2File').addEventListener('change', (event) => handleFileUpload(event.target, 'galleryTwo', 'gallery2Preview'));
 
-    document.getElementById('bgUploadInput').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const result = await fileToDataUrl(file);
-      state.backgroundSource = result;
-      state.backgroundType = file.type.startsWith('video/') ? 'video' : 'image';
-      document.getElementById('bgTypeInput').value = state.backgroundType;
-      setBackgroundPreview(document.getElementById('bgPreview'), result, state.backgroundType);
-      saveState();
-    });
+      elements.muteBtn.addEventListener('click', () => {
+        const isMuted = document.body.dataset.muted === 'true';
+        document.body.dataset.muted = String(!isMuted);
+        elements.muteBtn.textContent = isMuted ? '♫' : '🔇';
+      });
 
-    document.getElementById('featuredUploadInput').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const result = await fileToDataUrl(file);
-      state.featuredPhoto = result;
-      setFeaturedPreview(result);
-      document.getElementById('featuredUrlInput').value = result;
-      saveState();
-      renderAll();
-    });
-
-    document.getElementById('featuredUrlInput').addEventListener('input', (e) => {
-      const value = e.target.value.trim();
-      if (!value) return;
-      state.featuredPhoto = value;
-      document.getElementById('featuredImg').src = value;
-      saveState();
-    });
-
-    document.getElementById('addGalleryItemBtn').addEventListener('click', () => {
-      state.gallery.push({ src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80', title: 'Momen baru', date: new Date().getFullYear().toString() });
-      saveState();
-      renderAll();
-    });
-
-    document.getElementById('addVideoItemBtn').addEventListener('click', () => {
-      state.videos.push({ src: 'https://videos.pexels.com/video-files/3209828/3209828-hd_1920_1080.mp4', title: 'Video baru' });
-      saveState();
-      renderAll();
-    });
-
-    document.getElementById('audioUploadInput').addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const dataUrl = await fileToDataUrl(file);
-      state.audioSource = dataUrl;
-      document.getElementById('audioUrlInput').value = dataUrl;
-      saveState();
-      renderAudio();
-      e.target.value = '';
-    });
-
-    document.getElementById('audioUrlInput').addEventListener('input', (e) => {
-      const value = e.target.value.trim();
-      state.audioSource = value;
-      saveState();
-      renderAudio();
-    });
-
-    document.addEventListener('click', (e) => {
-      const removeGallery = e.target.closest('[data-gallery-remove]');
-      if (removeGallery) {
-        const index = Number(removeGallery.getAttribute('data-gallery-remove'));
-        state.gallery.splice(index, 1);
-        saveState();
-        renderAll();
-        return;
-      }
-
-      const removeVideo = e.target.closest('[data-video-remove]');
-      if (removeVideo) {
-        const index = Number(removeVideo.getAttribute('data-video-remove'));
-        state.videos.splice(index, 1);
-        saveState();
-        renderAll();
-      }
-    });
-
-    document.addEventListener('input', (e) => {
-      const galleryField = e.target.getAttribute('data-gallery-field');
-      if (galleryField) {
-        const idx = Number(e.target.getAttribute('data-gallery-index'));
-        const value = e.target.value;
-        if (!state.gallery[idx]) return;
-        state.gallery[idx][galleryField] = value;
-        if (galleryField === 'src') {
-          const preview = e.target.closest('.editor-card')?.querySelector('.media-preview');
-          if (preview) preview.src = value;
-        }
-        saveState();
-        renderAll();
-        return;
-      }
-
-      const videoField = e.target.getAttribute('data-video-field');
-      if (videoField) {
-        const idx = Number(e.target.getAttribute('data-video-index'));
-        const value = e.target.value;
-        if (!state.videos[idx]) return;
-        state.videos[idx][videoField] = value;
-        if (videoField === 'src') {
-          const preview = e.target.closest('.editor-card')?.querySelector('.media-preview');
-          if (preview) preview.src = value;
-        }
-        saveState();
-        renderAll();
-      }
-    });
-
-    document.getElementById('saveBtn').addEventListener('click', () => {
-      state.siteTitle = document.getElementById('titleInput').value.trim() || 'MOMENTARY';
-      state.siteSubtitle = document.getElementById('subtitleInput').value.trim() || 'Jejak Kebersamaan Kita';
-      state.introTitle = document.getElementById('introTitleInput').value.trim() || 'Kebersamaan kita';
-      state.introText = document.getElementById('introTextInput').value.trim() || 'Kebersamaan puncak kejayaannya.';
-      state.closingText = document.getElementById('closingTextInput').value.trim() || 'Terimakasih sudah melihat pustaka kami. Semoga bisa menghibur dan menginspirasi.';
-      state.backgroundType = document.getElementById('bgTypeInput').value;
-      state.featuredPhoto = document.getElementById('featuredUrlInput').value.trim() || state.featuredPhoto;
-      state.audioSource = document.getElementById('audioUrlInput').value.trim() || state.audioSource;
-      saveState();
-      renderAll();
-      document.getElementById('editPanel').classList.add('hidden');
-    });
-
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      if (!confirm('Reset semua data ke default?')) return;
-      localStorage.removeItem(STORAGE_KEY);
-      state = JSON.parse(JSON.stringify(defaultState));
-      renderAll();
-      document.getElementById('editPanel').classList.add('hidden');
-    });
-
-    document.getElementById('backToTop').addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    document.getElementById('toTopBtn').addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    window.addEventListener('scroll', () => {
-      const btn = document.getElementById('toTopBtn');
-      btn.classList.toggle('show', window.scrollY > 800);
-    });
-
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
+      elements.backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 250) {
+          elements.backToTop.classList.add('show');
+        } else {
+          elements.backToTop.classList.remove('show');
         }
       });
-    }, { threshold: 0.12 });
 
-    document.querySelectorAll('.section, .hero, .featured-wrap').forEach((el) => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(24px)';
-      el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
-      revealObserver.observe(el);
-    });
+      function initPreviewPlaceholders() {
+        document.getElementById('heroPreview').innerHTML = state.heroMedia && state.heroMedia.src ? (state.heroMedia.type === 'video' ? `<video src="${state.heroMedia.src}" controls playsinline></video>` : `<img src="${state.heroMedia.src}" alt="hero" />`) : '';
+        document.getElementById('featuredPreview').innerHTML = state.featuredMedia && state.featuredMedia.src ? (state.featuredMedia.type === 'video' ? `<video src="${state.featuredMedia.src}" controls playsinline></video>` : `<img src="${state.featuredMedia.src}" alt="featured" />`) : '';
+      }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        document.getElementById('loading').classList.add('hidden');
-      }, 500);
-    });
-
-    renderAll();
-    document.getElementById('bgPreview').classList.add('hidden');
-    document.getElementById('featuredPreview').classList.add('hidden');
-  </script>
-</body>
+      renderUI();
+      initPreviewPlaceholders();
+      populateEditor();
+      setTimeout(() => elements.loading.classList.add('hidden'), 600);
+      const shareUrl = saveStateToLocal(state);
+      elements.shareBox.textContent = shareUrl;
+      elements.shareBox.classList.add('show');
+      const storedGuest = localStorage.getItem('momentary-guest-name');
+      if (storedGuest) elements.guestName.value = storedGuest;
+    </script>
+  </body>
 </html>
