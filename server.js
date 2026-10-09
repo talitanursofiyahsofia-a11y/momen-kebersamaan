@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -11,6 +12,13 @@ const ROOT = __dirname;
 const DATA_DIR = path.join(ROOT, 'data');
 const UPLOADS_DIR = path.join(DATA_DIR, 'uploads');
 const DATA_FILE = path.join(DATA_DIR, 'pages.json');
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_BUCKET = process.env.SUPABASE_BUCKET || 'momen-kebersamaan';
+
+function isSupabaseConfigured() {
+  return Boolean(SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY);
+}
 
 function ensureDirs() {
   fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -205,8 +213,39 @@ async function saveUploadedFile(file) {
   const isImage = file.mimetype.startsWith('image/');
   const ext = isImage ? '.webp' : '.mp4';
   const filename = `${crypto.randomBytes(8).toString('hex')}${ext}`;
-  const filepath = path.join(UPLOADS_DIR, filename);
 
+  if (isSupabaseConfigured()) {
+    const finalBuffer = isImage
+      ? await sharp(file.buffer)
+          .resize(1920, 1080, { fit: 'inside', withoutEnlargement: true })
+          .webp({ quality: 80 })
+          .toBuffer()
+      : file.buffer;
+
+    const url = `${SUPABASE_URL}/storage/v1/object/${SUPABASE_BUCKET}/${filename}`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        'Content-Type': isImage ? 'image/webp' : 'video/mp4',
+        'x-upsert': 'true'
+      },
+      body: finalBuffer
+    });
+
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`Supabase upload failed: ${text || response.statusText}`);
+    }
+
+    return {
+      url: `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_BUCKET}/${filename}`,
+      type: isImage ? 'image' : 'video'
+    };
+  }
+
+  const filepath = path.join(UPLOADS_DIR, filename);
   if (isImage) {
     await sharp(file.buffer)
       .resize(1920, 1080, { fit: 'inside', withoutEnlargement: true })
@@ -286,4 +325,9 @@ ensureDirs();
 app.listen(PORT, () => {
   console.log(`\n🎉 Momentary backend running on http://localhost:${PORT}\n`);
   console.log(`Admin page: http://localhost:${PORT}/admin.html\n`);
+  if (isSupabaseConfigured()) {
+    console.log('✅ Supabase storage detected. Uploaded media will be stored in Supabase.');
+  } else {
+    console.log('ℹ️ Supabase not configured. Falling back to local file storage in /data/uploads');
+  }
 });
