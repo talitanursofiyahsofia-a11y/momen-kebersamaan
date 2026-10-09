@@ -478,7 +478,7 @@
         </div>
 
         <div class="input-group">
-          <label>Hero Media</label>
+          <label>Hero Media (Foto/Video Utama)</label>
           <div class="file-input-wrapper">
             <input type="file" id="heroMediaFile" accept="image/*,video/*" onchange="previewMedia('heroMediaFile', 'heroMediaPreview')">
             <label class="file-input-label">Pilih Gambar/Video</label>
@@ -542,7 +542,7 @@
       <!-- Intro -->
       <section class="section">
         <h2 class="section-title" id="introTitleDisplay">Kehidupan <span class="ital">yang menyatukan</span> kita</h2>
-        <p class="section-text" id="introTextDisplay">Setiap momen yang kita lalui bersama membuat kami lebih berarti. Dari tawa hingga haru, semuanya menjadi bagian dari cerita yang tak tergantikan.</p>
+        <p class="section-text" id="introTextDisplay">Setiap momen yang kita lalui bersama membuat kami lebih berarti. Dari tawa hingga haru, semuanya menjadi bagian dari cerita yang tak terganti[...]
         <div id="featuredMediaContainer">
           <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1600&q=80" alt="" class="featured-media">
         </div>
@@ -734,6 +734,7 @@
           const uploadRes = await uploadMedia(heroFile);
           if (uploadRes.ok) {
             state.heroMedia = { type: heroFile.type.startsWith('image/') ? 'image' : 'video', src: uploadRes.url };
+            currentState.heroMedia = state.heroMedia;
           }
         }
 
@@ -752,10 +753,10 @@
             currentState = data.page.state;
             renderPage();
             closeEditModal();
-            alert('Halaman berhasil disimpan!');
+            alert('✅ Halaman berhasil disimpan permanent! Data Anda aman di server.');
           }
         } catch (error) {
-          alert('Gagal menyimpan halaman');
+          alert('❌ Gagal menyimpan halaman');
           console.error(error);
         } finally {
           document.getElementById('loading').classList.add('hidden');
