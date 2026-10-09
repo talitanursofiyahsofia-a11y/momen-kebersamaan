@@ -41,6 +41,13 @@ function safeString(value, fallback = '') {
   return value.trim() || fallback;
 }
 
+function normalizeMedia(value, fallback) {
+  if (value && typeof value === 'object') {
+    return value;
+  }
+  return fallback;
+}
+
 function normalizeState(state) {
   const defaultState = {
     siteTitle: 'MOMENTARY',
@@ -91,6 +98,20 @@ function normalizeState(state) {
   };
 
   const base = state && typeof state === 'object' ? state : {};
+
+  const normalizedGallery = Array.isArray(base.gallery)
+    ? base.gallery.map((item) => {
+        if (item && typeof item === 'object') {
+          return {
+            label: safeString(item.label, 'Gallery'),
+            src: safeString(item.src, defaultState.gallery[0].src),
+            type: item.type === 'video' ? 'video' : 'image'
+          };
+        }
+        return { label: 'Gallery', src: String(item), type: 'image' };
+      })
+    : defaultState.gallery;
+
   return {
     ...defaultState,
     ...base,
@@ -102,9 +123,9 @@ function normalizeState(state) {
     introText: safeString(base.introText, defaultState.introText),
     closingTitle: safeString(base.closingTitle, defaultState.closingTitle),
     closingText: safeString(base.closingText, defaultState.closingText),
-    heroMedia: base.heroMedia && typeof base.heroMedia === 'object' ? base.heroMedia : defaultState.heroMedia,
-    featuredMedia: base.featuredMedia && typeof base.featuredMedia === 'object' ? base.featuredMedia : defaultState.featuredMedia,
-    gallery: Array.isArray(base.gallery) ? base.gallery : defaultState.gallery,
+    heroMedia: normalizeMedia(base.heroMedia, defaultState.heroMedia),
+    featuredMedia: normalizeMedia(base.featuredMedia, defaultState.featuredMedia),
+    gallery: normalizedGallery,
     videos: Array.isArray(base.videos) ? base.videos : defaultState.videos,
     timeline: Array.isArray(base.timeline) ? base.timeline : defaultState.timeline,
     memoryWall: Array.isArray(base.memoryWall) ? base.memoryWall : defaultState.memoryWall
@@ -180,29 +201,61 @@ app.post('/api/page/:id', (req, res) => {
   res.json({ ok: true, page: { id: req.params.id, state }, shareUrl });
 });
 
+async function saveUploadedFile(file) {
+  const isImage = file.mimetype.startsWith('image/');
+  const ext = isImage ? '.webp' : '.mp4';
+  const filename = `${crypto.randomBytes(8).toString('hex')}${ext}`;
+  const filepath = path.join(UPLOADS_DIR, filename);
+
+  if (isImage) {
+    await sharp(file.buffer)
+      .resize(1920, 1080, { fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toFile(filepath);
+  } else {
+    fs.writeFileSync(filepath, file.buffer);
+  }
+
+  return {
+    url: `/uploads/${filename}`,
+    type: isImage ? 'image' : 'video'
+  };
+}
+
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ ok: false, error: 'no file provided' });
     }
 
-    const ext = req.file.mimetype.startsWith('image/') ? '.webp' : '.mp4';
-    const filename = `${crypto.randomBytes(8).toString('hex')}${ext}`;
-    const filepath = path.join(UPLOADS_DIR, filename);
-
-    if (req.file.mimetype.startsWith('image/')) {
-      await sharp(req.file.buffer)
-        .resize(1920, 1080, { fit: 'inside', withoutEnlargement: true })
-        .webp({ quality: 80 })
-        .toFile(filepath);
-    } else {
-      fs.writeFileSync(filepath, req.file.buffer);
-    }
-
-    const url = `/uploads/${filename}`;
-    res.json({ ok: true, url });
+    const saved = await saveUploadedFile(req.file);
+    res.json({ ok: true, url: saved.url, type: saved.type });
   } catch (error) {
     console.error('Upload error:', error);
+    res.status(500).json({ ok: false, error: error.message || 'Upload failed' });
+  }
+});
+
+app.post('/api/upload-multiple', upload.array('files', 20), async (req, res) => {
+  try {
+    const files = Array.isArray(req.files) ? req.files : [];
+    if (!files.length) {
+      return res.status(400).json({ ok: false, error: 'no files provided' });
+    }
+
+    const results = [];
+    for (const file of files) {
+      const saved = await saveUploadedFile(file);
+      results.push({
+        url: saved.url,
+        type: saved.type,
+        name: file.originalname || 'gallery-item'
+      });
+    }
+
+    res.json({ ok: true, files: results });
+  } catch (error) {
+    console.error('Multiple upload error:', error);
     res.status(500).json({ ok: false, error: error.message || 'Upload failed' });
   }
 });
