@@ -24,7 +24,8 @@ function readPages() {
   ensureDirs();
   try {
     const raw = fs.readFileSync(DATA_FILE, 'utf8');
-    return JSON.parse(raw || '{}');
+    const parsed = JSON.parse(raw || '{}');
+    return parsed && typeof parsed === 'object' ? parsed : {};
   } catch (error) {
     return {};
   }
@@ -35,8 +36,13 @@ function writePages(pages) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(pages, null, 2), 'utf8');
 }
 
-function defaultState() {
-  return {
+function safeString(value, fallback = '') {
+  if (typeof value !== 'string') return fallback;
+  return value.trim() || fallback;
+}
+
+function normalizeState(state) {
+  const defaultState = {
     siteTitle: 'MOMENTARY',
     siteSubtitle: 'Jejak Kebersamaan Kita',
     heroTitle: 'Bersama <span class="ital">dalam</span> cerita',
@@ -83,6 +89,26 @@ function defaultState() {
       'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80'
     ]
   };
+
+  const base = state && typeof state === 'object' ? state : {};
+  return {
+    ...defaultState,
+    ...base,
+    siteTitle: safeString(base.siteTitle, defaultState.siteTitle),
+    siteSubtitle: safeString(base.siteSubtitle, defaultState.siteSubtitle),
+    heroTitle: safeString(base.heroTitle, defaultState.heroTitle),
+    heroText: safeString(base.heroText, defaultState.heroText),
+    introTitle: safeString(base.introTitle, defaultState.introTitle),
+    introText: safeString(base.introText, defaultState.introText),
+    closingTitle: safeString(base.closingTitle, defaultState.closingTitle),
+    closingText: safeString(base.closingText, defaultState.closingText),
+    heroMedia: base.heroMedia && typeof base.heroMedia === 'object' ? base.heroMedia : defaultState.heroMedia,
+    featuredMedia: base.featuredMedia && typeof base.featuredMedia === 'object' ? base.featuredMedia : defaultState.featuredMedia,
+    gallery: Array.isArray(base.gallery) ? base.gallery : defaultState.gallery,
+    videos: Array.isArray(base.videos) ? base.videos : defaultState.videos,
+    timeline: Array.isArray(base.timeline) ? base.timeline : defaultState.timeline,
+    memoryWall: Array.isArray(base.memoryWall) ? base.memoryWall : defaultState.memoryWall
+  };
 }
 
 const storage = multer.memoryStorage();
@@ -114,13 +140,21 @@ app.get('/api/page/:id', (req, res) => {
     return res.status(404).json({ ok: false, error: 'page not found' });
   }
 
-  res.json({ ok: true, page: { id: page.id, state: page.state } });
+  res.json({
+    ok: true,
+    page: {
+      id: page.id,
+      state: normalizeState(page.state),
+      createdAt: page.createdAt,
+      updatedAt: page.updatedAt
+    }
+  });
 });
 
 app.post('/api/page', (req, res) => {
   const pages = readPages();
   const id = crypto.randomUUID();
-  const state = req.body?.state || defaultState();
+  const state = normalizeState(req.body?.state || {});
   const entry = { id, state, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
   pages[id] = entry;
   writePages(pages);
@@ -136,7 +170,7 @@ app.post('/api/page/:id', (req, res) => {
     return res.status(404).json({ ok: false, error: 'page not found' });
   }
 
-  const state = req.body?.state || existing.state || defaultState();
+  const state = normalizeState(req.body?.state || existing.state || {});
   existing.state = state;
   existing.updatedAt = new Date().toISOString();
   pages[req.params.id] = existing;
@@ -169,18 +203,21 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     res.json({ ok: true, url });
   } catch (error) {
     console.error('Upload error:', error);
-    res.status(500).json({ ok: false, error: error.message });
+    res.status(500).json({ ok: false, error: error.message || 'Upload failed' });
   }
 });
 
 app.get('/api/admin/pages', (req, res) => {
   const pages = readPages();
-  const list = Object.values(pages).map((p) => ({
-    id: p.id,
-    title: p.state?.siteTitle || 'Untitled',
-    createdAt: p.createdAt,
-    updatedAt: p.updatedAt
-  }));
+  const list = Object.values(pages)
+    .map((p) => ({
+      id: p.id,
+      title: p.state?.siteTitle || 'Untitled',
+      createdAt: p.createdAt,
+      updatedAt: p.updatedAt
+    }))
+    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
   res.json({ ok: true, pages: list });
 });
 
