@@ -53,6 +53,7 @@
         letter-spacing: 0.18em;
         text-transform: uppercase;
         backdrop-filter: blur(10px);
+        transition: opacity 0.4s ease, visibility 0.4s ease;
       }
 
       .loading.hidden {
@@ -61,10 +62,9 @@
         pointer-events: none;
       }
 
-      .edit-toggle {
+      .edit-toggle, .share-toggle {
         position: fixed;
         right: 18px;
-        top: 18px;
         z-index: 120;
         border: 1px solid rgba(29, 36, 48, 0.15);
         background: rgba(255,255,255,0.72);
@@ -77,6 +77,129 @@
         letter-spacing: 0.15em;
         backdrop-filter: blur(12px);
         box-shadow: var(--shadow);
+      }
+
+      .edit-toggle { top: 18px; }
+      .share-toggle { top: 70px; }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 300;
+        display: grid;
+        place-items: center;
+        background: rgba(18, 18, 18, 0.68);
+        backdrop-filter: blur(10px);
+        padding: 20px;
+      }
+
+      .modal.hidden { display: none; }
+
+      .modal-content {
+        background: var(--panel-strong);
+        border-radius: 24px;
+        max-width: 500px;
+        width: 100%;
+        padding: 32px;
+        box-shadow: var(--shadow);
+      }
+
+      .modal-title { margin: 0 0 16px; font-size: 1.4rem; }
+      .modal-text { color: var(--muted); margin: 0 0 24px; }
+
+      .input-group {
+        margin-bottom: 16px;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+      }
+
+      .input-group input,
+      .input-group textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.5);
+      }
+
+      .input-group textarea {
+        min-height: 80px;
+        resize: vertical;
+      }
+
+      .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .file-input-wrapper input[type="file"] {
+        position: absolute;
+        left: -9999px;
+      }
+
+      .file-input-label {
+        display: block;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255,255,255,0.5);
+        cursor: pointer;
+        text-align: center;
+      }
+
+      .modal-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 24px;
+      }
+
+      button {
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        padding: 10px 16px;
+        font-weight: 600;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+        flex: 1;
+      }
+
+      .btn-secondary {
+        background: rgba(255,255,255,0.3);
+        color: var(--dark);
+        flex: 1;
+      }
+
+      .share-link-box {
+        background: rgba(255,255,255,0.3);
+        padding: 12px;
+        border-radius: 8px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .share-link-box input {
+        flex: 1;
+        border: none;
+        padding: 8px;
+        border-radius: 4px;
+        background: rgba(255,255,255,0.5);
+      }
+
+      .share-link-box button {
+        padding: 8px 12px;
+        background: var(--accent);
+        color: white;
       }
 
       .gate {
@@ -98,1234 +221,640 @@
         transform: scale(1.08);
       }
 
-      .gate-inner {
+      .gate-content {
         position: relative;
-        z-index: 1;
-        width: min(760px, 92vw);
+        z-index: 10;
         text-align: center;
-        color: #fff;
-        text-shadow: 0 10px 30px rgba(0,0,0,0.28);
+        color: white;
+        animation: fadeIn 0.6s ease;
       }
 
-      .eyebrow {
-        display: inline-block;
-        font-size: 0.68rem;
-        letter-spacing: 0.26em;
-        text-transform: uppercase;
-        color: rgba(255,255,255,0.9);
-        font-weight: 700;
-      }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-      .gate h1 {
-        margin: 18px 0 8px;
-        font-size: clamp(3.4rem, 9vw, 8rem);
-        line-height: 0.9;
-        letter-spacing: 0.08em;
+      .gate-title {
+        font-size: clamp(2.4rem, 6vw, 4rem);
         font-weight: 700;
+        margin: 0 0 12px;
+        letter-spacing: -0.02em;
       }
 
       .gate-subtitle {
-        margin: 0;
-        font-size: 0.9rem;
-        letter-spacing: 0.42em;
-        text-transform: uppercase;
-        color: rgba(255,255,255,0.8);
+        font-size: 1.2rem;
+        font-weight: 300;
+        margin: 0 0 32px;
+        opacity: 0.9;
       }
 
-      .gate-card {
-        width: min(420px, 90vw);
-        margin: 32px auto 0;
-        padding: 22px 20px 18px;
-        background: rgba(16, 21, 31, 0.28);
-        border: 1px solid rgba(255,255,255,0.18);
-        border-radius: 24px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        text-align: left;
-      }
-
-      .gate-card label {
-        display: block;
-        margin-bottom: 8px;
-        color: rgba(255,255,255,0.82);
-        font-size: 0.74rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      .gate-card input {
-        width: 100%;
-        background: rgba(255,255,255,0.12);
-        border: 1px solid rgba(255,255,255,0.18);
-        border-radius: 12px;
-        padding: 12px 14px;
-        color: #fff;
-        outline: none;
-      }
-
-      .gate-card input::placeholder { color: rgba(255,255,255,0.5); }
-      .gate-card button {
-        width: 100%;
-        margin-top: 16px;
-        border: none;
-        padding: 13px 16px;
+      .gate-button {
+        display: inline-block;
+        padding: 14px 32px;
+        background: rgba(255,255,255,0.95);
+        color: var(--dark);
         border-radius: 999px;
-        background: linear-gradient(135deg, rgba(255,255,255,0.28), rgba(255,255,255,0.18));
-        color: white;
-        font-weight: 700;
-        letter-spacing: 0.18em;
         cursor: pointer;
-        transition: transform 0.25s ease, box-shadow 0.25s ease;
-        box-shadow: 0 16px 30px rgba(0, 0, 0, 0.18);
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        font-size: 0.8rem;
+        border: none;
+        box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
       }
 
-      .gate-card button:hover {
+      .gate-button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 16px 40px rgba(0,0,0,0.2);
       }
 
-      .topbar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 40;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 18px 26px;
-        background: linear-gradient(180deg, rgba(18, 19, 23, 0.48), rgba(18, 19, 23, 0));
-        pointer-events: none;
+      .page-content {
+        opacity: 0;
+        transition: opacity 0.4s ease;
       }
 
-      .topbar > * { pointer-events: auto; }
-      .brand {
-        font-size: 0.72rem;
-        letter-spacing: 0.21em;
-        color: rgba(255,255,255,0.92);
-        text-transform: uppercase;
-        font-weight: 700;
-      }
-
-      .mute-btn {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        border: 1px solid rgba(255,255,255,0.24);
-        background: rgba(17,20,25,0.22);
-        color: white;
-        backdrop-filter: blur(8px);
-        cursor: pointer;
-        font-size: 1.1rem;
+      .page-content.show {
+        opacity: 1;
       }
 
       .hero {
-        position: relative;
         min-height: 100vh;
-        display: grid;
-        place-items: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, rgba(240,203,197,0.3), rgba(200,220,235,0.3));
+        position: relative;
         overflow: hidden;
-        background: #222;
       }
 
-      .hero-media {
+      .hero::before {
+        content: "";
         position: absolute;
         inset: 0;
-        overflow: hidden;
-        background: #111;
+        background-image: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1600&q=80');
+        background-size: cover;
+        background-position: center;
+        filter: grayscale(0.2) brightness(0.6);
+        z-index: 1;
       }
 
-      .hero-media video,
-      .hero-media img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        filter: saturate(1.05) brightness(0.66) contrast(1.1);
-        transform: scale(1.08);
-      }
-
-      .hero-overlay {
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(180deg, rgba(16,18,22,0.08), rgba(16,18,22,0.2), rgba(16,18,22,0.5));
-      }
-
-      .hero-copy {
+      .hero-content {
         position: relative;
         z-index: 2;
-        width: min(960px, 84vw);
         text-align: center;
         color: white;
+        max-width: 800px;
       }
 
-      .hero-copy h2 {
-        font-size: clamp(3.2rem, 7vw, 7.5rem);
-        line-height: 0.96;
-        margin: 22px 0 18px;
-        letter-spacing: -0.05em;
-        font-weight: 500;
+      .hero-title {
+        font-size: clamp(2.4rem, 6vw, 4rem);
+        font-weight: 700;
+        margin: 0 0 16px;
+        line-height: 1.1;
       }
 
-      .hero-copy h2 .ital {
-        color: #e2d6d0;
-        font-style: italic;
+      .hero-text {
+        font-size: clamp(1rem, 2.5vw, 1.3rem);
         font-weight: 300;
+        margin: 0;
+        opacity: 0.95;
       }
 
-      .hero-copy p {
-        max-width: 650px;
-        margin: 0 auto;
-        color: rgba(255,255,255,0.82);
-        font-size: 1.08rem;
-        line-height: 1.8;
-      }
-
-      .scroll-hint {
-        margin-top: 42px;
-        font-size: 0.68rem;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: rgba(255,255,255,0.8);
-      }
-
-      .scroll-hint span {
-        display: block;
-        width: 1px;
-        height: 54px;
-        margin: 0 auto 12px;
-        background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0));
-        animation: floatLine 1.8s ease-in-out infinite;
-      }
-
-      @keyframes floatLine {
-        0% { transform: translateY(0); opacity: 0.1; }
-        50% { transform: translateY(16px); opacity: 1; }
-        100% { transform: translateY(0); opacity: 0.1; }
-      }
+      .ital { font-style: italic; }
 
       .section {
-        padding: 7.5rem 6vw;
-        position: relative;
+        padding: 60px 20px;
+        max-width: 1000px;
+        margin: 0 auto;
       }
 
-      .section-inner { max-width: 1180px; margin: 0 auto; }
-      .intro {
+      .section-title {
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
         text-align: center;
-        background: rgba(255,255,255,0.18);
+        margin: 0 0 40px;
       }
 
-      .intro h3 {
-        margin: 20px 0 14px;
-        font-size: clamp(2.4rem, 5vw, 5.2rem);
-        line-height: 1.04;
-        letter-spacing: -0.04em;
-        font-weight: 400;
-      }
-
-      .intro h3 .ital {
-        color: #7f9ab2;
-        font-style: italic;
-        font-weight: 300;
-      }
-
-      .intro p {
-        max-width: 720px;
-        margin: 0 auto;
+      .section-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
         color: var(--muted);
-        line-height: 1.9;
-        font-size: 1.05rem;
+        text-align: center;
+        margin: 0 0 40px;
       }
 
-      .featured-wrap {
-        padding-top: 4rem;
-        padding-bottom: 2rem;
-      }
-
-      .featured-main {
-        position: relative;
-        max-width: 1220px;
-        margin: 0 auto;
-        overflow: hidden;
-        border-radius: 32px;
-        box-shadow: var(--shadow);
-        border: 1px solid rgba(38, 43, 53, 0.08);
-        background: #e7d7d0;
-      }
-
-      .featured-main img {
+      .featured-media {
         width: 100%;
-        height: min(72vh, 780px);
+        aspect-ratio: 16 / 9;
         object-fit: cover;
-        display: block;
-        filter: saturate(1.08) contrast(1.05);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
       }
 
-      .featured-meta {
-        width: min(1220px, 88vw);
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 18px 0 0;
-        font-size: 0.66rem;
-        font-weight: 700;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--muted);
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+        margin: 40px 0;
       }
 
-      .gallery { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
-      .memory-card {
-        position: relative;
+      .gallery-item {
+        aspect-ratio: 1;
+        border-radius: 12px;
         overflow: hidden;
-        border-radius: 24px;
-        background: #ddd;
-        border: 1px solid rgba(25, 33, 41, 0.08);
-        box-shadow: 0 12px 24px rgba(42, 35, 49, 0.08);
-        min-height: 280px;
-        grid-column: span 4;
+        box-shadow: var(--shadow);
       }
 
-      .memory-card:nth-child(3n + 1) { grid-column: span 5; }
-      .memory-card:nth-child(3n + 2) { grid-column: span 4; }
-      .memory-card:nth-child(3n + 3) { grid-column: span 3; }
-      .memory-card:nth-child(5n + 1),
-      .memory-card:nth-child(5n + 4) { min-height: 400px; }
-
-      .memory-card img {
+      .gallery-item img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        display: block;
       }
 
-      .memory-card figcaption {
-        position: absolute;
-        inset: auto 0 0 0;
-        display: flex;
-        justify-content: space-between;
-        gap: 16px;
-        padding: 16px 18px 14px;
-        background: linear-gradient(180deg, rgba(9,11,17,0), rgba(9,11,17,0.76));
-        color: white;
-        font-size: 0.7rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        font-weight: 700;
-      }
-
-      .soundtrack { padding-top: 6rem; padding-bottom: 5rem; }
-      .soundtrack-inner {
-        display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: 36px;
-        align-items: center;
-        max-width: 1180px;
-        margin: 0 auto;
-      }
-
-      .soundtrack-copy h3 {
-        margin: 18px 0 12px;
-        font-weight: 400;
-        font-size: clamp(2.3rem, 4vw, 4.4rem);
-        line-height: 1.02;
-        letter-spacing: -0.05em;
-      }
-
-      .soundtrack-copy .ital {
-        color: #829ab2;
-        font-style: italic;
-        font-weight: 300;
-      }
-
-      .soundtrack-copy p {
-        margin: 0;
-        max-width: 630px;
-        line-height: 1.9;
-        color: var(--muted);
-      }
-
-      .sound-box {
-        background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
-        border: 1px solid rgba(25,33,41,0.08);
-        border-radius: 30px;
-        min-height: 290px;
-        box-shadow: var(--shadow);
-        display: grid;
-        place-items: center;
-        text-align: center;
-        padding: 20px;
-      }
-
-      .bars {
-        display: flex;
-        align-items: end;
-        gap: 8px;
-        height: 100px;
-        margin-bottom: 14px;
-      }
-
-      .bars span {
-        display: block;
-        width: 8px;
-        border-radius: 999px;
-        background: linear-gradient(180deg, #d9bfdb, #9fc3df, #efb7b2);
-        animation: audioWave 1.25s ease-in-out infinite alternate;
-      }
-      .bars span:nth-child(1){ height: 28%; animation-delay: 0.1s; }
-      .bars span:nth-child(2){ height: 46%; animation-delay: 0.2s; }
-      .bars span:nth-child(3){ height: 68%; animation-delay: 0.3s; }
-      .bars span:nth-child(4){ height: 52%; animation-delay: 0.4s; }
-      .bars span:nth-child(5){ height: 82%; animation-delay: 0.5s; }
-      .bars span:nth-child(6){ height: 58%; animation-delay: 0.6s; }
-      .bars span:nth-child(7){ height: 90%; animation-delay: 0.7s; }
-      .bars span:nth-child(8){ height: 62%; animation-delay: 0.8s; }
-      .bars span:nth-child(9){ height: 44%; animation-delay: 0.9s; }
-
-      @keyframes audioWave {
-        0% { transform: scaleY(0.42); opacity: 0.55; }
-        100% { transform: scaleY(1); opacity: 1; }
-      }
-
-      .video-section { background: rgba(255,255,255,0.14); }
-      .video-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 22px;
-        max-width: 1180px;
-        margin: 0 auto;
-      }
-
-      .video-card {
-        overflow: hidden;
-        background: rgba(255,255,255,0.6);
-        border: 1px solid rgba(25,33,41,0.08);
-        border-radius: 24px;
-        box-shadow: var(--shadow);
-      }
-
-      .video-card video {
-        width: 100%;
-        height: 420px;
-        object-fit: cover;
-        display: block;
-        background: #0f1116;
-      }
-
-      .video-card figcaption {
-        padding: 14px 18px 16px;
-        color: var(--muted);
-        font-size: 0.76rem;
-        letter-spacing: 0.13em;
-        text-transform: uppercase;
-        font-weight: 700;
-      }
-
-      .timeline-section { padding-bottom: 4rem; }
       .timeline {
-        position: relative;
-        max-width: 1100px;
-        margin: 0 auto;
-        border-left: 1px solid rgba(51,58,67,0.12);
-        padding-left: 34px;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        margin: 40px 0;
       }
 
       .timeline-item {
-        position: relative;
-        padding: 0 0 34px 18px;
-      }
-
-      .timeline-item::before {
-        content: "";
-        position: absolute;
-        left: -41px;
-        top: 8px;
-        width: 14px;
-        height: 14px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #c7a0fa, #9cc2e3);
-        box-shadow: 0 0 0 6px rgba(173, 186, 208, 0.2);
+        display: flex;
+        gap: 24px;
       }
 
       .timeline-time {
-        color: #7382a0;
-        font-size: 0.66rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
+        flex-shrink: 0;
         font-weight: 700;
-        display: block;
-        margin-bottom: 8px;
+        color: var(--accent);
       }
 
-      .timeline-item h4 {
+      .timeline-content h3 {
         margin: 0 0 8px;
-        font-size: clamp(1.5rem, 2.3vw, 2.5rem);
-        letter-spacing: -0.04em;
-        font-weight: 500;
       }
 
-      .timeline-item p {
+      .timeline-content p {
         margin: 0;
         color: var(--muted);
-        line-height: 1.8;
-        max-width: 620px;
       }
 
-      .wall-section { padding-top: 5rem; }
       .memory-wall {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 10px;
-        max-width: 1180px;
-        margin: 28px auto 0;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 12px;
+        margin: 40px 0;
       }
 
-      .memory-wall-item {
-        position: relative;
-        aspect-ratio: 1 / 1;
-        overflow: hidden;
-        border-radius: 18px;
-        box-shadow: 0 10px 18px rgba(26, 23, 30, 0.09);
-        background: #ddd;
-      }
-
-      .memory-wall-item img {
+      .memory-wall img {
         width: 100%;
-        height: 100%;
+        aspect-ratio: 1;
         object-fit: cover;
-        display: block;
+        border-radius: 8px;
       }
 
-      .closing {
-        padding-top: 5rem;
-        padding-bottom: 7rem;
+      .footer {
+        background: var(--bg-deep);
+        padding: 60px 20px;
         text-align: center;
-      }
-
-      .closing h2 {
-        margin: 18px 0 12px;
-        font-size: clamp(3.2rem, 9vw, 7.5rem);
-        letter-spacing: 0.08em;
-        font-weight: 700;
-        color: var(--dark);
-      }
-
-      .closing p {
-        max-width: 700px;
-        margin: 0 auto;
         color: var(--muted);
-        line-height: 1.95;
-        font-size: 1.08rem;
       }
 
-      .back-to-top {
-        position: fixed;
-        right: 18px;
-        bottom: 18px;
-        z-index: 80;
-        width: 48px;
-        height: 48px;
-        border: 1px solid rgba(25,35,44,0.12);
-        border-radius: 50%;
-        background: rgba(255,255,255,0.7);
-        color: var(--dark);
-        font-size: 1.3rem;
-        cursor: pointer;
-        box-shadow: 0 14px 30px rgba(0,0,0,0.12);
-        opacity: 0;
-        transform: translateY(16px);
-        pointer-events: none;
-        transition: opacity 0.25s ease, transform 0.25s ease;
-      }
-
-      .back-to-top.show {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-      }
-
-      .edit-panel {
-        position: fixed;
-        top: 16px;
-        right: 16px;
-        z-index: 150;
-        width: min(460px, calc(100vw - 30px));
-        max-height: calc(100vh - 32px);
-        overflow: auto;
-        background: rgba(254, 250, 247, 0.92);
-        border: 1px solid rgba(26, 31, 40, 0.08);
-        border-radius: 26px;
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(12px);
-        padding: 18px 18px 20px;
-      }
-
-      .panel-head {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 12px;
-      }
-
-      .panel-head h3 {
-        margin: 0;
-        font-size: 0.8rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-      }
-
-      .close-panel {
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        border: 1px solid rgba(27,32,40,0.1);
-        background: rgba(255,255,255,0.5);
-        color: var(--dark);
-        cursor: pointer;
-        font-size: 1.2rem;
-      }
-
-      .panel-tabs {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 8px;
-        margin: 12px 0 16px;
-      }
-
-      .tab-btn {
-        border: 1px solid rgba(27,32,40,0.08);
-        background: rgba(255,255,255,0.3);
-        color: var(--muted);
-        padding: 9px 8px;
-        border-radius: 12px;
-        font-size: 0.65rem;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        cursor: pointer;
+      .footer-title {
+        font-size: 2rem;
         font-weight: 700;
-      }
-
-      .tab-btn.active {
-        background: rgba(159,192,219,0.24);
-        color: var(--dark);
-        border-color: rgba(126,153,182,0.4);
-      }
-
-      .panel-tab { display: none; }
-      .panel-tab.active { display: block; }
-      .panel-group { margin-bottom: 14px; }
-      .panel-group label {
-        display: block;
-        font-size: 0.72rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--muted);
-        margin-bottom: 8px;
-        font-weight: 700;
-      }
-
-      .panel-input,
-      .panel-textarea,
-      .inline-input {
-        width: 100%;
-        padding: 11px 12px;
-        border: 1px solid rgba(27,32,40,0.12);
-        border-radius: 12px;
-        background: rgba(255,255,255,0.48);
         color: var(--text);
-        outline: none;
+        margin: 0 0 16px;
       }
 
-      .panel-textarea { min-height: 100px; resize: vertical; }
-      .file-box {
-        background: rgba(255,255,255,0.38);
-        border: 1px dashed rgba(27,32,40,0.18);
-        border-radius: 14px;
-        padding: 10px 12px;
-        margin-top: 8px;
-      }
-      .file-box input[type="file"] {
-        width: 100%;
-        color: var(--muted);
-        font-size: 0.78rem;
+      .footer-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        max-width: 600px;
+        margin: 0 auto;
       }
 
-      .preview-mini {
-        width: 100%;
-        margin-top: 12px;
-        border-radius: 12px;
-        overflow: hidden;
-        border: 1px solid rgba(27,32,40,0.08);
-        background: #e8d8d1;
-      }
-
-      .preview-mini img,
-      .preview-mini video {
-        width: 100%;
-        height: 170px;
-        object-fit: cover;
-        display: block;
-      }
-
-      .panel-actions {
-        display: flex;
-        gap: 10px;
-        margin-top: 20px;
-      }
-
-      .panel-actions button {
-        flex: 1;
-        border: 1px solid rgba(27,32,40,0.08);
-        background: rgba(255,255,255,0.55);
-        color: var(--dark);
-        border-radius: 12px;
-        padding: 12px 14px;
-        cursor: pointer;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      .primary-btn {
-        background: linear-gradient(135deg, rgba(163,191,219,0.5), rgba(225,197,204,0.55)) !important;
-      }
-
-      .share-box {
-        margin-top: 10px;
-        padding: 12px;
-        border-radius: 12px;
-        background: rgba(255,255,255,0.45);
-        border: 1px solid rgba(27,32,40,0.08);
-        display: none;
-        font-size: 0.72rem;
-        word-break: break-all;
-      }
-
-      .share-box.show { display: block; }
-
-      @media (max-width: 768px) {
-        .gallery { grid-template-columns: 1fr; }
-        .memory-card, .memory-card:nth-child(3n + 1), .memory-card:nth-child(3n + 2), .memory-card:nth-child(3n + 3) {
-          grid-column: auto;
-          min-height: 300px;
-        }
-        .soundtrack-inner,
-        .video-grid { grid-template-columns: 1fr; }
-        .memory-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .edit-panel { top: 12px; right: 12px; width: min(92vw, 420px); }
-        .panel-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .hero-copy h2 { font-size: clamp(2.6rem, 15vw, 5rem); }
+      @media (max-width: 640px) {
+        .timeline-item { flex-direction: column; }
+        .timeline-time { font-size: 0.9rem; }
       }
     </style>
   </head>
   <body>
-    <div id="loading" class="loading">Memuat kenangan...</div>
-    <button id="editToggle" class="edit-toggle" type="button">✎ EDIT</button>
+    <div id="loading" class="loading hidden">Loading...</div>
 
+    <!-- Gate Screen -->
     <div id="gate" class="gate">
-      <div class="gate-inner">
-        <span class="eyebrow">Digital Memory Archive</span>
-        <h1 id="siteTitle">MOMENTARY</h1>
-        <p id="siteSubtitle" class="gate-subtitle">Jejak Kebersamaan Kita</p>
-        <div class="gate-card">
-          <label for="guestName">Nama / Panggilan</label>
-          <input id="guestName" type="text" maxlength="30" placeholder="Contoh: Raka" />
-          <button id="startBtn" type="button">✦ MULAI ✦</button>
-          <small>siap menelusuri kenangan bersama kami</small>
-        </div>
+      <div class="gate-content">
+        <h1 class="gate-title">MOMENTARY</h1>
+        <p class="gate-subtitle">Jejak Kebersamaan Kita</p>
+        <button class="gate-button" onclick="enterPage()">Masuk</button>
       </div>
     </div>
 
-    <header id="topbar" class="topbar hidden">
-      <a href="#top" class="brand" id="brandName">MOMENTARY</a>
-      <button id="muteBtn" class="mute-btn" type="button" aria-label="mute/unmute">♫</button>
-    </header>
+    <!-- Edit Button -->
+    <button class="edit-toggle hidden" id="editBtn" onclick="openEditModal()">EDIT</button>
+    <button class="share-toggle hidden" id="shareBtn" onclick="openShareModal()">SHARE</button>
 
-    <aside id="editPanel" class="edit-panel hidden" aria-label="Panel edit web">
-      <div class="panel-head">
-        <h3>Panel Edit</h3>
-        <button id="closePanel" class="close-panel" type="button">×</button>
-      </div>
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal hidden">
+      <div class="modal-content">
+        <h2 class="modal-title">Edit Halaman</h2>
+        
+        <div class="input-group">
+          <label>Judul Halaman</label>
+          <input type="text" id="siteTitle" placeholder="ex: MOMENTARY">
+        </div>
 
-      <div class="panel-tabs">
-        <button class="tab-btn active" type="button" data-tab="general">Umum</button>
-        <button class="tab-btn" type="button" data-tab="media">Media</button>
-        <button class="tab-btn" type="button" data-tab="share">Share</button>
-      </div>
+        <div class="input-group">
+          <label>Subtitle</label>
+          <input type="text" id="siteSubtitle" placeholder="ex: Jejak Kebersamaan Kita">
+        </div>
 
-      <div class="panel-tab active" data-panel="general">
-        <div class="panel-group">
-          <label for="editTitle">Judul</label>
-          <input id="editTitle" class="panel-input" type="text" />
+        <div class="input-group">
+          <label>Hero Title</label>
+          <input type="text" id="heroTitle" placeholder="ex: Bersama dalam cerita">
         </div>
-        <div class="panel-group">
-          <label for="editSubtitle">Subjudul</label>
-          <input id="editSubtitle" class="panel-input" type="text" />
-        </div>
-        <div class="panel-group">
-          <label for="editIntroTitle">Judul Intro</label>
-          <input id="editIntroTitle" class="panel-input" type="text" />
-        </div>
-        <div class="panel-group">
-          <label for="editIntroText">Teks Intro</label>
-          <textarea id="editIntroText" class="panel-textarea"></textarea>
-        </div>
-        <div class="panel-group">
-          <label for="editClosingText">Teks Penutup</label>
-          <textarea id="editClosingText" class="panel-textarea"></textarea>
-        </div>
-      </div>
 
-      <div class="panel-tab" data-panel="media">
-        <div class="panel-group">
+        <div class="input-group">
+          <label>Hero Text</label>
+          <textarea id="heroText" placeholder="Deskripsi utama halaman..."></textarea>
+        </div>
+
+        <div class="input-group">
           <label>Hero Media</label>
-          <div class="file-box">
-            <input id="heroFile" type="file" accept="image/*,video/*" />
+          <div class="file-input-wrapper">
+            <input type="file" id="heroMediaFile" accept="image/*,video/*" onchange="previewMedia('heroMediaFile', 'heroMediaPreview')">
+            <label class="file-input-label">Pilih Gambar/Video</label>
           </div>
-          <div id="heroPreview" class="preview-mini"></div>
+          <div id="heroMediaPreview" style="margin-top: 8px;"></div>
         </div>
-        <div class="panel-group">
-          <label>Featured Image</label>
-          <div class="file-box">
-            <input id="featuredFile" type="file" accept="image/*,video/*" />
-          </div>
-          <div id="featuredPreview" class="preview-mini"></div>
+
+        <div class="input-group">
+          <label>Intro Title</label>
+          <input type="text" id="introTitle" placeholder="ex: Kehidupan yang menyatukan kita">
+        </div>
+
+        <div class="input-group">
+          <label>Intro Text</label>
+          <textarea id="introText" placeholder="Deskripsi intro..."></textarea>
+        </div>
+
+        <div class="input-group">
+          <label>Closing Title</label>
+          <input type="text" id="closingTitle" placeholder="ex: FOREVER">
+        </div>
+
+        <div class="input-group">
+          <label>Closing Text</label>
+          <textarea id="closingText" placeholder="Pesan penutup..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-primary" onclick="savePage()">SIMPAN</button>
+          <button class="btn-secondary" onclick="closeEditModal()">BATAL</button>
         </div>
       </div>
-
-      <div class="panel-tab" data-panel="share">
-        <div class="panel-group">
-          <label>Link Share</label>
-          <div id="shareBox" class="share-box"></div>
-        </div>
-      </div>
-
-      <div class="panel-actions">
-        <button id="cancelEdit" type="button">Batal</button>
-        <button id="saveEdit" class="primary-btn" type="button">Simpan</button>
-      </div>
-    </aside>
-
-    <div id="app">
-      <div class="hero" id="top">
-        <div class="hero-media" id="heroMedia"></div>
-        <div class="hero-overlay"></div>
-        <div class="hero-copy">
-          <span class="eyebrow">Jejak Kebersamaan</span>
-          <h2 id="heroTitle">Bersama <span class="ital">dalam</span> cerita</h2>
-          <p id="heroText">Kenangan indah yang kita lukis bersama, tak pernah hilang walau waktu berganti.</p>
-          <div class="scroll-hint"><span></span>Scroll</div>
-        </div>
-      </div>
-
-      <section class="section intro">
-        <div class="section-inner">
-          <span class="eyebrow">Tentang kami</span>
-          <h3 id="introTitle">Kehidupan <span class="ital">yang menyatukan</span> kita</h3>
-          <p id="introText">Setiap momen yang kita lalui bersama membuat kami lebih berarti. Dari tawa hingga haru, semuanya menjadi bagian dari cerita yang tak tergantikan.</p>
-        </div>
-      </section>
-
-      <section class="section featured-wrap">
-        <div class="featured-main" id="featuredMain"></div>
-        <div class="featured-meta">
-          <span>Memory</span>
-          <span id="featuredMetaText">Momen indah</span>
-        </div>
-      </section>
-
-      <section class="section gallery-section">
-        <div class="section-inner">
-          <div class="heading">
-            <span class="eyebrow">Galeri</span>
-            <h3>Saat <span class="ital">senyum</span> kita tumbuh</h3>
-            <p>Jejak yang tak bisa dibeli, hanya bisa dijaga dan diingat dengan hangat.</p>
-          </div>
-          <div class="gallery" id="galleryGrid"></div>
-        </div>
-      </section>
-
-      <section class="section soundtrack">
-        <div class="soundtrack-inner">
-          <div class="soundtrack-copy">
-            <span class="eyebrow">Soundtrack</span>
-            <h3>Suara <span class="ital">yang</span> mengingatkan</h3>
-            <p id="soundtrackText">Lirik-lirik sederhana ini menjadi pengiring perjalanan kita, menenangkan dan menghangatkan hati ketika rindu datang.</p>
-          </div>
-          <div class="sound-box">
-            <div class="bars" aria-label="equalizer">
-              <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-            </div>
-            <div class="small-label">For us</div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section video-section">
-        <div class="section-inner">
-          <div class="heading">
-            <span class="eyebrow">Video</span>
-            <h3>Potongan <span class="ital">kenangan</span> hidup</h3>
-          </div>
-          <div class="video-grid" id="videoGrid"></div>
-        </div>
-      </section>
-
-      <section class="section timeline-section">
-        <div class="section-inner">
-          <div class="heading">
-            <span class="eyebrow">Timeline</span>
-            <h3>Hari <span class="ital">yang</span> menghubungkan</h3>
-          </div>
-          <div class="timeline" id="timelineList"></div>
-        </div>
-      </section>
-
-      <section class="section wall-section">
-        <div class="section-inner">
-          <div class="heading">
-            <span class="eyebrow">Wall</span>
-            <h3>Kenangan <span class="ital">yang</span> selalu hadir</h3>
-          </div>
-          <div class="memory-wall" id="memoryWall"></div>
-        </div>
-      </section>
-
-      <section class="section closing">
-        <div class="section-inner">
-          <span class="eyebrow">Untuk kita</span>
-          <h2 id="closingTitle">FOREVER</h2>
-          <p id="closingText">Semua cerita hari ini adalah bagian dari perjalanan kita. Terima kasih sudah menjadi tempat pulang yang hangat dan penuh arti.</p>
-        </div>
-      </section>
     </div>
 
-    <button id="backToTop" class="back-to-top" type="button" aria-label="Back to top">↑</button>
+    <!-- Share Modal -->
+    <div id="shareModal" class="modal hidden">
+      <div class="modal-content">
+        <h2 class="modal-title">Bagikan Halaman</h2>
+        <p class="modal-text">Salin link di bawah untuk membagikan halaman ini kepada orang lain.</p>
+        
+        <div id="shareContent">
+          <p class="modal-text">Belum ada link share. Simpan halaman terlebih dahulu untuk mendapatkan link.</p>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-secondary" onclick="closeShareModal()">TUTUP</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page Content -->
+    <div id="pageContent" class="page-content">
+      <!-- Hero -->
+      <section class="hero" id="heroSection">
+        <div class="hero-content">
+          <h1 class="hero-title" id="heroTitleDisplay">Bersama <span class="ital">dalam</span> cerita</h1>
+          <p class="hero-text" id="heroTextDisplay">Kenangan indah yang kita lukis bersama, tak pernah hilang walau waktu berganti.</p>
+        </div>
+      </section>
+
+      <!-- Intro -->
+      <section class="section">
+        <h2 class="section-title" id="introTitleDisplay">Kehidupan <span class="ital">yang menyatukan</span> kita</h2>
+        <p class="section-text" id="introTextDisplay">Setiap momen yang kita lalui bersama membuat kami lebih berarti. Dari tawa hingga haru, semuanya menjadi bagian dari cerita yang tak tergantikan.</p>
+        <div id="featuredMediaContainer">
+          <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1600&q=80" alt="" class="featured-media">
+        </div>
+      </section>
+
+      <!-- Gallery -->
+      <section class="section">
+        <h2 class="section-title">Galeri Kenangan</h2>
+        <div id="galleryContainer" class="gallery"></div>
+      </section>
+
+      <!-- Timeline -->
+      <section class="section">
+        <h2 class="section-title">Perjalanan Kita</h2>
+        <div id="timelineContainer" class="timeline"></div>
+      </section>
+
+      <!-- Memory Wall -->
+      <section class="section">
+        <h2 class="section-title">Dinding Kenangan</h2>
+        <div id="memoryWallContainer" class="memory-wall"></div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <h2 class="footer-title" id="closingTitleDisplay">FOREVER</h2>
+        <p class="footer-text" id="closingTextDisplay">Semua cerita hari ini adalah bagian dari perjalanan kita. Terima kasih sudah menjadi tempat pulang yang hangat dan penuh arti.</p>
+      </footer>
+    </div>
 
     <script>
-      const DEFAULT_STATE = {
-        siteTitle: 'MOMENTARY',
-        siteSubtitle: 'Jejak Kebersamaan Kita',
-        heroTitle: 'Bersama <span class="ital">dalam</span> cerita',
-        heroText: 'Kenangan indah yang kita lukis bersama, tak pernah hilang walau waktu berganti.',
-        introTitle: 'Kehidupan <span class="ital">yang menyatukan</span> kita',
-        introText: 'Setiap momen yang kita lalui bersama membuat kami lebih berarti. Dari tawa hingga haru, semuanya menjadi bagian dari cerita yang tak tergantikan.',
-        soundtrackText: 'Lirik-lirik sederhana ini menjadi pengiring perjalanan kita, menenangkan dan menghangatkan hati ketika rindu datang.',
-        closingTitle: 'FOREVER',
-        closingText: 'Semua cerita hari ini adalah bagian dari perjalanan kita. Terima kasih sudah menjadi tempat pulang yang hangat dan penuh arti.',
-        featuredMeta: 'Momen indah',
-        heroMedia: {
-          type: 'image',
-          src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1600&q=80'
-        },
-        featuredMedia: {
-          type: 'image',
-          src: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1600&q=80'
-        },
-        gallery: [
-          { label: 'Sunset', src: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80' },
-          { label: 'Smile', src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80' },
-          { label: 'Together', src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80' },
-          { label: 'Joy', src: 'https://images.unsplash.com/photo-1529154691717-3306083d869e?auto=format&fit=crop&w=900&q=80' },
-          { label: 'Run', src: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=900&q=80' },
-          { label: 'Grin', src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80' }
-        ],
-        videos: [
-          { label: 'Moment 1', src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4' },
-          { label: 'Moment 2', src: 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm' }
-        ],
-        timeline: [
-          { time: 'Januari 2024', title: 'Awal perjumpaan', desc: 'Sebuah kenangan dimulai dari percakapan sederhana yang tak pernah lupa.' },
-          { time: 'Maret 2024', title: 'Luka dan tawa', desc: 'Hari-hari yang penuh semangat, cerita ringan, dan senyum yang tak pernah padam.' },
-          { time: 'Juni 2024', title: 'Bertumbuh bersama', desc: 'Kita belajar, menangis, tertawa, dan saling menjaga dengan cara yang unik.' }
-        ],
-        memoryWall: [
-          'https://images.unsplash.com/photo-1529154691717-3306083d869e?auto=format&fit=crop&w=800&q=80',
-          'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80',
-          'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80',
-          'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=80',
-          'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=800&q=80',
-          'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=800&q=80',
-          'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80',
-          'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80'
-        ]
-      };
-
-      const STORAGE_KEY = 'momentary-local-state-v1';
-      let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
       let currentPageId = null;
+      let currentState = null;
 
-      const elements = {
-        loading: document.getElementById('loading'),
-        gate: document.getElementById('gate'),
-        topbar: document.getElementById('topbar'),
-        editToggle: document.getElementById('editToggle'),
-        editPanel: document.getElementById('editPanel'),
-        closePanel: document.getElementById('closePanel'),
-        saveEdit: document.getElementById('saveEdit'),
-        cancelEdit: document.getElementById('cancelEdit'),
-        startBtn: document.getElementById('startBtn'),
-        guestName: document.getElementById('guestName'),
-        muteBtn: document.getElementById('muteBtn'),
-        backToTop: document.getElementById('backToTop'),
-        shareBox: document.getElementById('shareBox'),
-        heroMedia: document.getElementById('heroMedia'),
-        featuredMain: document.getElementById('featuredMain'),
-        galleryGrid: document.getElementById('galleryGrid'),
-        videoGrid: document.getElementById('videoGrid'),
-        timelineList: document.getElementById('timelineList'),
-        memoryWall: document.getElementById('memoryWall'),
-        siteTitle: document.getElementById('siteTitle'),
-        siteSubtitle: document.getElementById('siteSubtitle'),
-        brandName: document.getElementById('brandName'),
-        heroTitle: document.getElementById('heroTitle'),
-        heroText: document.getElementById('heroText'),
-        introTitle: document.getElementById('introTitle'),
-        introText: document.getElementById('introText'),
-        soundtrackText: document.getElementById('soundtrackText'),
-        closingTitle: document.getElementById('closingTitle'),
-        closingText: document.getElementById('closingText'),
-        featuredMetaText: document.getElementById('featuredMetaText')
-      };
-
-      const editFields = {
-        title: document.getElementById('editTitle'),
-        subtitle: document.getElementById('editSubtitle'),
-        introTitle: document.getElementById('editIntroTitle'),
-        introText: document.getElementById('editIntroText'),
-        closingText: document.getElementById('editClosingText')
-      };
-
-      function renderMedia(container, media, label) {
-        if (!media || !media.src) return;
-        if (media.type === 'video') {
-          container.innerHTML = `<video autoplay muted loop playsinline src="${media.src}"></video>`;
-          return;
-        }
-        container.innerHTML = `<img src="${media.src}" alt="${label}" />`;
-      }
-
-      function renderUI() {
-        elements.siteTitle.textContent = state.siteTitle || DEFAULT_STATE.siteTitle;
-        elements.siteSubtitle.textContent = state.siteSubtitle || DEFAULT_STATE.siteSubtitle;
-        elements.brandName.textContent = state.siteTitle || DEFAULT_STATE.siteTitle;
-        document.title = `${state.siteTitle || DEFAULT_STATE.siteTitle} | ${state.siteSubtitle || DEFAULT_STATE.siteSubtitle}`;
-
-        elements.heroTitle.innerHTML = state.heroTitle || DEFAULT_STATE.heroTitle;
-        elements.heroText.textContent = state.heroText || DEFAULT_STATE.heroText;
-        elements.introTitle.innerHTML = state.introTitle || DEFAULT_STATE.introTitle;
-        elements.introText.textContent = state.introText || DEFAULT_STATE.introText;
-        elements.soundtrackText.textContent = state.soundtrackText || DEFAULT_STATE.soundtrackText;
-        elements.closingTitle.textContent = state.closingTitle || DEFAULT_STATE.closingTitle;
-        elements.closingText.textContent = state.closingText || DEFAULT_STATE.closingText;
-        elements.featuredMetaText.textContent = state.featuredMeta || DEFAULT_STATE.featuredMeta;
-
-        renderMedia(elements.heroMedia, state.heroMedia || DEFAULT_STATE.heroMedia, 'hero');
-        renderMedia(elements.featuredMain, state.featuredMedia || DEFAULT_STATE.featuredMedia, 'featured');
-
-        const gallery = state.gallery || DEFAULT_STATE.gallery;
-        elements.galleryGrid.innerHTML = gallery.map((item, index) => `
-          <figure class="memory-card">
-            <img src="${item.src}" alt="${item.label || 'Gallery'}" />
-            <figcaption><span>${item.label || 'Memory'}</span><span>${index + 1}</span></figcaption>
-          </figure>
-        `).join('');
-
-        const videos = state.videos || DEFAULT_STATE.videos;
-        elements.videoGrid.innerHTML = videos.map((video, index) => `
-          <figure class="video-card">
-            <video controls playsinline preload="metadata" src="${video.src}"></video>
-            <figcaption>${video.label || `Video ${index + 1}`}</figcaption>
-          </figure>
-        `).join('');
-
-        const timeline = state.timeline || DEFAULT_STATE.timeline;
-        elements.timelineList.innerHTML = timeline.map((item) => `
-          <div class="timeline-item">
-            <span class="timeline-time">${item.time}</span>
-            <h4>${item.title}</h4>
-            <p>${item.desc}</p>
-          </div>
-        `).join('');
-
-        const wall = state.memoryWall || DEFAULT_STATE.memoryWall;
-        elements.memoryWall.innerHTML = wall.map((src) => `
-          <div class="memory-wall-item"><img src="${src}" alt="memory" /></div>
-        `).join('');
-      }
-
-      function populateEditor() {
-        editFields.title.value = state.siteTitle || DEFAULT_STATE.siteTitle;
-        editFields.subtitle.value = state.siteSubtitle || DEFAULT_STATE.siteSubtitle;
-        editFields.introTitle.value = state.introTitle || DEFAULT_STATE.introTitle;
-        editFields.introText.value = state.introText || DEFAULT_STATE.introText;
-        editFields.closingText.value = state.closingText || DEFAULT_STATE.closingText;
-      }
-
-      function fallbackSaveLocal() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      }
-
-      async function apiRequest(path, method = 'GET', payload = null) {
-        const options = { method, headers: { 'Content-Type': 'application/json' } };
-        if (payload) options.body = JSON.stringify(payload);
-
-        const response = await fetch(path, options);
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error(text || 'request failed');
-        }
-
-        return response.json();
-      }
-
-      async function ensurePage() {
+      async function init() {
         const params = new URLSearchParams(window.location.search);
-        const pageId = params.get('page');
+        currentPageId = params.get('page');
 
-        if (pageId) {
-          try {
-            const data = await apiRequest(`/api/page/${encodeURIComponent(pageId)}`);
-            state = data.page && data.page.state ? data.page.state : JSON.parse(JSON.stringify(DEFAULT_STATE));
-            currentPageId = pageId;
-            renderUI();
-            populateEditor();
-            return;
-          } catch (error) {
-            console.warn('Page not found on server', error);
+        if (currentPageId) {
+          await loadPage(currentPageId);
+        } else {
+          document.getElementById('editBtn').classList.remove('hidden');
+          document.getElementById('shareBtn').classList.remove('hidden');
+          enterPage();
+        }
+      }
+
+      async function loadPage(pageId) {
+        try {
+          const res = await fetch(`/api/page/${pageId}`);
+          const data = await res.json();
+          if (data.ok && data.page) {
+            currentState = data.page.state;
+            renderPage();
+            document.getElementById('editBtn').classList.remove('hidden');
+            document.getElementById('shareBtn').classList.remove('hidden');
+            setTimeout(() => enterPage(), 300);
+          }
+        } catch (error) {
+          console.error('Error loading page:', error);
+        }
+      }
+
+      function renderPage() {
+        if (!currentState) return;
+
+        document.getElementById('heroTitleDisplay').innerHTML = currentState.heroTitle || '';
+        document.getElementById('heroTextDisplay').textContent = currentState.heroText || '';
+        document.getElementById('introTitleDisplay').innerHTML = currentState.introTitle || '';
+        document.getElementById('introTextDisplay').textContent = currentState.introText || '';
+        document.getElementById('closingTitleDisplay').innerHTML = currentState.closingTitle || '';
+        document.getElementById('closingTextDisplay').textContent = currentState.closingText || '';
+
+        if (currentState.heroMedia) {
+          const media = currentState.heroMedia;
+          const heroSection = document.getElementById('heroSection');
+          heroSection.style.backgroundImage = `url('${media.src}')`;
+          heroSection.style.backgroundSize = 'cover';
+          heroSection.style.backgroundPosition = 'center';
+          heroSection.style.backgroundAttachment = 'fixed';
+        }
+
+        if (currentState.featuredMedia) {
+          const container = document.getElementById('featuredMediaContainer');
+          container.innerHTML = '';
+          const media = currentState.featuredMedia;
+          if (media.type === 'image') {
+            const img = document.createElement('img');
+            img.src = media.src;
+            img.className = 'featured-media';
+            container.appendChild(img);
+          } else if (media.type === 'video') {
+            const video = document.createElement('video');
+            video.src = media.src;
+            video.className = 'featured-media';
+            video.controls = true;
+            container.appendChild(video);
+          }
+        }
+
+        if (currentState.gallery && Array.isArray(currentState.gallery)) {
+          const container = document.getElementById('galleryContainer');
+          container.innerHTML = '';
+          currentState.gallery.forEach((item) => {
+            const div = document.createElement('div');
+            div.className = 'gallery-item';
+            div.innerHTML = `<img src="${item.src}" alt="${item.label}" loading="lazy">`;
+            container.appendChild(div);
+          });
+        }
+
+        if (currentState.timeline && Array.isArray(currentState.timeline)) {
+          const container = document.getElementById('timelineContainer');
+          container.innerHTML = '';
+          currentState.timeline.forEach((item) => {
+            const div = document.createElement('div');
+            div.className = 'timeline-item';
+            div.innerHTML = `
+              <div class="timeline-time">${item.time}</div>
+              <div class="timeline-content">
+                <h3>${item.title}</h3>
+                <p>${item.desc}</p>
+              </div>
+            `;
+            container.appendChild(div);
+          });
+        }
+
+        if (currentState.memoryWall && Array.isArray(currentState.memoryWall)) {
+          const container = document.getElementById('memoryWallContainer');
+          container.innerHTML = '';
+          currentState.memoryWall.forEach((src) => {
+            const img = document.createElement('img');
+            img.src = src;
+            img.loading = 'lazy';
+            container.appendChild(img);
+          });
+        }
+      }
+
+      function enterPage() {
+        document.getElementById('gate').style.display = 'none';
+        const content = document.getElementById('pageContent');
+        content.classList.add('show');
+      }
+
+      function openEditModal() {
+        if (!currentState) {
+          currentState = getDefaultState();
+        }
+
+        document.getElementById('siteTitle').value = currentState.siteTitle || '';
+        document.getElementById('siteSubtitle').value = currentState.siteSubtitle || '';
+        document.getElementById('heroTitle').value = currentState.heroTitle || '';
+        document.getElementById('heroText').value = currentState.heroText || '';
+        document.getElementById('introTitle').value = currentState.introTitle || '';
+        document.getElementById('introText').value = currentState.introText || '';
+        document.getElementById('closingTitle').value = currentState.closingTitle || '';
+        document.getElementById('closingText').value = currentState.closingText || '';
+
+        document.getElementById('editModal').classList.remove('hidden');
+      }
+
+      function closeEditModal() {
+        document.getElementById('editModal').classList.add('hidden');
+      }
+
+      async function savePage() {
+        document.getElementById('loading').classList.remove('hidden');
+
+        const state = {
+          siteTitle: document.getElementById('siteTitle').value,
+          siteSubtitle: document.getElementById('siteSubtitle').value,
+          heroTitle: document.getElementById('heroTitle').value,
+          heroText: document.getElementById('heroText').value,
+          introTitle: document.getElementById('introTitle').value,
+          introText: document.getElementById('introText').value,
+          closingTitle: document.getElementById('closingTitle').value,
+          closingText: document.getElementById('closingText').value,
+          heroMedia: currentState?.heroMedia || { type: 'image', src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1600&q=80' },
+          featuredMedia: currentState?.featuredMedia || { type: 'image', src: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1600&q=80' },
+          gallery: currentState?.gallery || [],
+          timeline: currentState?.timeline || [],
+          memoryWall: currentState?.memoryWall || []
+        };
+
+        const heroFile = document.getElementById('heroMediaFile').files[0];
+        if (heroFile) {
+          const uploadRes = await uploadMedia(heroFile);
+          if (uploadRes.ok) {
+            state.heroMedia = { type: heroFile.type.startsWith('image/') ? 'image' : 'video', src: uploadRes.url };
           }
         }
 
         try {
-          const data = await apiRequest('/api/page', 'POST', { state: JSON.parse(JSON.stringify(DEFAULT_STATE)) });
-          currentPageId = data.page.id;
-          state = data.page.state;
-          const url = new URL(window.location.href);
-          url.searchParams.set('page', currentPageId);
-          window.history.replaceState({}, '', url);
-          renderUI();
-          populateEditor();
-        } catch (error) {
-          console.warn('Server unavailable, using local fallback.', error);
-          const saved = localStorage.getItem(STORAGE_KEY);
-          state = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_STATE));
-          currentPageId = 'local';
-          renderUI();
-          populateEditor();
-        }
-      }
+          const endpoint = currentPageId ? `/api/page/${currentPageId}` : '/api/page';
+          const method = currentPageId ? 'POST' : 'POST';
+          const res = await fetch(endpoint, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ state })
+          });
 
-      async function saveCurrentPage() {
-        const payload = JSON.parse(JSON.stringify(state));
-
-        if (currentPageId && currentPageId !== 'local') {
-          try {
-            const data = await apiRequest(`/api/page/${encodeURIComponent(currentPageId)}`, 'POST', { state: payload });
-            const shareUrl = data.shareUrl || window.location.href;
-            elements.shareBox.textContent = shareUrl;
-            elements.shareBox.classList.add('show');
-            fallbackSaveLocal();
-            return;
-          } catch (error) {
-            console.warn('Save to server failed; falling back to localStorage', error);
+          const data = await res.json();
+          if (data.ok && data.page) {
+            currentPageId = data.page.id;
+            currentState = data.page.state;
+            renderPage();
+            closeEditModal();
+            alert('Halaman berhasil disimpan!');
           }
+        } catch (error) {
+          alert('Gagal menyimpan halaman');
+          console.error(error);
+        } finally {
+          document.getElementById('loading').classList.add('hidden');
         }
+      }
 
-        fallbackSaveLocal();
-        const url = new URL(window.location.href);
-        if (!currentPageId || currentPageId === 'local') {
-          currentPageId = 'local';
+      async function uploadMedia(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData
+          });
+
+          const data = await res.json();
+          return data;
+        } catch (error) {
+          console.error('Upload error:', error);
+          return { ok: false };
         }
-        elements.shareBox.textContent = window.location.href;
-        elements.shareBox.classList.add('show');
       }
 
-      function setTab(tabName) {
-        document.querySelectorAll('.tab-btn').forEach((btn) => {
-          btn.classList.toggle('active', btn.dataset.tab === tabName);
-        });
-        document.querySelectorAll('.panel-tab').forEach((panel) => {
-          panel.classList.toggle('active', panel.dataset.panel === tabName);
-        });
-      }
+      function previewMedia(inputId, previewId) {
+        const input = document.getElementById(inputId);
+        const preview = document.getElementById(previewId);
+        const file = input.files[0];
 
-      function closeEditor() {
-        elements.editPanel.classList.add('hidden');
-      }
-
-      function openEditor() {
-        populateEditor();
-        elements.editPanel.classList.remove('hidden');
-      }
-
-      function handleFileUpload(input, targetKey, previewId) {
-        const file = input.files && input.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = () => {
-          const value = {
-            type: file.type.startsWith('video/') ? 'video' : 'image',
-            src: reader.result
+        preview.innerHTML = '';
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            if (file.type.startsWith('image/')) {
+              const img = document.createElement('img');
+              img.src = e.target.result;
+              img.style.maxWidth = '100%';
+              img.style.borderRadius = '8px';
+              preview.appendChild(img);
+            } else {
+              const video = document.createElement('video');
+              video.src = e.target.result;
+              video.style.maxWidth = '100%';
+              video.style.borderRadius = '8px';
+              video.controls = true;
+              preview.appendChild(video);
+            }
           };
-          state[targetKey] = value;
-          const preview = document.getElementById(previewId);
-          preview.innerHTML = value.type === 'video' ? `<video src="${value.src}" controls playsinline></video>` : `<img src="${value.src}" alt="preview" />`;
-          renderUI();
+          reader.readAsDataURL(file);
+        }
+      }
+
+      function openShareModal() {
+        const shareContent = document.getElementById('shareContent');
+        if (currentPageId) {
+          const shareUrl = `${window.location.origin}/?page=${currentPageId}`;
+          shareContent.innerHTML = `
+            <div class="share-link-box">
+              <input type="text" value="${shareUrl}" readonly>
+              <button onclick="copyShareLink('${shareUrl}')">Salin</button>
+            </div>
+          `;
+        } else {
+          shareContent.innerHTML = '<p class="modal-text">Belum ada link share. Simpan halaman terlebih dahulu untuk mendapatkan link.</p>';
+        }
+        document.getElementById('shareModal').classList.remove('hidden');
+      }
+
+      function closeShareModal() {
+        document.getElementById('shareModal').classList.add('hidden');
+      }
+
+      function copyShareLink(url) {
+        navigator.clipboard.writeText(url).then(() => {
+          alert('Link tersalin!');
+        }).catch(() => {
+          alert('Gagal menyalin link');
+        });
+      }
+
+      function getDefaultState() {
+        return {
+          siteTitle: 'MOMENTARY',
+          siteSubtitle: 'Jejak Kebersamaan Kita',
+          heroTitle: 'Bersama <span class="ital">dalam</span> cerita',
+          heroText: 'Kenangan indah yang kita lukis bersama, tak pernah hilang walau waktu berganti.',
+          introTitle: 'Kehidupan <span class="ital">yang menyatukan</span> kita',
+          introText: 'Setiap momen yang kita lalui bersama membuat kami lebih berarti.',
+          closingTitle: 'FOREVER',
+          closingText: 'Semua cerita hari ini adalah bagian dari perjalanan kita.',
+          heroMedia: { type: 'image', src: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1600&q=80' },
+          featuredMedia: { type: 'image', src: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=1600&q=80' },
+          gallery: [],
+          timeline: [],
+          memoryWall: []
         };
-        reader.readAsDataURL(file);
       }
 
-      function applyEditedText() {
-        state.siteTitle = (editFields.title.value || DEFAULT_STATE.siteTitle).trim();
-        state.siteSubtitle = (editFields.subtitle.value || DEFAULT_STATE.siteSubtitle).trim();
-        state.introTitle = (editFields.introTitle.value || DEFAULT_STATE.introTitle).trim();
-        state.introText = (editFields.introText.value || DEFAULT_STATE.introText).trim();
-        state.closingText = (editFields.closingText.value || DEFAULT_STATE.closingText).trim();
-      }
-
-      document.getElementById('startBtn').addEventListener('click', () => {
-        const name = document.getElementById('guestName').value.trim();
-        if (name) localStorage.setItem('momentary-guest-name', name);
-        elements.gate.classList.add('hidden');
-        elements.topbar.classList.remove('hidden');
-      });
-
-      document.getElementById('editToggle').addEventListener('click', openEditor);
-      document.getElementById('closePanel').addEventListener('click', closeEditor);
-      document.getElementById('cancelEdit').addEventListener('click', closeEditor);
-      document.getElementById('saveEdit').addEventListener('click', async () => {
-        applyEditedText();
-        await saveCurrentPage();
-        renderUI();
-        closeEditor();
-      });
-
-      document.querySelectorAll('.tab-btn').forEach((btn) => {
-        btn.addEventListener('click', () => setTab(btn.dataset.tab));
-      });
-
-      document.getElementById('heroFile').addEventListener('change', (event) => handleFileUpload(event.target, 'heroMedia', 'heroPreview'));
-      document.getElementById('featuredFile').addEventListener('change', (event) => handleFileUpload(event.target, 'featuredMedia', 'featuredPreview'));
-      document.getElementById('muteBtn').addEventListener('click', () => {
-        const muted = document.body.dataset.muted === 'true';
-        document.body.dataset.muted = String(!muted);
-        elements.muteBtn.textContent = muted ? '♫' : '🔇';
-      });
-
-      document.getElementById('backToTop').addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-      window.addEventListener('scroll', () => {
-        document.getElementById('backToTop').classList.toggle('show', window.scrollY > 250);
-      });
-
-      const savedGuest = localStorage.getItem('momentary-guest-name');
-      if (savedGuest) {
-        document.getElementById('guestName').value = savedGuest;
-      }
-
-      ensurePage().then(() => {
-        setTimeout(() => elements.loading.classList.add('hidden'), 500);
-      });
+      init();
     </script>
   </body>
 </html>
